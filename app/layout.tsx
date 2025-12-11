@@ -5,6 +5,7 @@ import GlobalNav from "@/components/shared/globalNav/GlobalNav";
 import HeaderBar from "@/components/shared/header/HeaderBar";
 import HeaderNav from "@/components/shared/header/HeaderNav";
 import Wallpapaer from "@/components/shared/wallpaper/Wallpaper";
+import QueryProvider from "@/components/queryProvider/QueryProvider";
 
 const nanumGothicFont = Nanum_Gothic({
   variable: "--font-nanum-gothic",
@@ -32,14 +33,16 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body
-        className={`${nanumGothicFont.variable} ${doHyeonFont.variable} antialiased relative overflow-hidden`}
+        className={`${nanumGothicFont.variable} ${doHyeonFont.variable} antialiased relative overflow-x-hidden`}
       >
         <Wallpapaer>
-          <section className="flex flex-col justify-between min-w-[430px] min-h-full">
-            <HeaderBar className="bg-blue-500">
+          <section className="flex flex-col justify-between min-w-[430px] min-h-full ">
+            <HeaderBar className="bg-(--mt-blue)">
               <HeaderNav />
             </HeaderBar>
-            <main className="flex-1">{children}</main>
+            <QueryProvider>
+              <main className="flex-1 flex p-6">{children}</main>
+            </QueryProvider>
             <GlobalNav />
           </section>
         </Wallpapaer>

@@ -16,7 +16,7 @@ export default function Drawer() {
         className="w-full h-full absolute top-0 left-0"
       />
       <div className="flex flex-col w-80 relative z-99">
-        <HeaderBar className="bg-blue-500">
+        <HeaderBar className="bg-(--mt-blue)">
           <DrawerHeader />
         </HeaderBar>
         <section className="bg-(--mt-white) h-full">
