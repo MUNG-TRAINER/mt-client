@@ -1,0 +1,36 @@
+"use client";
+import {useDrawer} from "@/stores/drawerState";
+import DrawerHeader from "../header/DrawerHeader";
+import HeaderBar from "../header/HeaderBar";
+
+export default function Drawer() {
+  const {toggle, offToggle} = useDrawer();
+  return (
+    <div
+      className={`absolute left-0 top-0 z-99 bg-(--mt-black)/70 w-full h-full flex justify-end transition-transform ease-in-out duration-300 ${
+        toggle ? "" : "translate-x-full"
+      }`}
+    >
+      <div
+        onClick={offToggle}
+        className="w-full h-full absolute top-0 left-0"
+      />
+      <div className="flex flex-col w-80 relative z-99">
+        <HeaderBar className="bg-blue-500">
+          <DrawerHeader />
+        </HeaderBar>
+        <section className="bg-(--mt-white) h-full">
+          <nav className="p-5">
+            <ul className="flex flex-col gap-10">
+              <li>홈</li>
+              <li>마이페이지</li>
+              <li>나의훈련보기</li>
+              <li>찜리스트</li>
+              <li>멍선생소개</li>
+            </ul>
+          </nav>
+        </section>
+      </div>
+    </div>
+  );
+}
