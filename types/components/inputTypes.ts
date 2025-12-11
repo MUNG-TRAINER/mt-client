@@ -1,15 +1,14 @@
 import {HTMLAttributes, ReactNode} from "react";
 
-export interface IAuthInputType {
+export interface IAuthInputType extends HTMLAttributes<HTMLInputElement> {
   labelTxt: string;
   id: string;
   name: string;
   placeholder: string;
-  classNames: string;
+  classNames?: string;
   headIcon: ReactNode;
   tailIcon?: ReactNode;
   stateTrueTailIcon?: ReactNode;
-  fnState: boolean;
+  fnState?: boolean;
   fn?: () => void;
-  props?: HTMLAttributes<HTMLInputElement>;
 }
