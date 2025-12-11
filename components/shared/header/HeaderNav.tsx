@@ -1,9 +1,7 @@
 "use client";
 import {BellIcon} from "@/components/icons/bells";
 import {Hamburger3Icon} from "@/components/icons/hamburger";
-import Image from "next/image";
 import Link from "next/link";
-import logo_white from "@/public/logos/logo_text_landscape_svg_white.svg";
 import {useDrawer} from "@/stores/drawerState";
 
 export default function HeaderNav() {
