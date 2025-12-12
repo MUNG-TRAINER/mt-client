@@ -17,9 +17,14 @@ export default function AuthInput({
   ...props
 }: IAuthInputType) {
   const labelId = useId();
+  const checkId =
+    id === "sido" || id === "sigungu" || id === "roadname" || id === "postcode";
   return (
     <div className="flex flex-col gap-2 w-full">
-      <label htmlFor={`${labelId}_${id}`} className="font-bold">
+      <label
+        htmlFor={`${labelId}_${id}`}
+        className={`font-bold ${checkId && "cursor-pointer"}`}
+      >
         {labelTxt}
       </label>
       <div className="relative flex items-center">
@@ -28,7 +33,9 @@ export default function AuthInput({
           id={`${labelId}_${id}`}
           name={name}
           type={type}
-          className={`border border-(--mt-gray-light) pl-10 py-2 w-full bg-(--mt-white) ${classNames} rounded-xl`}
+          className={`border border-(--mt-gray-light) pl-10 py-2 w-full ${classNames} rounded-xl ${
+            checkId ? "bg-(--mt-gray-light) cursor-pointer" : "bg-(--mt-white) "
+          }`}
           placeholder={placeholder}
           {...props}
         />

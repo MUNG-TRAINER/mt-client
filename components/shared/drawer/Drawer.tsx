@@ -2,6 +2,7 @@
 import {useDrawer} from "@/stores/drawerState";
 import DrawerHeader from "../header/DrawerHeader";
 import HeaderBar from "../header/HeaderBar";
+import Link from "next/link";
 
 export default function Drawer() {
   const {toggle, offToggle} = useDrawer();
@@ -22,11 +23,21 @@ export default function Drawer() {
         <section className="bg-(--mt-white) h-full">
           <nav className="p-5">
             <ul className="flex flex-col gap-10">
-              <li>홈</li>
-              <li>마이페이지</li>
-              <li>나의훈련보기</li>
-              <li>찜리스트</li>
-              <li>멍선생소개</li>
+              <li>
+                <Link href={"/"}>홈</Link>
+              </li>
+              <li>
+                <Link href={"/mypage"}>마이페이지</Link>
+              </li>
+              <li>
+                <Link href={"/mytrain"}>나의훈련보기</Link>
+              </li>
+              <li>
+                <Link href={"/wishlist"}>찜리스트</Link>
+              </li>
+              <li>
+                <Link href={"/introduce"}>멍선생소개</Link>
+              </li>
             </ul>
           </nav>
         </section>

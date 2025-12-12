@@ -1,5 +1,8 @@
 import {ICheckIdType} from "@/types/join/checkIdType";
-import {IJoinDataType} from "@/types/join/joinDataType";
+import {
+  IJoinTrainerDataType,
+  IJoinUserDataType,
+} from "@/types/join/joinDataType";
 import {API_BASE_URL} from "@/util/env";
 
 export const joinApi = {
@@ -35,9 +38,22 @@ export const joinApi = {
     }
     return result;
   },
-  join: async (data: IJoinDataType) => {
-    const response = await fetch(`${API_BASE_URL}/`, {
+  joinTrainer: async (data: IJoinTrainerDataType) => {
+    const response = await fetch(`${API_BASE_URL}/auth/join/trainer`, {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+    return response;
+  },
+  joinUser: async (data: IJoinUserDataType) => {
+    const response = await fetch(`${API_BASE_URL}/auth/join/user`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify(data),
     });
     return response;

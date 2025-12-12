@@ -1,15 +1,53 @@
 "use server";
+
 import {joinApi} from "@/apis/join/joinApi";
-import {joinSchema} from "@/schemas/joinSchema";
+import {joinUserSchema, joinTrainerSchema} from "@/schemas/joinSchema";
 import {IFormResultType} from "@/types/formResultType";
 import {IErrorResponse} from "@/types/response/errorResponse";
 import {redirect} from "next/navigation";
-import z, {treeifyError} from "zod";
+import {treeifyError} from "zod";
 
-export async function joinAction(
-  state: IFormResultType<typeof joinSchema>,
+export async function joinUserAction(
+  state: IFormResultType<typeof joinUserSchema>,
   formData: FormData
-): Promise<IFormResultType<typeof joinSchema>> {
+): Promise<IFormResultType<typeof joinUserSchema>> {
+  const data = {
+    userName: formData.get("userName"),
+    email: formData.get("email"),
+    phone: formData.get("phone"),
+    password: formData.get("password"),
+    passwordCheck: formData.get("passwordCheck"),
+    name: formData.get("name"),
+    birth: formData.get("birth"),
+    registCode: formData.get("registCode"),
+    sido: formData.get("sido"),
+    sigungu: formData.get("sigungu"),
+    roadname: formData.get("roadname"),
+    postcode: formData.get("postcode"),
+    restAddress: formData.get("restAddress"),
+  };
+  const result = await joinUserSchema.safeParseAsync(data);
+  if (!result.success) {
+    return {
+      errMsg: treeifyError(result.error),
+      resMsg: undefined,
+    };
+  }
+  const response = await joinApi.joinUser(result.data);
+  if (!response.ok) {
+    const responseResult: IErrorResponse = await response.json();
+    return {
+      errMsg: undefined,
+      resMsg: responseResult.message,
+    };
+  }
+  redirect("/login");
+}
+
+export async function joinTrainerAction(
+  state: IFormResultType<typeof joinTrainerSchema>,
+  formData: FormData
+): Promise<IFormResultType<typeof joinTrainerSchema>> {
   const data = {
     userName: formData.get("userName"),
     email: formData.get("email"),
@@ -24,26 +62,23 @@ export async function joinAction(
     postcode: formData.get("postcode"),
     restAddress: formData.get("restAddress"),
   };
-  const result = await joinSchema.safeParseAsync(data);
+  const result = await joinTrainerSchema.safeParseAsync(data);
   if (!result.success) {
-    console.log(result.data);
-    console.log(result.error);
+    console.log(result);
     return {
       errMsg: treeifyError(result.error),
       resMsg: undefined,
     };
   }
-  // const response = await joinApi.join(result.data);
-  // if (!response.ok) {
-  //   const responseResult: IErrorResponse = await response.json();
-  //   return {
-  //     errMsg: undefined,
-  //     resMsg: responseResult.message,
-  //   };
-  // }
-  // redirect("/login");
-  return {
-    errMsg: undefined,
-    resMsg: undefined,
-  };
+  const response = await joinApi.joinTrainer(result.data);
+  if (!response.ok) {
+    const responseResult: IErrorResponse = await response.json();
+    console.log(responseResult);
+    return {
+      errMsg: undefined,
+      resMsg: responseResult.message,
+    };
+  }
+
+  redirect("/login");
 }

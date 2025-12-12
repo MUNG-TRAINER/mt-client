@@ -15,6 +15,7 @@ export default function JoinAddress() {
         onClick={() =>
           onClickAddr({setSido, setSigungu, setRoadName, setPostCode})
         }
+        className="cursor-pointer"
       >
         <AuthInput
           id="sido"

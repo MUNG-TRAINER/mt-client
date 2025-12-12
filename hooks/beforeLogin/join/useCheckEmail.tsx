@@ -3,9 +3,8 @@ import {useQuery} from "@tanstack/react-query";
 
 export default function useCheckEmail(email: string) {
   const {data, isSuccess, isError, isPending, refetch} = useQuery({
-    queryKey: ["checkUserName", email],
-    queryFn: () => joinApi.checkUserName(email),
-    enabled: false,
+    queryKey: ["checkEmail", email],
+    queryFn: () => joinApi.checkEmail(email),
   });
   return {data, isSuccess, isError, isPending, refetch};
 }
