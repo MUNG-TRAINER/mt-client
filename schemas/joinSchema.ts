@@ -2,6 +2,7 @@ import z from "zod";
 
 export const joinUserSchema = z
   .object({
+    isAgree: z.boolean({error: "약관 동의는 필수 입니다."}),
     userName: z.coerce
       .string()
       .min(4, {error: "아이디는 4~20자여야 합니다."})
@@ -22,16 +23,6 @@ export const joinUserSchema = z
     postcode: z.coerce.string().optional(),
     restAddress: z.coerce.string().optional(),
   })
-  .required({
-    userName: true,
-    email: true,
-    phone: true,
-    password: true,
-    passwordCheck: true,
-    name: true,
-    birth: true,
-    registCode: true,
-  })
   .superRefine(({password, passwordCheck}, ctx) => {
     if (password !== passwordCheck) {
       ctx.addIssue({
@@ -44,6 +35,7 @@ export const joinUserSchema = z
 
 export const joinTrainerSchema = z
   .object({
+    isAgree: z.boolean({error: "약관 동의는 필수 입니다."}),
     userName: z.coerce
       .string()
       .min(4, {error: "아이디는 4~20자여야 합니다."})
@@ -62,15 +54,6 @@ export const joinTrainerSchema = z
     roadname: z.coerce.string().optional(),
     postcode: z.coerce.string().optional(),
     restAddress: z.coerce.string().optional(),
-  })
-  .required({
-    userName: true,
-    email: true,
-    phone: true,
-    password: true,
-    passwordCheck: true,
-    name: true,
-    birth: true,
   })
   .superRefine(({password, passwordCheck}, ctx) => {
     if (password !== passwordCheck) {

@@ -1,5 +1,6 @@
 import JoinStateComp from "@/components/pages/beforeLogin/join/JoinStateComp";
 import {Metadata} from "next";
+import Link from "next/link";
 import {ReactNode} from "react";
 
 export const metadata: Metadata = {
@@ -14,6 +15,12 @@ export default function layout({children}: {children: ReactNode}) {
       </p>
       <JoinStateComp />
       {children}
+      <p className="flex items-center gap-2 justify-center text-center text-sm font-semibold text-(--mt-gray)">
+        회원이신가요?
+        <Link href={"/login"} className="text-(--mt-blue)">
+          로그인
+        </Link>
+      </p>
     </>
   );
 }

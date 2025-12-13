@@ -12,6 +12,7 @@ export async function joinUserAction(
   formData: FormData
 ): Promise<IFormResultType<typeof joinUserSchema>> {
   const data = {
+    isAgree: formData.get("isAgree") === "1",
     userName: formData.get("userName"),
     email: formData.get("email"),
     phone: formData.get("phone"),
@@ -26,6 +27,7 @@ export async function joinUserAction(
     postcode: formData.get("postcode"),
     restAddress: formData.get("restAddress"),
   };
+
   const result = await joinUserSchema.safeParseAsync(data);
   if (!result.success) {
     return {
@@ -49,6 +51,7 @@ export async function joinTrainerAction(
   formData: FormData
 ): Promise<IFormResultType<typeof joinTrainerSchema>> {
   const data = {
+    isAgree: formData.get("isAgree") === "1",
     userName: formData.get("userName"),
     email: formData.get("email"),
     phone: formData.get("phone"),
@@ -79,6 +82,5 @@ export async function joinTrainerAction(
       resMsg: responseResult.message,
     };
   }
-
   redirect("/login");
 }
