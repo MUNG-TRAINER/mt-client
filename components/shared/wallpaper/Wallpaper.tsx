@@ -3,7 +3,7 @@ import Drawer from "../drawer/Drawer";
 
 export default function Wallpaper({children}: {children: ReactNode}) {
   return (
-    <div className="h-full">
+    <div className="h-dvh">
       <Drawer />
       {children}
     </div>

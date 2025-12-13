@@ -27,7 +27,7 @@ function GlobalNavList({to, txt, icon}: IGlobalNavListProps) {
 
 export default function GlobalNav() {
   return (
-    <nav className="p-5 bg-white">
+    <nav className="p-5 bg-white shadow-[0px_1px_20px_rgba(0,0,0,0.2)]">
       <ul className="flex justify-between *:[&>a]:flex *:[&>a]:flex-col *:[&>a]:justify-center *:[&>a]:items-center *:[&>a]:gap-1  *:[&>a]:w-10 *:[&>a>i]:size-6">
         <GlobalNavList to="/" txt="홈" icon={<HomeIcon />} />
         <GlobalNavList to="/plan" txt="일정" icon={<CalendarDaysIcon />} />

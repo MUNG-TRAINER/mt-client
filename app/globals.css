@@ -3,7 +3,7 @@
 :root {
   --mt-white: #ffffff;
   --mt-black: #212529;
-  --mt-background: #f8fcff;
+  --mt-background: #e4f3ff;
   --mt-green-smoke: #dff6e3;
   --mt-green-point: #22c55e;
   --mt-green: #10b981;
@@ -32,7 +32,8 @@
 html,
 body {
   width: 100%;
-  height: 100%;
+  height: 100dvh;
+  overflow-x: hidden;
 }
 body {
   background-color: var(--mt-background);
@@ -45,4 +46,9 @@ body {
 }
 button {
   cursor: pointer;
+}
+legend {
+  width: 0;
+  height: 0;
+  opacity: 0;
 }

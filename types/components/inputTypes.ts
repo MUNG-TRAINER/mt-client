@@ -1,9 +1,12 @@
-import {HTMLAttributes, ReactNode} from "react";
+import {InputHTMLAttributes, ReactNode} from "react";
+import {ZodErrorTree} from "../formResultType";
+import {joinUserSchema, joinTrainerSchema} from "@/schemas/joinSchema";
 
-export interface IAuthInputType extends HTMLAttributes<HTMLInputElement> {
+export interface IAuthInputType extends InputHTMLAttributes<HTMLInputElement> {
   labelTxt: string;
   id: string;
   name: string;
+  type: string;
   placeholder: string;
   classNames?: string;
   headIcon: ReactNode;
@@ -11,4 +14,8 @@ export interface IAuthInputType extends HTMLAttributes<HTMLInputElement> {
   stateTrueTailIcon?: ReactNode;
   fnState?: boolean;
   fn?: () => void;
+  errMsg?:
+    | ZodErrorTree<typeof joinUserSchema>["errors"]
+    | ZodErrorTree<typeof joinTrainerSchema>["errors"]
+    | undefined;
 }

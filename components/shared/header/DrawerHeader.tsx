@@ -1,10 +1,18 @@
 "use client";
 import {XMarkIcon} from "@/components/icons/xMark";
 import {useDrawer} from "@/stores/drawerState";
-import Link from "next/link";
+import {useRouter} from "next/navigation";
 
 export default function DrawerHeader() {
+  const router = useRouter();
   const {offToggle} = useDrawer();
+
+  // functions
+  /* 로그인페이지 이동 */
+  const goToLogin = () => {
+    router.push("/login");
+    offToggle();
+  };
   return (
     <>
       <li>
@@ -15,7 +23,12 @@ export default function DrawerHeader() {
         </button>
       </li>
       <li>
-        <Link href={"/login"}>로그인</Link>
+        <button
+          onClick={goToLogin}
+          className="bg-(--mt-white) px-2 py-1 rounded-lg font-semibold text-sm hover:bg-(--mt-blue-light) hover:outline-2 hover:outline-(--mt-blue-point) transition-colors ease-in-out duration-200"
+        >
+          로그인
+        </button>
       </li>
     </>
   );

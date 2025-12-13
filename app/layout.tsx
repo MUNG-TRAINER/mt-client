@@ -5,6 +5,8 @@ import GlobalNav from "@/components/shared/globalNav/GlobalNav";
 import HeaderBar from "@/components/shared/header/HeaderBar";
 import HeaderNav from "@/components/shared/header/HeaderNav";
 import Wallpapaer from "@/components/shared/wallpaper/Wallpaper";
+import QueryProvider from "@/components/providers/queryProvider/QueryProvider";
+import OSProvider from "@/components/providers/OSProvider";
 
 const nanumGothicFont = Nanum_Gothic({
   variable: "--font-nanum-gothic",
@@ -34,12 +36,19 @@ export default function RootLayout({
       <body
         className={`${nanumGothicFont.variable} ${doHyeonFont.variable} antialiased relative overflow-hidden`}
       >
+        <OSProvider />
         <Wallpapaer>
-          <section className="flex flex-col justify-between min-w-[430px] min-h-full">
-            <HeaderBar className="bg-blue-500">
+          <section className="flex flex-col justify-between min-w-full min-h-full ">
+            <HeaderBar className="bg-(--mt-blue)">
               <HeaderNav />
             </HeaderBar>
-            <main className="flex-1">{children}</main>
+            <QueryProvider>
+              <main
+                className={`flex items-center h-[1100px] [body[data-os=android]_&]:h-[750px] [body[data-os=ios]_&]:h-[750px] p-6 overflow-y-auto`}
+              >
+                {children}
+              </main>
+            </QueryProvider>
             <GlobalNav />
           </section>
         </Wallpapaer>
