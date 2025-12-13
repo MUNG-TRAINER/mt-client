@@ -13,7 +13,7 @@ export const loginAPi = {
     });
     const result = await response.json();
     if (!response.ok) {
-      throw new Error("로그인에 싪패하였습니다.");
+      throw new Error("로그인에 실패하였습니다.");
     }
     return result;
   },

@@ -67,7 +67,6 @@ export async function joinTrainerAction(
   };
   const result = await joinTrainerSchema.safeParseAsync(data);
   if (!result.success) {
-    console.log(result);
     return {
       errMsg: treeifyError(result.error),
       resMsg: undefined,
@@ -76,7 +75,6 @@ export async function joinTrainerAction(
   const response = await joinApi.joinTrainer(result.data);
   if (!response.ok) {
     const responseResult: IErrorResponse = await response.json();
-    console.log(responseResult);
     return {
       errMsg: undefined,
       resMsg: responseResult.message,

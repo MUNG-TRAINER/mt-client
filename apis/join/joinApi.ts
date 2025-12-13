@@ -18,7 +18,10 @@ export const joinApi = {
     );
     const result: ICheckIdType = await response.json();
     if (!response.ok) {
-      return result;
+      return {
+        valid: false,
+        message: result.message || "서버에 오류가 발생했습니다.",
+      };
     }
     return result;
   },
@@ -34,7 +37,10 @@ export const joinApi = {
     );
     const result: ICheckIdType = await response.json();
     if (!response.ok) {
-      return result;
+      return {
+        valid: false,
+        message: result.message || "서버에 오류가 발생했습니다.",
+      };
     }
     return result;
   },

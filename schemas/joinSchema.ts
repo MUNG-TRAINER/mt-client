@@ -7,7 +7,7 @@ export const joinUserSchema = z
       .string()
       .min(4, {error: "아이디는 4~20자여야 합니다."})
       .max(20, {error: "아이디는 4~20자여야 합니다."}),
-    email: z.email({error: "이메일 양식이여야합니다."}),
+    email: z.email({error: "이메일 양식이어야합니다."}),
     phone: z.coerce
       .string()
       .min(10, {error: "전화번호를 올바르게 작성해주세요"})
@@ -40,7 +40,7 @@ export const joinTrainerSchema = z
       .string()
       .min(4, {error: "아이디는 4~20자여야 합니다."})
       .max(20, {error: "아이디는 4~20자여야 합니다."}),
-    email: z.email({error: "이메일 양식이여야합니다."}),
+    email: z.email({error: "이메일 양식이어야합니다."}),
     phone: z.coerce
       .string()
       .min(10, {error: "전화번호를 올바르게 작성해주세요"})
