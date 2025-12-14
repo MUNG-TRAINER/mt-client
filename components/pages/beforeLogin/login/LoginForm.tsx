@@ -16,7 +16,9 @@ export default function LoginForm() {
     useState<ZodErrorTree<typeof loginSchema>>();
   /* Custom Hook */
   const {mutate, isPending, isError, reset} = useLogin();
+
   /* fn */
+  // 로그인
   const handleFormAction = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -31,6 +33,7 @@ export default function LoginForm() {
     }
     mutate(result.data);
   };
+  // 에러메세지 초기화
   const handleFieldChange = (field: "userName" | "password") => {
     setFieldErrors((prev) => {
       if (!prev?.properties) return prev;
