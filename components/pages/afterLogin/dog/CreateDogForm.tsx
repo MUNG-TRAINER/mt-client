@@ -10,6 +10,7 @@ export default function CreateDogForm() {
   const router = useRouter();
   const { mutateAsync, isPending } = useCreateDog();
   const [error, setError] = useState<string>("");
+  const [profileImage, setProfileImage] = useState<string>("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -27,7 +28,7 @@ export default function CreateDogForm() {
       personality: formData.get("personality") as string,
       habits: formData.get("habits") as string,
       healthInfo: formData.get("healthInfo") as string,
-      profileImageUrl: (formData.get("profileImageUrl") as string) || undefined,
+      profileImageUrl: profileImage || undefined,
     };
 
     try {
@@ -46,6 +47,33 @@ export default function CreateDogForm() {
       </div>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        {/* 프로필 이미지 업로드 */}
+        <div className="flex flex-col items-center gap-2">
+          {profileImage ? (
+            <div className="relative size-30 rounded-full overflow-hidden bg-blue-300">
+              <img
+                src={profileImage}
+                alt="반려견 프로필"
+                className="w-full h-full object-cover"
+              />
+            </div>
+          ) : (
+            <div className="flex items-center justify-center relative size-30 rounded-full overflow-hidden bg-blue-300">
+              <UserIcon className="size-16 text-(--mt-blue-point)" />
+            </div>
+          )}
+          <button
+            type="button"
+            className="text-sm text-(--mt-gray)"
+            onClick={() => {
+              // TODO: 이미지 업로드 로직 구현
+              alert("이미지 업로드 기능은 추후 구현 예정입니다.");
+            }}
+          >
+            프로필 이미지 업로드
+          </button>
+        </div>
+
         {/* 기본 정보 */}
         <div className="flex flex-col gap-3">
           <h2 className="text-lg font-bold text-(--mt-black)">기본 정보</h2>
@@ -194,14 +222,6 @@ export default function CreateDogForm() {
               className="border border-(--mt-gray-light) p-3 rounded-xl min-h-24 resize-none"
             />
           </div>
-
-          <DogInput
-            labelTxt="프로필 이미지 URL"
-            id="profileImageUrl"
-            name="profileImageUrl"
-            type="url"
-            placeholder="https://example.com/image.jpg (선택사항)"
-          />
         </div>
 
         {/* 에러 메시지 */}
