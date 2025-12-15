@@ -1,4 +1,4 @@
-export type UserRoleType = "TRAINER" | "ADMIN" | "USER" | undefined;
+import {UserRoleType} from "../common/commonType";
 
 export interface IMyPageTypes {
   userId?: number;

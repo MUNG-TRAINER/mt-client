@@ -7,10 +7,13 @@ export const usersApi = {
     const resposne = await fetchWithAuth(`${API_BASE_URL}/users/me`, {
       method: "GET",
     });
-    if (!resposne.ok) {
+
+    if (!resposne?.ok) {
       throw new Error("유정의 정보를 불러올 수 없습니다.");
     }
+
     const data: IMyPageTypes = await resposne.json();
+
     return data;
   },
 };

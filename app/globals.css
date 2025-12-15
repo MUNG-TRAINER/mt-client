@@ -13,7 +13,7 @@
   --mt-blue-smoke: #eff6ff;
   --mt-blue-light: #e8f4ff;
   --mt-blue-point: #3b82f6;
-  --mt-blue: #4a87c8;
+  --mt-blue: #328dee;
   --mt-red: #be185d;
   --mt-red-smoke: #fff1f2;
   --mt-red-point: #ec4899;
@@ -44,6 +44,7 @@ body {
 .font-dohyeon {
   font-family: var(--font-dohyeon);
 }
+
 button {
   cursor: pointer;
 }

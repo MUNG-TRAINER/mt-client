@@ -21,7 +21,11 @@ export default function MyPage() {
       <div className="flex flex-col items-center gap-2">
         {data?.profileImage ? (
           <div className="relative size-30 rounded-full overflow-hidden bg-blue-300">
-            <Image src={data?.profileImage} alt="프로필 이미지" />
+            <Image
+              src={data?.profileImage}
+              alt="프로필 이미지"
+              placeholder="blur"
+            />
           </div>
         ) : (
           <>
@@ -46,6 +50,14 @@ export default function MyPage() {
           <span>{data?.email}</span>
           <h3>연락처</h3>
           <span>{data?.phone}</span>
+          {data?.role === "TRAINER" && (
+            <Link
+              href={`/trainer/${data.userId}`}
+              className="py-2 text-center bg-(--mt-blue-point) p-2 rounded-xl text-(--mt-white) text-nowrap font-bold shadow-md"
+            >
+              훈련사 상세페이지
+            </Link>
+          )}
           <h3>나의 반려견</h3>
           <div className="border border-(--mt-gray-light) p-2 rounded-md flex flex-col gap-5">
             <Link

@@ -1,8 +1,7 @@
-import {Dispatch, SetStateAction} from "react";
+import {Dispatch, MouseEvent, SetStateAction} from "react";
 
 interface IToggleSlideProps {
   toggleState: boolean;
-  // toggleFn: () => void;
   toggleFn: Dispatch<SetStateAction<boolean>>;
   barWidth: number;
   barHeight: number;
@@ -13,16 +12,20 @@ export default function ToggleSlide({
   barWidth,
   barHeight,
 }: IToggleSlideProps) {
+  const handleToggle = (e: MouseEvent) => {
+    e.stopPropagation();
+    toggleFn((prev) => !prev);
+  };
   return (
     <div
       className={`flex items-center rounded-3xl transition-colors duration-200 ease-in-out ${
         toggleState ? "bg-(--mt-gray-light)" : "bg-gray-400"
       }`}
       style={{width: `${barWidth}px`, height: `${barHeight}px`}}
-      onClick={() => toggleFn((prev) => !prev)}
+      onClick={handleToggle}
     >
       <button
-        onClick={() => toggleFn((prev) => !prev)}
+        onClick={handleToggle}
         className={`transition-transform duration-200 ease-in-out size-[${
           barWidth / 2
         }px] rounded-full ${

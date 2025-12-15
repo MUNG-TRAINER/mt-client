@@ -4,6 +4,7 @@ import {EyeIcon, EyeSlashIcon} from "@/components/icons/eye";
 import {LockClosedIcon} from "@/components/icons/lock";
 import {UserIcon} from "@/components/icons/user";
 import AuthInput from "@/components/shared/inputs/AuthInput";
+import useCheckLoggedIn from "@/hooks/afterLogin/users/useCheckLoggedIn";
 import useLogin from "@/hooks/beforeLogin/login/useLogin";
 import {loginSchema} from "@/schemas/loginSchema";
 import {ZodErrorTree} from "@/types/formResultType";
@@ -16,7 +17,7 @@ export default function LoginForm() {
     useState<ZodErrorTree<typeof loginSchema>>();
   /* Custom Hook */
   const {mutate, isPending, isError, reset} = useLogin();
-
+  const {refreshUserCheck} = useCheckLoggedIn();
   /* fn */
   // 로그인
   const handleFormAction = async (e: FormEvent<HTMLFormElement>) => {
@@ -32,6 +33,7 @@ export default function LoginForm() {
       return;
     }
     mutate(result.data);
+    refreshUserCheck();
   };
   // 에러메세지 초기화
   const handleFieldChange = (field: "userName" | "password") => {
