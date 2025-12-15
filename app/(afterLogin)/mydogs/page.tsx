@@ -1,4 +1,4 @@
-import MyDogs from "@/components/pages/afterLogin/MyDogs";
+import MyDogs from "@/components/pages/afterLogin/dog/MyDogs";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
