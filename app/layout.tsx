@@ -34,24 +34,24 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body
-        className={`${nanumGothicFont.variable} ${doHyeonFont.variable} antialiased relative overflow-hidden`}
+        className={`${nanumGothicFont.variable} ${doHyeonFont.variable} antialiased relative overflow-y-auto`}
       >
         <OSProvider />
-        <Wallpapaer>
-          <section className="flex flex-col justify-between min-w-full min-h-full ">
-            <HeaderBar className="bg-(--mt-blue)">
-              <HeaderNav />
-            </HeaderBar>
-            <QueryProvider>
+        <QueryProvider>
+          <Wallpapaer>
+            <section className="flex flex-col justify-between min-w-full min-h-full ">
+              <HeaderBar className="bg-(--mt-blue)">
+                <HeaderNav />
+              </HeaderBar>
               <main
                 className={`flex items-center h-[1100px] [body[data-os=android]_&]:h-[750px] [body[data-os=ios]_&]:h-[750px] p-6 overflow-y-auto`}
               >
                 {children}
               </main>
-            </QueryProvider>
-            <GlobalNav />
-          </section>
-        </Wallpapaer>
+              <GlobalNav />
+            </section>
+          </Wallpapaer>
+        </QueryProvider>
       </body>
     </html>
   );

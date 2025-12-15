@@ -1,0 +1,12 @@
+import CreateCourse from "@/components/pages/afterLogin/course/create/CreateCourse";
+import {Metadata} from "next";
+export const metadata: Metadata = {
+  title: "수업생성하기",
+};
+export default function page() {
+  return (
+    <div className="w-full h-full p-6">
+      <CreateCourse />
+    </div>
+  );
+}

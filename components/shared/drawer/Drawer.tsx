@@ -6,6 +6,13 @@ import Link from "next/link";
 
 export default function Drawer() {
   const {toggle, offToggle} = useDrawer();
+  const link = [
+    {href: "/", label: "홈"},
+    {href: "/mypage", label: "마이페이지"},
+    {href: "/mytrain", label: "나의훈련보기"},
+    {href: "/wishlist", label: "찜리스트"},
+    {href: "/introduce", label: "멍선생소개"},
+  ];
   return (
     <div
       className={`absolute left-0 top-0 z-99 bg-(--mt-black)/70 w-full h-full flex justify-end transition-transform ease-in-out duration-300 ${
@@ -23,21 +30,13 @@ export default function Drawer() {
         <section className="bg-(--mt-white) h-full">
           <nav className="p-5">
             <ul className="flex flex-col gap-10">
-              <li>
-                <Link href={"/"}>홈</Link>
-              </li>
-              <li>
-                <Link href={"/mypage"}>마이페이지</Link>
-              </li>
-              <li>
-                <Link href={"/mytrain"}>나의훈련보기</Link>
-              </li>
-              <li>
-                <Link href={"/wishlist"}>찜리스트</Link>
-              </li>
-              <li>
-                <Link href={"/introduce"}>멍선생소개</Link>
-              </li>
+              {link.map((val, index) => (
+                <li key={index}>
+                  <Link href={val.href} onClick={offToggle}>
+                    {val.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </nav>
         </section>
