@@ -1,16 +1,10 @@
 "use client";
 import useMyDogs from "@/hooks/afterLogin/dogs/useMyDogs";
-import useDeleteDog from "@/hooks/afterLogin/dogs/useDeleteDog";
 import DogProfileCard from "@/components/shared/cards/DogProfileCard";
 import Link from "next/link";
 
 export default function MyDogs() {
   const { data: dogs, isPending, isError } = useMyDogs();
-  const { mutate: deleteDog } = useDeleteDog();
-
-  const handleDelete = (dogId: number) => {
-    deleteDog(dogId);
-  };
 
   if (isPending) {
     return (
@@ -43,14 +37,9 @@ export default function MyDogs() {
 
       {/* 반려견 리스트 */}
       {dogs && dogs.length > 0 ? (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-3">
           {dogs.map((dog) => (
-            <DogProfileCard
-              key={dog.dogId}
-              dog={dog}
-              showActions={true}
-              onDelete={handleDelete}
-            />
+            <DogProfileCard key={dog.dogId} dog={dog} />
           ))}
         </div>
       ) : (
