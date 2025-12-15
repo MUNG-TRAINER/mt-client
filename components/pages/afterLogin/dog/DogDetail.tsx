@@ -2,6 +2,7 @@
 
 import { UserIcon } from "@/components/icons/user";
 import useDogDetail from "@/hooks/afterLogin/dogs/useDogDetail";
+import useDeleteDog from "@/hooks/afterLogin/dogs/useDeleteDog";
 import { IDogProfileType } from "@/types/dog/dogType";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -17,6 +18,21 @@ export default function DogDetail({ dogId }: { dogId: number }) {
     isPending: boolean;
     isError: boolean;
   } = useDogDetail(dogId);
+  const { mutateAsync: deleteDog, isPending: isDeleting } = useDeleteDog();
+
+  const handleDelete = async () => {
+    if (!confirm(`정말로 ${data?.name}의 정보를 삭제하시겠습니까?`)) {
+      return;
+    }
+
+    try {
+      await deleteDog(dogId);
+      router.push("/mydogs");
+    } catch (err) {
+      alert("반려견 삭제에 실패했습니다. 다시 시도해주세요.");
+      console.error(err);
+    }
+  };
 
   if (isPending) {
     return (
@@ -99,8 +115,12 @@ export default function DogDetail({ dogId }: { dogId: number }) {
         >
           수정
         </Link>
-        <button className="flex-1 border border-red-500 text-red-500 py-3 rounded-md font-bold">
-          삭제
+        <button
+          onClick={handleDelete}
+          disabled={isDeleting}
+          className="flex-1 border border-red-500 text-red-500 py-3 rounded-md font-bold disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {isDeleting ? "삭제 중..." : "삭제"}
         </button>
       </div>
 
