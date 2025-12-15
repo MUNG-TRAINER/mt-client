@@ -6,7 +6,7 @@ export default function DogInput({
   id,
   name,
   type,
-  placeholder,
+  placeholder = "",
   classNames = "",
   headIcon,
   tailIcon,

@@ -25,7 +25,7 @@ export interface IDogInputType extends InputHTMLAttributes<HTMLInputElement> {
   id: string;
   name: string;
   type: string;
-  placeholder: string;
+  placeholder?: string;
   classNames?: string;
   headIcon?: ReactNode;
   tailIcon?: ReactNode;
