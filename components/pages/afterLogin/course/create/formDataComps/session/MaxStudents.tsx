@@ -8,7 +8,7 @@ export default function MaxStudents({inputId, ...props}: IMaxStudents) {
   return (
     <div>
       <label htmlFor={`${id}_${inputId}`}>최대 수강생 수</label>
-      <CreateCourseInput {...props} />
+      <CreateCourseInput id={`${id}_${inputId}`} {...props} />
     </div>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import {RefObject, useRef, useState} from "react";
+import {useRef, useState} from "react";
 import CourseTypeBtn from "./common/CourseTypeBtn";
 type TLessonForm = "WALK" | "GROUP" | "PRIVATE";
 export default function CourseLessonForm() {
@@ -17,7 +17,7 @@ export default function CourseLessonForm() {
           labelFor="walk"
           labelTxt="산책"
           name="lessonForm"
-          ref={walkRef}
+          inputRef={walkRef}
           inputValue="WALK"
           isActive={state === "WALK"}
           handleFn={() => setState("WALK")}
@@ -27,21 +27,19 @@ export default function CourseLessonForm() {
           labelFor="group"
           labelTxt="그룹"
           name="lessonForm"
-          ref={groupRef}
+          inputRef={groupRef}
           inputValue="GROUP"
           isActive={state === "GROUP"}
           handleFn={() => setState("GROUP")}
-          defaultChecked
         />
         <CourseTypeBtn
           labelFor="private"
           labelTxt="개인"
           name="lessonForm"
-          ref={privateRef}
+          inputRef={privateRef}
           inputValue="PRIVATE"
           isActive={state === "PRIVATE"}
           handleFn={() => setState("PRIVATE")}
-          defaultChecked
         />
       </div>
     </div>

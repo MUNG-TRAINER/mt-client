@@ -5,6 +5,8 @@ import CreateCourseInput from "../CreateCourseInput";
 import CourseTypeBtn from "./common/CourseTypeBtn";
 import CourseCountBtn from "./courseType/CourseCountBtn";
 import {useSessionState} from "@/stores/sessionState";
+import MaxStudents from "./session/MaxStudents";
+import SessionPrice from "./session/SessionPrice";
 
 export default function CourseType() {
   const [isActive, setIsActive] = useState(true);
@@ -23,7 +25,7 @@ export default function CourseType() {
   const handleMultiActive = useCallback(() => {
     multiRef.current?.click();
     setIsActive(false);
-    setCount("");
+    setCount(null);
   }, [setCount]);
 
   const handleCountChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -36,7 +38,7 @@ export default function CourseType() {
       setCount(1);
       return;
     }
-    setCount(e.target.value);
+    setCount(Number(e.target.value));
   };
 
   return (
@@ -46,7 +48,7 @@ export default function CourseType() {
         <CourseTypeBtn
           labelFor="type_once"
           labelTxt="일회성 수업"
-          ref={onceRef}
+          inputRef={onceRef}
           isActive={isActive}
           handleFn={handleOnceActive}
           name="type"
@@ -56,12 +58,11 @@ export default function CourseType() {
         <CourseTypeBtn
           labelFor="type_multi"
           labelTxt=" 다회성 수업"
-          ref={multiRef}
+          inputRef={multiRef}
           isActive={!isActive}
           handleFn={handleMultiActive}
           name="type"
           inputValue="MULTI"
-          defaultChecked
         />
       </div>
       <div className="flex gap-3 items-center justify-between">
@@ -81,6 +82,15 @@ export default function CourseType() {
           plusFn={handleCountPlus}
         />
       </div>
+      <CreateCourseInput name="sessionNo" readOnly />
+      {/* <SessionDate /> */}
+      <CreateCourseInput
+        name="locationDetail"
+        type="text"
+        placeholder="세부 위치"
+      />
+      <MaxStudents inputId="" />
+      <SessionPrice inputId="" />
     </>
   );
 }

@@ -24,7 +24,7 @@ export default function CourseIsFree() {
         <CourseTypeBtn
           labelFor={"free"}
           labelTxt={"무료"}
-          ref={freeRef}
+          inputRef={freeRef}
           name="isFree"
           inputValue={"true"}
           isActive={state}
@@ -35,7 +35,7 @@ export default function CourseIsFree() {
           labelFor={"nonFree"}
           labelTxt={"유료"}
           name="isFree"
-          ref={nonFreeRef}
+          inputRef={nonFreeRef}
           inputValue={"false"}
           isActive={!state}
           handleFn={handleFalsePrice}
