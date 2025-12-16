@@ -4,12 +4,12 @@ import {ChangeEvent, useCallback, useRef, useState} from "react";
 import CreateCourseInput from "../CreateCourseInput";
 import CourseTypeBtn from "./common/CourseTypeBtn";
 import CourseCountBtn from "./courseType/CourseCountBtn";
-import {useSesseionState} from "@/stores/sessionState";
+import {useSessionState} from "@/stores/sessionState";
 
 export default function CourseType() {
   const [isActive, setIsActive] = useState(true);
   const {count, setCount, handleCountMinus, handleCountPlus} =
-    useSesseionState();
+    useSessionState();
   const onceRef = useRef<HTMLInputElement | null>(null);
   const multiRef = useRef<HTMLInputElement | null>(null);
 
