@@ -4,11 +4,10 @@ import ErrorMessage from "@/components/shared/feedback/ErrorMessage";
 
 interface DogImageUploaderProps {
   previewUrl: string;
-  existingImageUrl?: string;
+  existingImageUrl?: string | null;
   dogId?: number;
-  fileInputRef: React.RefObject<HTMLInputElement>;
+  fileInputRef: React.RefObject<HTMLInputElement | null>;
   fileError: string;
-  isUploading: boolean;
   isDisabled: boolean;
   onFileSelect: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onButtonClick: () => void;
@@ -20,7 +19,6 @@ export default function DogImageUploader({
   dogId,
   fileInputRef,
   fileError,
-  isUploading,
   isDisabled,
   onFileSelect,
   onButtonClick,

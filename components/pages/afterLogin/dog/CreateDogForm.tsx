@@ -66,7 +66,6 @@ export default function CreateDogForm() {
           previewUrl={previewUrl}
           fileInputRef={fileInputRef}
           fileError={fileError}
-          isUploading={isUploading}
           isDisabled={isPending || isUploading}
           onFileSelect={handleFileSelect}
           onButtonClick={() => fileInputRef.current?.click()}

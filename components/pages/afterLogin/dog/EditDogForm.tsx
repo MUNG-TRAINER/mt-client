@@ -98,7 +98,6 @@ export default function EditDogForm({ dogId }: { dogId: number }) {
           dogId={dogId}
           fileInputRef={fileInputRef}
           fileError={fileError}
-          isUploading={isUploading}
           isDisabled={isPending || isUploading}
           onFileSelect={handleFileSelect}
           onButtonClick={() => fileInputRef.current?.click()}
