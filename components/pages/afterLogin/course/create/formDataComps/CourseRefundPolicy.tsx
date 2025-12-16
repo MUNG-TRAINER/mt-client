@@ -1,8 +1,9 @@
 export default function CourseRefundPolicy() {
   return (
     <>
-      <label htmlFor="title">환불 정책</label>
+      <label htmlFor="refundPolicy">환불 정책</label>
       <textarea
+        id="refundPolicy"
         name="refundPolicy"
         className="border border-(--mt-gray) bg-(--mt-gray-light) p-3 rounded-md resize-none"
         rows={5}

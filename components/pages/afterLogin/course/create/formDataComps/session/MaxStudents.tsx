@@ -1,6 +1,6 @@
-import {useId} from "react";
+import {InputHTMLAttributes, useId} from "react";
 import CreateCourseInput from "../../CreateCourseInput";
-interface IMaxStudents {
+interface IMaxStudents extends InputHTMLAttributes<HTMLInputElement> {
   inputId: string;
 }
 export default function MaxStudents({inputId, ...props}: IMaxStudents) {

@@ -3,6 +3,7 @@ export default function CourseDescription() {
     <>
       <label htmlFor="description">훈련 과정 내용</label>
       <textarea
+        id="description"
         name="description"
         className="border border-(--mt-gray) bg-(--mt-gray-light) p-3 rounded-md resize-none"
         rows={5}

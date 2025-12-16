@@ -57,7 +57,7 @@ export default function CourseType() {
         />
         <CourseTypeBtn
           labelFor="type_multi"
-          labelTxt=" 다회성 수업"
+          labelTxt="다회성 수업"
           inputRef={multiRef}
           isActive={!isActive}
           handleFn={handleMultiActive}
