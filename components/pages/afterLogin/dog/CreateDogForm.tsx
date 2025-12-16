@@ -1,40 +1,88 @@
 "use client";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import DogInput from "@/components/shared/inputs/DogInput";
 import useCreateDog from "@/hooks/afterLogin/dogs/useCreateDog";
 import { UserIcon } from "@/components/icons/user";
 import { IDogCreateRequestType } from "@/types/dog/dogType";
+import { presignedUrlApi } from "@/apis/common/presignedUrl";
 
 export default function CreateDogForm() {
   const router = useRouter();
   const { mutateAsync, isPending } = useCreateDog();
   const [error, setError] = useState<string>("");
-  const [profileImage, setProfileImage] = useState<string>("");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string>("");
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      alert("이미지 파일만 업로드 가능합니다.");
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      alert("파일 크기는 5MB 이하여야 합니다.");
+      return;
+    }
+
+    setSelectedFile(file);
+    const preview = URL.createObjectURL(file);
+    setPreviewUrl(preview);
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
 
+    // FormData를 먼저 생성 (이벤트가 무효화되기 전에)
     const formData = new FormData(e.currentTarget);
 
-    const dogData: IDogCreateRequestType = {
-      name: formData.get("name") as string,
-      breed: formData.get("breed") as string,
-      age: Number(formData.get("age")),
-      gender: formData.get("gender") as "M" | "F",
-      isNeutered: formData.get("isNeutered") === "true",
-      weight: Number(formData.get("weight")),
-      personality: formData.get("personality") as string,
-      habits: formData.get("habits") as string,
-      healthInfo: formData.get("healthInfo") as string,
-      profileImageUrl: profileImage || undefined,
-    };
-
     try {
+      let uploadedImageUrl = "";
+
+      // 선택된 파일이 있으면 S3에 업로드
+      if (selectedFile) {
+        setIsUploading(true);
+
+        const presignedUrl = await presignedUrlApi.getPresignedUrl({
+          category: "dog-profile",
+          fileName: selectedFile.name,
+          contentType: selectedFile.type,
+        });
+
+        uploadedImageUrl = await presignedUrlApi.uploadToS3(
+          presignedUrl,
+          selectedFile
+        );
+
+        setIsUploading(false);
+      }
+
+      const dogData: IDogCreateRequestType = {
+        name: formData.get("name") as string,
+        breed: formData.get("breed") as string,
+        age: Number(formData.get("age")),
+        gender: formData.get("gender") as "M" | "F",
+        isNeutered: formData.get("isNeutered") === "true",
+        weight: Number(formData.get("weight")),
+        personality: formData.get("personality") as string,
+        habits: formData.get("habits") as string,
+        healthInfo: formData.get("healthInfo") as string,
+        profileImageUrl: uploadedImageUrl || undefined,
+      };
+
       await mutateAsync(dogData);
+
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+
       router.push("/mydogs");
     } catch (err) {
+      setIsUploading(false);
       setError("반려견 등록에 실패했습니다. 다시 시도해주세요.");
       console.error(err);
     }
@@ -49,11 +97,11 @@ export default function CreateDogForm() {
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         {/* 프로필 이미지 업로드 */}
         <div className="flex flex-col items-center gap-2">
-          {profileImage ? (
+          {previewUrl ? (
             <div className="relative size-30 rounded-full overflow-hidden bg-blue-300">
               <img
-                src={profileImage}
-                alt="반려견 프로필"
+                src={previewUrl}
+                alt="반려견 프로필 미리보기"
                 className="w-full h-full object-cover"
               />
             </div>
@@ -62,15 +110,20 @@ export default function CreateDogForm() {
               <UserIcon className="size-16 text-(--mt-blue-point)" />
             </div>
           )}
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handleFileSelect}
+            className="hidden"
+          />
           <button
             type="button"
-            className="text-sm text-(--mt-gray)"
-            onClick={() => {
-              // TODO: 이미지 업로드 로직 구현
-              alert("이미지 업로드 기능은 추후 구현 예정입니다.");
-            }}
+            onClick={() => fileInputRef.current?.click()}
+            disabled={isUploading || isPending}
+            className="text-sm text-(--mt-gray) disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            프로필 이미지 업로드
+            {previewUrl ? "이미지 변경" : "이미지 선택"}
           </button>
         </div>
 
@@ -242,10 +295,14 @@ export default function CreateDogForm() {
           </button>
           <button
             type="submit"
-            disabled={isPending}
+            disabled={isPending || isUploading}
             className="flex-1 py-3 bg-(--mt-blue-point) text-(--mt-white) rounded-xl font-bold shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isPending ? "등록 중..." : "등록하기"}
+            {isUploading
+              ? "이미지 업로드 중..."
+              : isPending
+              ? "등록 중..."
+              : "등록하기"}
           </button>
         </div>
       </form>

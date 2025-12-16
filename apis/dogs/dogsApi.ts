@@ -57,10 +57,8 @@ export const dogsApi = {
   createDog: async (dogData: IDogCreateRequestType): Promise<number> => {
     const response = await fetchWithAuth(`${API_BASE_URL}/dogs`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
       body: JSON.stringify(dogData),
+     
     });
 
     if (!response?.ok) {

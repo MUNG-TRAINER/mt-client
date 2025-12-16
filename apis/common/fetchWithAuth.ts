@@ -1,5 +1,5 @@
 "use client";
-import {API_BASE_URL} from "@/util/env";
+import { API_BASE_URL } from "@/util/env";
 
 export async function fetchWithAuth(
   input: RequestInfo,
@@ -20,7 +20,11 @@ export async function fetchWithAuth(
         credentials: "include",
       });
     }
+    if (res.status === 400) {
+      return await res.json();
+    }
     if (!res.ok) {
+      // console.log(await res.json());
       window.location.href = "/login";
     }
     return res;
