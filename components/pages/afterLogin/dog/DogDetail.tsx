@@ -7,6 +7,8 @@ import { IDogProfileType } from "@/types/dog/dogType";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
+import Image from "next/image";
+
 export default function DogDetail({ dogId }: { dogId: number }) {
   const router = useRouter();
   const {
@@ -61,7 +63,7 @@ export default function DogDetail({ dogId }: { dogId: number }) {
       <div className="flex flex-col items-center gap-2">
         {data.profileImage ? (
           <div className="relative size-30 rounded-full overflow-hidden">
-            <img
+            <Image
               src={data.profileImage}
               alt={`${data.name} 프로필 이미지`}
               className="w-full h-full object-cover"

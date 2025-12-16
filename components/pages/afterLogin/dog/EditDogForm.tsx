@@ -1,6 +1,7 @@
 "use client";
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { z } from "zod";
 import Image from "next/image";
 import DogInput from "@/components/shared/inputs/DogInput";
 import useUpdateDog from "@/hooks/afterLogin/dogs/useUpdateDog";
@@ -8,12 +9,14 @@ import useDogDetail from "@/hooks/afterLogin/dogs/useDogDetail";
 import { UserIcon } from "@/components/icons/user";
 import { IDogUpdateRequestType } from "@/types/dog/dogType";
 import { presignedUrlApi } from "@/apis/common/presignedUrl";
+import { imageFileSchema } from "@/schemas/fileSchema";
 
 export default function EditDogForm({ dogId }: { dogId: number }) {
   const router = useRouter();
   const { data: dogData, isPending: isLoading } = useDogDetail(dogId);
   const { mutateAsync, isPending } = useUpdateDog();
   const [error, setError] = useState<string>("");
+  const [fileError, setFileError] = useState<string>("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string>("");
   const [isUploading, setIsUploading] = useState(false);
@@ -23,13 +26,17 @@ export default function EditDogForm({ dogId }: { dogId: number }) {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (!file.type.startsWith("image/")) {
-      alert("이미지 파일만 업로드 가능합니다.");
-      return;
-    }
+    // 에러 초기화
+    setFileError("");
 
-    if (file.size > 5 * 1024 * 1024) {
-      alert("파일 크기는 5MB 이하여야 합니다.");
+    // Zod를 사용한 파일 검증
+    const validation = imageFileSchema.safeParse(file);
+
+    if (!validation.success) {
+      const errorMessage =
+        validation.error.issues[0]?.message || "파일 업로드에 실패했습니다.";
+      setFileError(errorMessage);
+      e.target.value = ""; // input 초기화
       return;
     }
 
@@ -175,6 +182,13 @@ export default function EditDogForm({ dogId }: { dogId: number }) {
           >
             {previewUrl ? "이미지 변경" : "이미지 선택"}
           </button>
+
+          {/* 파일 에러 메시지 */}
+          {fileError && (
+            <div className="w-full p-2 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-red-600 text-sm text-center">{fileError}</p>
+            </div>
+          )}
         </div>
 
         {/* 기본 정보 */}
