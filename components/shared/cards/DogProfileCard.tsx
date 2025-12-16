@@ -24,12 +24,19 @@ export default function DogProfileCard({ dog }: IDogProfileCardProps) {
     "bg-pink-200",
   ];
 
+  console.log(
+    "DogProfileCard - dog:",
+    dog.dogId,
+    "profileImage:",
+    dog.profileImage
+  );
+
   return (
     <Link href={`/mydogs/${dog.dogId}`}>
       <article className="p-4 bg-(--mt-gray-light) rounded-2xl flex items-center gap-3 hover:bg-(--mt-gray) transition-colors cursor-pointer">
         {/* 프로필 이미지 */}
         <div className="overflow-hidden size-16 rounded-full relative flex-shrink-0">
-          {dog.profileImage ? (
+          {dog.profileImage && dog.profileImage.trim() ? (
             <Image
               src={dog.profileImage}
               alt={dog.name}
