@@ -72,7 +72,7 @@ export default function CourseType() {
           min={1}
           max={5}
           onChange={handleCountChange}
-          value={count + ""}
+          value={count ?? ""}
           readOnly={isActive}
           classNames={`${isActive && "text-(--mt-gray)"}`}
         />

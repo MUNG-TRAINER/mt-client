@@ -57,7 +57,10 @@ export default function CreateCourse() {
           <CourseItems />
         </CreateCourseCard>
       </fieldset>
-      <button className="w-full bg-(--mt-blue-point) py-2 rounded-lg shadow text-(--mt-white) font-bold">
+      <button
+        type="submit"
+        className="w-full bg-(--mt-blue-point) py-2 rounded-lg shadow text-(--mt-white) font-bold"
+      >
         개설하기
       </button>
     </form>
