@@ -1,42 +1,43 @@
 "use client";
 import { API_BASE_URL } from "@/util/env";
 
+const TOKEN_EXPIRED = "TOKEN_EXPIRED";
+const UNAUTHORIZED = "UNAUTHORIZED";
+const REFRESH_EXPIRED = "REFRESH_EXPIRED";
+
+async function fetchData(input: RequestInfo, init: RequestInit = {}) {
+  return await fetch(input, {
+    ...init,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+  });
+}
 export async function fetchWithAuth(
   input: RequestInfo,
   init: RequestInit = {}
 ) {
   try {
-    // Build headers safely: only set JSON content-type when appropriate
-    const existingHeaders = new Headers(init.headers || {});
-    const hasContentType = existingHeaders.has("Content-Type");
-    const body = (init as any).body;
-    const shouldSetJsonContentType =
-      !hasContentType && (typeof body === "string" || body === undefined);
-
-    const headers = new Headers(init.headers || {});
-    if (shouldSetJsonContentType) {
-      headers.set("Content-Type", "application/json");
-    }
-
-    let res = await fetch(input, {
-      ...init,
-      headers,
-      credentials: "include",
-    });
-    if (res.status === 401) {
-      await refreshToken();
-      res = await fetch(input, {
-        ...init,
-        headers,
-        credentials: "include",
-      });
-    }
+    let res = await fetchData(input, init);
     if (res.status === 400) {
-      return await res.json();
+      return res.json();
     }
+    const result = await res.json();
+    if (res.status === 401) {
+      if (result.code === TOKEN_EXPIRED) {
+        await refreshToken();
+        res = await fetchData(input, init);
+      }
+      if (result.code === REFRESH_EXPIRED || result.code === UNAUTHORIZED) {
+        window.location.href = "/login";
+      }
+    }
+
     if (!res.ok) {
       // window.location.href = "/login";
     }
+
     return res;
   } catch {
     window.location.href = "/login";

@@ -1,4 +1,4 @@
-import CreateCourse from "@/components/pages/afterLogin/course/create/CreateCourse";
+import CreateCourse from "@/components/pages/afterLogin/course/create/formDataComps/CreateCourse";
 import {Metadata} from "next";
 export const metadata: Metadata = {
   title: "수업생성하기",

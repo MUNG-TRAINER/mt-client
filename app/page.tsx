@@ -12,7 +12,7 @@ export default async function Page() {
           href={"/"}
           className="relative w-full h-80 flex rounded-lg overflow-hidden group"
         >
-          <div className="brightness-80 group-hover:brightness-100 transition-[filter] duration-200 ease-in-out w-full h-full">
+          <div className="relative brightness-80 group-hover:brightness-100 transition-[filter] duration-200 ease-in-out w-full h-full">
             <Image
               src={walk_course}
               alt="무료산책홍보이미지"
@@ -29,25 +29,27 @@ export default async function Page() {
       <section className="flex flex-col gap-2">
         <h3 className="font-dohyeon">개인레슨과 그룹레슨은 댕스쿨</h3>
         <div className="flex justify-between gap-3 *:w-full *:h-52 *:bg-blue-200 *:overflow-hidden *:rounded-lg *:relative *:flex *:justify-center *:items-center **:transition-[filter] **:duration-200 **:ease-in-out">
-          <Link href={"/"} className="group">
+          <Link href={"/"} className="relative group">
             <Image
               src={solo_course}
               alt="개인 레슨 로고"
               className="brightness-80 group-hover:brightness-100"
               fill
               placeholder="blur"
+              sizes="200"
             />
             <h4 className="absolute text-(--mt-white) font-bold group-hover:opacity-0">
               개인 레슨
             </h4>
           </Link>
-          <Link href={"/"} className="group">
+          <Link href={"/"} className="relative group">
             <Image
               src={group_course}
               alt="그룹 레슨 로고"
               className="brightness-80 group-hover:brightness-100"
               fill
               placeholder="blur"
+              sizes="200"
             />
             <h4 className="absolute text-(--mt-white) font-bold group-hover:opacity-0">
               그룹 레슨
