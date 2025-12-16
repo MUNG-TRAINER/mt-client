@@ -8,7 +8,7 @@ export default function CourseItems() {
         id="items"
         name="items"
         type="text"
-        placeholder="일자"
+        placeholder="준비물을 입력해주세요"
       />
     </>
   );
