@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { memo } from "react";
 import { UserIcon } from "@/components/icons/user";
 import ErrorMessage from "@/components/shared/feedback/ErrorMessage";
 
@@ -13,7 +14,7 @@ interface DogImageUploaderProps {
   onButtonClick: () => void;
 }
 
-export default function DogImageUploader({
+const DogImageUploader = memo(function DogImageUploader({
   previewUrl,
   existingImageUrl,
   dogId,
@@ -84,4 +85,6 @@ export default function DogImageUploader({
       <ErrorMessage message={fileError} className="w-full text-center" />
     </div>
   );
-}
+});
+
+export default DogImageUploader;

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import DogInput from "@/components/shared/inputs/DogInput";
 import { UserIcon } from "@/components/icons/user";
 import { IDogProfileType } from "@/types/dog/dogType";
@@ -6,7 +7,9 @@ interface DogFormFieldsProps {
   defaultValues?: Partial<IDogProfileType>;
 }
 
-export default function DogFormFields({ defaultValues }: DogFormFieldsProps) {
+const DogFormFields = memo(function DogFormFields({
+  defaultValues,
+}: DogFormFieldsProps) {
   return (
     <>
       {/* 기본 정보 */}
@@ -171,4 +174,6 @@ export default function DogFormFields({ defaultValues }: DogFormFieldsProps) {
       </div>
     </>
   );
-}
+});
+
+export default DogFormFields;

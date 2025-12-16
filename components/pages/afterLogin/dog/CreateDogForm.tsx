@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import useCreateDog from "@/hooks/afterLogin/dogs/useCreateDog";
 import useDogImageUpload from "@/hooks/afterLogin/dogs/useDogImageUpload";
@@ -23,37 +23,38 @@ export default function CreateDogForm() {
     cleanup,
   } = useDogImageUpload();
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setError("");
+  const handleSubmit = useCallback(
+    async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      setError("");
 
-    const formData = new FormData(e.currentTarget);
+      const formData = new FormData(e.currentTarget);
 
-    try {
-      // 이미지 업로드 (선택된 파일이 있으면)
-      const uploadedImageUrl = await uploadImage();
+      try {
+        const uploadedImageUrl = await uploadImage();
 
-      const dogData: IDogCreateRequestType = {
-        name: (formData.get("name") as string) || "",
-        breed: (formData.get("breed") as string) || "",
-        age: Number(formData.get("age") || 0),
-        gender: (formData.get("gender") as "M" | "F") || "M",
-        isNeutered: formData.get("isNeutered") === "true",
-        weight: Number(formData.get("weight") || 0),
-        personality: (formData.get("personality") as string) || "",
-        habits: (formData.get("habits") as string) || "",
-        healthInfo: (formData.get("healthInfo") as string) || "",
-        profileImage: uploadedImageUrl || undefined,
-      };
+        const dogData: IDogCreateRequestType = {
+          name: (formData.get("name") as string) || "",
+          breed: (formData.get("breed") as string) || "",
+          age: Number(formData.get("age") || 0),
+          gender: (formData.get("gender") as "M" | "F") || "M",
+          isNeutered: formData.get("isNeutered") === "true",
+          weight: Number(formData.get("weight") || 0),
+          personality: (formData.get("personality") as string) || "",
+          habits: (formData.get("habits") as string) || "",
+          healthInfo: (formData.get("healthInfo") as string) || "",
+          profileImage: uploadedImageUrl || undefined,
+        };
 
-      await mutateAsync(dogData);
-      cleanup();
-      router.push("/mydogs");
-    } catch (err) {
-      setError("반려견 등록에 실패했습니다. 다시 시도해주세요.");
-      console.error(err);
-    }
-  };
+        await mutateAsync(dogData);
+        cleanup();
+        router.push("/mydogs");
+      } catch (err) {
+        setError("반려견 등록에 실패했습니다. 다시 시도해주세요.");
+      }
+    },
+    [uploadImage, mutateAsync, cleanup, router]
+  );
 
   return (
     <div className="bg-white w-full h-full m-auto p-6 rounded-md flex flex-col gap-4 overflow-y-auto">

@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import useUpdateDog from "@/hooks/afterLogin/dogs/useUpdateDog";
 import useDogDetail from "@/hooks/afterLogin/dogs/useDogDetail";
@@ -25,43 +25,41 @@ export default function EditDogForm({ dogId }: { dogId: number }) {
     cleanup,
   } = useDogImageUpload();
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setError("");
+  const handleSubmit = useCallback(
+    async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      setError("");
 
-    const formData = new FormData(e.currentTarget);
+      const formData = new FormData(e.currentTarget);
 
-    try {
-      // 새로운 파일이 선택되었으면 S3에 업로드
-      const uploadedImageKey = await uploadImage();
+      try {
+        const uploadedImageKey = await uploadImage();
 
-      const updateData: IDogUpdateRequestType = {
-        name: formData.get("name") as string,
-        breed: formData.get("breed") as string,
-        age: Number(formData.get("age")),
-        gender: formData.get("gender") as "M" | "F",
-        isNeutered: formData.get("isNeutered") === "true",
-        weight: Number(formData.get("weight")),
-        personality: formData.get("personality") as string,
-        habits: formData.get("habits") as string,
-        healthInfo: formData.get("healthInfo") as string,
-      };
+        const updateData: IDogUpdateRequestType = {
+          name: formData.get("name") as string,
+          breed: formData.get("breed") as string,
+          age: Number(formData.get("age")),
+          gender: formData.get("gender") as "M" | "F",
+          isNeutered: formData.get("isNeutered") === "true",
+          weight: Number(formData.get("weight")),
+          personality: formData.get("personality") as string,
+          habits: formData.get("habits") as string,
+          healthInfo: formData.get("healthInfo") as string,
+        };
 
-      // 새 이미지를 업로드했으면 profileImage 추가
-      if (uploadedImageKey) {
-        updateData.profileImage = uploadedImageKey;
+        if (uploadedImageKey) {
+          updateData.profileImage = uploadedImageKey;
+        }
+
+        await mutateAsync({ dogId, dogData: updateData });
+        cleanup();
+        router.push(`/mydogs/${dogId}`);
+      } catch (err) {
+        setError("반려견 정보 수정에 실패했습니다. 다시 시도해주세요.");
       }
-
-      console.log("전송할 데이터:", updateData);
-
-      await mutateAsync({ dogId, dogData: updateData });
-      cleanup();
-      router.push(`/mydogs/${dogId}`);
-    } catch (err) {
-      setError("반려견 정보 수정에 실패했습니다. 다시 시도해주세요.");
-      console.error(err);
-    }
-  };
+    },
+    [uploadImage, mutateAsync, cleanup, router, dogId]
+  );
 
   if (isLoading) {
     return (
