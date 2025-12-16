@@ -8,8 +8,8 @@ import {useRouter} from "next/navigation";
 export default function DrawerHeader() {
   const router = useRouter();
   const {offToggle} = useDrawer();
-  const {data: check, isPending, isError, resetUserCheck} = useCheckLoggedIn();
-  const {data: logoutData, refetch} = useLogout();
+  const {data: check, resetUserCheck} = useCheckLoggedIn();
+  const {refetch} = useLogout();
   // functions
   /* 로그인페이지 이동 */
   const goToLogin = () => {
@@ -20,7 +20,7 @@ export default function DrawerHeader() {
     await refetch();
     resetUserCheck();
     offToggle();
-    router.push("/");
+    router.push("/login");
   };
   return (
     <>

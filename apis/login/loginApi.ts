@@ -2,7 +2,7 @@ import {ICheckLoggedInType, ILoginDataType} from "@/types/login/loginDataType";
 import {API_BASE_URL} from "@/util/env";
 import {fetchWithAuth} from "../common/fetchWithAuth";
 
-export const loginAPi = {
+export const loginApi = {
   login: async (data: ILoginDataType) => {
     const res = await fetch(`${API_BASE_URL}/auth/login`, {
       method: "POST",
@@ -35,6 +35,9 @@ export const loginAPi = {
       },
       credentials: "include",
     });
+    if (res.status === 401) {
+      return null;
+    }
     if (!res?.ok) {
       throw new Error("유저의 정보를 불러올 수 없습니다.");
     }

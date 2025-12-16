@@ -39,7 +39,7 @@ export default function RootLayout({
         <OSProvider />
         <QueryProvider>
           <Wallpapaer>
-            <section className="flex flex-col justify-between min-w-full min-h-full ">
+            <section className="flex flex-col justify-between max-w-[500px] min-h-full mx-auto md:mr-32">
               <HeaderBar className="bg-(--mt-blue)">
                 <HeaderNav />
               </HeaderBar>

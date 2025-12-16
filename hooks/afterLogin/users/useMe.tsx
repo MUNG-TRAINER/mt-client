@@ -5,6 +5,7 @@ export default function useMe() {
   const {data, isPending, isError} = useQuery({
     queryKey: ["me"],
     queryFn: () => usersApi.me(),
+    retry: false,
   });
   return {data, isPending, isError};
 }
