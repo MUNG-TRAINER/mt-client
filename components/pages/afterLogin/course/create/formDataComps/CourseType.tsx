@@ -25,7 +25,7 @@ export default function CourseType() {
   const handleMultiActive = useCallback(() => {
     multiRef.current?.click();
     setIsActive(false);
-    setCount("");
+    setCount(null);
   }, [setCount]);
 
   const handleCountChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -38,7 +38,7 @@ export default function CourseType() {
       setCount(1);
       return;
     }
-    setCount(e.target.value);
+    setCount(Number(e.target.value));
   };
 
   return (
@@ -48,7 +48,7 @@ export default function CourseType() {
         <CourseTypeBtn
           labelFor="type_once"
           labelTxt="일회성 수업"
-          ref={onceRef}
+          inputRef={onceRef}
           isActive={isActive}
           handleFn={handleOnceActive}
           name="type"
@@ -58,12 +58,11 @@ export default function CourseType() {
         <CourseTypeBtn
           labelFor="type_multi"
           labelTxt=" 다회성 수업"
-          ref={multiRef}
+          inputRef={multiRef}
           isActive={!isActive}
           handleFn={handleMultiActive}
           name="type"
           inputValue="MULTI"
-          defaultChecked
         />
       </div>
       <div className="flex gap-3 items-center justify-between">

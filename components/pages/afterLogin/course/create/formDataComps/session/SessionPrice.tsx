@@ -3,7 +3,7 @@
 import {InputHTMLAttributes, useId} from "react";
 import CreateCourseInput from "../../CreateCourseInput";
 
-interface ICoursePriceProps extends InputHTMLAttributes<HTMLInputElement> {
+interface ISessionPriceProps extends InputHTMLAttributes<HTMLInputElement> {
   inputId: string;
   state?: boolean;
   classNames?: string;
@@ -13,7 +13,7 @@ export default function CoursePrice({
   state = false,
   classNames = "",
   ...props
-}: ICoursePriceProps) {
+}: ISessionPriceProps) {
   const id = useId();
   return (
     <div className="flex flex-col gap-1">

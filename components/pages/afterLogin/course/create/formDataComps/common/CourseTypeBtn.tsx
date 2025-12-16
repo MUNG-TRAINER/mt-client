@@ -5,7 +5,7 @@ import {InputHTMLAttributes, RefObject, useId} from "react";
 interface ICourseTypeBtnProps extends InputHTMLAttributes<HTMLInputElement> {
   labelFor: string;
   labelTxt: string;
-  ref: RefObject<HTMLInputElement | null>;
+  inputRef: RefObject<HTMLInputElement | null>;
   inputValue: string;
   isActive: boolean;
   handleFn: () => void;
@@ -14,7 +14,7 @@ interface ICourseTypeBtnProps extends InputHTMLAttributes<HTMLInputElement> {
 export default function CourseTypeBtn({
   labelFor,
   labelTxt,
-  ref,
+  inputRef,
   inputValue,
   isActive,
   handleFn,
@@ -35,7 +35,7 @@ export default function CourseTypeBtn({
         {labelTxt}
       </label>
       <input
-        ref={ref}
+        ref={inputRef}
         id={`${id}_${labelFor}`}
         type="radio"
         className="size-0"

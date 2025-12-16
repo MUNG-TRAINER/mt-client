@@ -1,9 +1,9 @@
 "use client";
 import {API_BASE_URL} from "@/util/env";
 
-const TOKEN_EXPRIED = "TOKEN_EXPRIED";
+const TOKEN_EXPIRED = "TOKEN_EXPIRED";
 const UNAUTHORIZED = "UNAUTHORIZED";
-const REFRESH_EXPRIED = "REFRESH_EXPRIED";
+const REFRESH_EXPIRED = "REFRESH_EXPIRED";
 
 export async function fetchWithAuth(
   input: RequestInfo,
@@ -24,14 +24,14 @@ export async function fetchWithAuth(
     const result = await res.json();
 
     if (res.status === 401) {
-      if (result.code === TOKEN_EXPRIED) {
+      if (result.code === TOKEN_EXPIRED) {
         await refreshToken();
         res = await fetch(input, {
           ...init,
           credentials: "include",
         });
       }
-      if (result.code === REFRESH_EXPRIED || result.code === UNAUTHORIZED) {
+      if (result.code === REFRESH_EXPIRED || result.code === UNAUTHORIZED) {
         window.location.href = "/login";
       }
     }

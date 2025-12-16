@@ -1,4 +1,4 @@
-export default function CourseDifficultiy() {
+export default function CourseDifficulty() {
   return (
     <>
       <label htmlFor="difficulty">난이도</label>
