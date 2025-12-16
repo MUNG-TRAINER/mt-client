@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { UserIcon } from "@/components/icons/user";
 import useDogDetail from "@/hooks/afterLogin/dogs/useDogDetail";
 import useDeleteDog from "@/hooks/afterLogin/dogs/useDeleteDog";
@@ -21,19 +22,27 @@ export default function DogDetail({ dogId }: { dogId: number }) {
     isError: boolean;
   } = useDogDetail(dogId);
   const { mutateAsync: deleteDog, isPending: isDeleting } = useDeleteDog();
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleteError, setDeleteError] = useState<string>("");
 
-  const handleDelete = async () => {
-    if (!confirm(`정말로 ${data?.name}의 정보를 삭제하시겠습니까?`)) {
-      return;
-    }
+  const handleDeleteClick = () => {
+    setShowDeleteConfirm(true);
+  };
 
+  const handleDeleteConfirm = async () => {
+    setDeleteError("");
     try {
       await deleteDog(dogId);
       router.push("/mydogs");
     } catch (err) {
-      alert("반려견 삭제에 실패했습니다. 다시 시도해주세요.");
+      setDeleteError("반려견 삭제에 실패했습니다. 다시 시도해주세요.");
+      setShowDeleteConfirm(false);
       console.error(err);
     }
+  };
+
+  const handleDeleteCancel = () => {
+    setShowDeleteConfirm(false);
   };
 
   if (isPending) {
@@ -110,6 +119,13 @@ export default function DogDetail({ dogId }: { dogId: number }) {
         </div>
       </div>
 
+      {/* 삭제 에러 메시지 */}
+      {deleteError && (
+        <div className="p-3 bg-red-50 border border-red-200 rounded-xl">
+          <p className="text-red-600 text-sm">{deleteError}</p>
+        </div>
+      )}
+
       <div className="flex gap-2">
         <Link
           href={`/mydogs/${dogId}/edit`}
@@ -118,7 +134,7 @@ export default function DogDetail({ dogId }: { dogId: number }) {
           수정
         </Link>
         <button
-          onClick={handleDelete}
+          onClick={handleDeleteClick}
           disabled={isDeleting}
           className="flex-1 border border-red-500 text-red-500 py-3 rounded-md font-bold disabled:opacity-50 disabled:cursor-not-allowed"
         >
@@ -132,6 +148,38 @@ export default function DogDetail({ dogId }: { dogId: number }) {
       >
         돌아가기
       </button>
+
+      {/* 삭제 확인 모달 */}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl p-6 max-w-sm w-full mx-4 shadow-xl">
+            <h3 className="text-lg font-bold text-(--mt-black) mb-2">
+              반려견 삭제
+            </h3>
+            <p className="text-(--mt-gray) mb-6">
+              정말로{" "}
+              <span className="font-bold text-(--mt-black)">{data?.name}</span>
+              의 정보를 삭제하시겠습니까?
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={handleDeleteCancel}
+                disabled={isDeleting}
+                className="flex-1 py-3 border border-(--mt-gray-light) text-(--mt-gray) rounded-xl font-bold disabled:opacity-50"
+              >
+                취소
+              </button>
+              <button
+                onClick={handleDeleteConfirm}
+                disabled={isDeleting}
+                className="flex-1 py-3 bg-red-500 text-white rounded-xl font-bold disabled:opacity-50"
+              >
+                {isDeleting ? "삭제 중..." : "삭제"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
