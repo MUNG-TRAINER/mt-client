@@ -1,19 +1,19 @@
 "use client";
-import {UserIcon} from "@/components/icons/user";
+import { UserIcon } from "@/components/icons/user";
 import UserBadge from "@/components/shared/badges/UserBadge";
 import ToggleSlide from "@/components/shared/toggleSlide/ToggleSlide";
 import useMe from "@/hooks/afterLogin/users/useMe";
-import {IMyPageTypes} from "@/types/mypage/myPageType";
+import { IMyPageTypes } from "@/types/mypage/myPageType";
 import Image from "next/image";
 import Link from "next/link";
-import {Suspense, useState} from "react";
+import { Suspense, useState } from "react";
 
 export default function MyPage() {
   const {
     data,
     isPending,
     isError,
-  }: {data: IMyPageTypes | undefined; isPending: boolean; isError: boolean} =
+  }: { data: IMyPageTypes | undefined; isPending: boolean; isError: boolean } =
     useMe();
   const [showDogs, setShowDogs] = useState(false);
   return (
@@ -23,8 +23,9 @@ export default function MyPage() {
           <div className="relative size-30 rounded-full overflow-hidden bg-blue-300">
             <Image
               src={data?.profileImage}
+              fill
               alt="프로필 이미지"
-              placeholder="blur"
+              className="object-cover"
             />
           </div>
         ) : (
