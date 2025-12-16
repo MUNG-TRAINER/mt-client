@@ -31,6 +31,9 @@ export async function fetchWithAuth(
         credentials: "include",
       });
     }
+    if (res.status === 400) {
+      return await res.json();
+    }
     if (!res.ok) {
       // window.location.href = "/login";
     }
