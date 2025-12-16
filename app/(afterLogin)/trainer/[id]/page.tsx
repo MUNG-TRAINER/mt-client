@@ -1,25 +1,35 @@
-import {ITrainerInfoType} from "@/types/trainer/trainerType";
-import {API_BASE_URL} from "@/util/env";
-import {cookies} from "next/headers";
-import {redirect} from "next/navigation";
+import { ITrainerInfoType } from "@/types/trainer/trainerType";
+import UserInfoCard from "@/components/pages/afterLogin/trainer/trainerInfo/UserInfoCard";
+import { API_BASE_URL } from "@/util/env";
+import { redirect } from "next/navigation";
+import TrainerDetailSection from "@/components/pages/afterLogin/trainer/trainerInfo/TrainerDetailCard";
 
 async function getTrainerInfo(id: string) {
-  const cookie = await cookies();
   const res = await fetch(`${API_BASE_URL}/users/trainer/${id}`, {
     method: "GET",
     headers: {
-      cookie: cookie.toString(),
       "Content-Type": "application/json",
     },
   });
+
   const data = await res.json();
-  if (!data) {
+  if (!res.ok) {
     redirect("/login");
   }
   return data;
 }
-export default async function Page({params}: {params: Promise<{id: string}>}) {
+
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const param = await params;
   const trainerData: ITrainerInfoType = await getTrainerInfo(param.id);
-  return <div className="w-full h-full bg-(--mt-white) p-6 rounded-md"></div>;
+  return (
+    <div className="w-full h-full bg-white m-auto p-6 rounded-md flex flex-col gap-6 overflow-y-auto">
+      <UserInfoCard user={trainerData}></UserInfoCard>
+      <TrainerDetailSection trainer={trainerData} />
+    </div>
+  );
 }
