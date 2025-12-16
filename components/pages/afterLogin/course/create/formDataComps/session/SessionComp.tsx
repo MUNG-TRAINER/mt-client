@@ -1,21 +1,30 @@
 "use client";
 
-import {useEffect, useState} from "react";
+import SessionItems from "./SessionItems";
+import {ISessionDataTypes} from "@/types/course/sessionType";
 
-interface ISessionDataTypes {
-  sessionDate: string;
-  startTime: string;
-  endTime: string;
-  locationDetail: string;
-  status: string;
-  maxStudents: number;
-  price: number;
-  content: string;
-}
 export default function SessionComp({count}: {count: number}) {
-  const [session, setSession] = useState([]);
-  useEffect(() => {
-    setSession(Array.from({length: count}, (_, i) => ({})));
-  }, [count]);
-  return <div></div>;
+  const session = Array.from(
+    {length: count},
+    (_, i) =>
+      ({
+        sessionNo: i + 1,
+        sessionDate: "",
+        startTime: "",
+        endTime: "",
+        locationDetail: "",
+        status: "SCHEDULED",
+        maxStudents: 1,
+        price: 0,
+        content: "",
+      } as ISessionDataTypes)
+  );
+
+  return (
+    <div className="flex flex-col gap-2">
+      {session.map((val, index, array) => (
+        <SessionItems key={Number(val.sessionNo)} index={index} val={array} />
+      ))}
+    </div>
+  );
 }

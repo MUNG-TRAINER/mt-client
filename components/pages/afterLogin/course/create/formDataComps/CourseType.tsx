@@ -7,6 +7,7 @@ import CourseCountBtn from "./courseType/CourseCountBtn";
 import {useSessionState} from "@/stores/sessionState";
 import MaxStudents from "./session/MaxStudents";
 import SessionPrice from "./session/SessionPrice";
+import SessionComp from "./session/SessionComp";
 
 export default function CourseType() {
   const [isActive, setIsActive] = useState(true);
@@ -42,9 +43,9 @@ export default function CourseType() {
   };
 
   return (
-    <>
+    <div className="flex flex-col gap-2">
       <h5 className="font-bold">회차 여부</h5>
-      <div className="flex justify-around *:flex *:items-center *:gap-2">
+      <div className="flex justify-between gap-3 *:flex *:items-center *:gap-2 ">
         <CourseTypeBtn
           labelFor="type_once"
           labelTxt="일회성 수업"
@@ -72,7 +73,7 @@ export default function CourseType() {
           min={1}
           max={5}
           onChange={handleCountChange}
-          value={count ?? ""}
+          value={isActive ? "1" : count}
           readOnly={isActive}
           classNames={`${isActive && "text-(--mt-gray)"}`}
         />
@@ -82,19 +83,7 @@ export default function CourseType() {
           plusFn={handleCountPlus}
         />
       </div>
-      {Array.from({length: count!}, (_, index) => (
-        <>
-          <CreateCourseInput name="sessionNo" readOnly value={index + 1} />
-          {/* <SessionDate /> */}
-          <CreateCourseInput
-            name="locationDetail"
-            type="text"
-            placeholder="세부 위치"
-          />
-          <MaxStudents inputId="" />
-          <SessionPrice inputId="" />
-        </>
-      ))}
-    </>
+      <SessionComp count={count!} />
+    </div>
   );
 }
