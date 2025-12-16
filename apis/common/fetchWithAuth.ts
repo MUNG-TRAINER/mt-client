@@ -19,7 +19,7 @@ export async function fetchWithAuth(
     });
 
     if (res.status === 400) {
-      return res.json;
+      return res.json();
     }
     const result = await res.json();
 
