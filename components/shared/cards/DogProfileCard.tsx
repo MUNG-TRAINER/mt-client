@@ -24,13 +24,6 @@ export default function DogProfileCard({ dog }: IDogProfileCardProps) {
     "bg-pink-200",
   ];
 
-  console.log(
-    "DogProfileCard - dog:",
-    dog.dogId,
-    "profileImage:",
-    dog.profileImage
-  );
-
   return (
     <Link href={`/mydogs/${dog.dogId}`}>
       <article className="p-4 bg-(--mt-gray-light) rounded-2xl flex items-center gap-3 hover:bg-(--mt-gray) transition-colors cursor-pointer">
@@ -40,9 +33,9 @@ export default function DogProfileCard({ dog }: IDogProfileCardProps) {
             <Image
               src={dog.profileImage}
               alt={dog.name}
-              width={64}
-              height={64}
+              fill
               className="object-cover"
+              priority
             />
           ) : (
             <div className={`${bgClass[randomInt]} size-16 rounded-full`} />
