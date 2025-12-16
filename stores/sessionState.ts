@@ -9,7 +9,7 @@ interface ISessionStateMutateTypes extends ISessionStateTypes {
   handleCountPlus: () => void;
 }
 
-export const useSesseionState = create<ISessionStateMutateTypes>((set) => ({
+export const useSessionState = create<ISessionStateMutateTypes>((set) => ({
   count: 1,
   setCount: (index) => set(() => ({count: index})),
   handleCountMinus: () =>
