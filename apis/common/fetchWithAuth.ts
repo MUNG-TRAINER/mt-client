@@ -35,7 +35,7 @@ export async function fetchWithAuth(
     }
 
     if (!res.ok) {
-      // window.location.href = "/login";
+      window.location.href = "/login";
     }
 
     return res;
