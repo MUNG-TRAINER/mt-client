@@ -1,7 +1,7 @@
 "use client";
 import CreateCourseCard from "../CreateCourseCard";
 import CourseDescription from "./CourseDescription";
-import CourseDifficultiy from "./CourseDifficulty";
+import CourseDifficulty from "./CourseDifficulty";
 import CourseDogSize from "./CourseDogSize";
 import CourseIsFree from "./CourseIsFree";
 import CourseItems from "./CourseItems";
@@ -38,7 +38,7 @@ export default function CreateCourse() {
         </CreateCourseCard>
 
         <CreateCourseCard classNames="[&>h5]:font-bold">
-          <CourseDifficultiy />
+          <CourseDifficulty />
           <CourseDogSize />
         </CreateCourseCard>
 

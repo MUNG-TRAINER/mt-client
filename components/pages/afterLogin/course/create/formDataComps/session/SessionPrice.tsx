@@ -8,7 +8,7 @@ interface ISessionPriceProps extends InputHTMLAttributes<HTMLInputElement> {
   state?: boolean;
   classNames?: string;
 }
-export default function CoursePrice({
+export default function SessionPrice({
   inputId,
   state = false,
   classNames = "",
