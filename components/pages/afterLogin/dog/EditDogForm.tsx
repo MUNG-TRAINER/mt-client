@@ -36,21 +36,23 @@ export default function EditDogForm({ dogId }: { dogId: number }) {
       const uploadedImageKey = await uploadImage();
 
       const updateData: IDogUpdateRequestType = {
-        name: (formData.get("name") ?? "") as string,
-        breed: (formData.get("breed") ?? "") as string,
-        age: Number(formData.get("age") ?? 0),
-        gender: (formData.get("gender") ?? "M") as "M" | "F",
+        name: formData.get("name") as string,
+        breed: formData.get("breed") as string,
+        age: Number(formData.get("age")),
+        gender: formData.get("gender") as "M" | "F",
         isNeutered: formData.get("isNeutered") === "true",
-        weight: Number(formData.get("weight") ?? 0),
-        personality: (formData.get("personality") ?? "") as string,
-        habits: (formData.get("habits") ?? "") as string,
-        healthInfo: (formData.get("healthInfo") ?? "") as string,
+        weight: Number(formData.get("weight")),
+        personality: formData.get("personality") as string,
+        habits: formData.get("habits") as string,
+        healthInfo: formData.get("healthInfo") as string,
       };
 
       // 새 이미지를 업로드했으면 profileImage 추가
       if (uploadedImageKey) {
         updateData.profileImage = uploadedImageKey;
       }
+
+      console.log("전송할 데이터:", updateData);
 
       await mutateAsync({ dogId, dogData: updateData });
       cleanup();
