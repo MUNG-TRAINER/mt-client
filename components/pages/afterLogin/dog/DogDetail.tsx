@@ -4,11 +4,13 @@ import { useState } from "react";
 import { UserIcon } from "@/components/icons/user";
 import useDogDetail from "@/hooks/afterLogin/dogs/useDogDetail";
 import useDeleteDog from "@/hooks/afterLogin/dogs/useDeleteDog";
+import Image from "next/image";
 import { IDogProfileType } from "@/types/dog/dogType";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-import Image from "next/image";
+import ErrorMessage from "@/components/shared/feedback/ErrorMessage";
+import ConfirmModal from "@/components/shared/modal/ConfirmModal";
 
 export default function DogDetail({ dogId }: { dogId: number }) {
   const router = useRouter();
@@ -75,7 +77,10 @@ export default function DogDetail({ dogId }: { dogId: number }) {
             <Image
               src={data.profileImage}
               alt={`${data.name} 프로필 이미지`}
-              className="w-full h-full object-cover"
+              fill
+              sizes="120px"
+              className="object-cover"
+              priority
             />
           </div>
         ) : (
@@ -120,11 +125,7 @@ export default function DogDetail({ dogId }: { dogId: number }) {
       </div>
 
       {/* 삭제 에러 메시지 */}
-      {deleteError && (
-        <div className="p-3 bg-red-50 border border-red-200 rounded-xl">
-          <p className="text-red-600 text-sm">{deleteError}</p>
-        </div>
-      )}
+      <ErrorMessage message={deleteError} />
 
       <div className="flex gap-2">
         <Link
@@ -150,36 +151,18 @@ export default function DogDetail({ dogId }: { dogId: number }) {
       </button>
 
       {/* 삭제 확인 모달 */}
-      {showDeleteConfirm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-2xl p-6 max-w-sm w-full mx-4 shadow-xl">
-            <h3 className="text-lg font-bold text-(--mt-black) mb-2">
-              반려견 삭제
-            </h3>
-            <p className="text-(--mt-gray) mb-6">
-              정말로{" "}
-              <span className="font-bold text-(--mt-black)">{data?.name}</span>
-              의 정보를 삭제하시겠습니까?
-            </p>
-            <div className="flex gap-3">
-              <button
-                onClick={handleDeleteCancel}
-                disabled={isDeleting}
-                className="flex-1 py-3 border border-(--mt-gray-light) text-(--mt-gray) rounded-xl font-bold disabled:opacity-50"
-              >
-                취소
-              </button>
-              <button
-                onClick={handleDeleteConfirm}
-                disabled={isDeleting}
-                className="flex-1 py-3 bg-red-500 text-white rounded-xl font-bold disabled:opacity-50"
-              >
-                {isDeleting ? "삭제 중..." : "삭제"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <ConfirmModal
+        isOpen={showDeleteConfirm}
+        title="반려견 삭제"
+        message={`정말로 <span class="font-bold text-(--mt-black)">${data?.name}</span>의 정보를 삭제하시겠습니까?`}
+        confirmText="삭제"
+        cancelText="취소"
+        confirmButtonClass="bg-red-500 text-white"
+        onConfirm={handleDeleteConfirm}
+        onCancel={handleDeleteCancel}
+        isLoading={isDeleting}
+        loadingText="삭제 중..."
+      />
     </div>
   );
 }

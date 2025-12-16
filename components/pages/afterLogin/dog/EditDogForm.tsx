@@ -10,6 +10,7 @@ import { UserIcon } from "@/components/icons/user";
 import { IDogUpdateRequestType } from "@/types/dog/dogType";
 import { presignedUrlApi } from "@/apis/common/presignedUrl";
 import { imageFileSchema } from "@/schemas/fileSchema";
+import ErrorMessage from "@/components/shared/feedback/ErrorMessage";
 
 export default function EditDogForm({ dogId }: { dogId: number }) {
   const router = useRouter();
@@ -184,11 +185,7 @@ export default function EditDogForm({ dogId }: { dogId: number }) {
           </button>
 
           {/* 파일 에러 메시지 */}
-          {fileError && (
-            <div className="w-full p-2 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-red-600 text-sm text-center">{fileError}</p>
-            </div>
-          )}
+          <ErrorMessage message={fileError} className="w-full text-center" />
         </div>
 
         {/* 기본 정보 */}
@@ -346,11 +343,7 @@ export default function EditDogForm({ dogId }: { dogId: number }) {
         </div>
 
         {/* 에러 메시지 */}
-        {error && (
-          <div className="p-3 bg-red-50 border border-red-200 rounded-xl">
-            <p className="text-red-600 text-sm">{error}</p>
-          </div>
-        )}
+        <ErrorMessage message={error} />
 
         {/* 버튼 */}
         <div className="flex gap-3 sticky bottom-0 bg-white pt-2 pb-2">
