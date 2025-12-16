@@ -1,22 +1,19 @@
 import { ITrainerInfoType } from "@/types/trainer/trainerType";
 import UserInfoCard from "@/components/pages/afterLogin/trainer/trainerInfo/UserInfoCard";
 import { API_BASE_URL } from "@/util/env";
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import TrainerDetailSection from "@/components/pages/afterLogin/trainer/trainerInfo/TrainerDetailCard";
 
 async function getTrainerInfo(id: string) {
-  const cookie = await cookies();
   const res = await fetch(`${API_BASE_URL}/users/trainer/${id}`, {
     method: "GET",
     headers: {
-      cookie: cookie.toString(),
       "Content-Type": "application/json",
     },
   });
 
   const data = await res.json();
-  if (!data) {
+  if (!res.ok) {
     redirect("/login");
   }
   return data;

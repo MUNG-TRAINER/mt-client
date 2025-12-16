@@ -6,9 +6,10 @@ import useMe from "@/hooks/afterLogin/users/useMe";
 import Image from "next/image";
 import Link from "next/link";
 import { ITrainerInfoType } from "@/types/trainer/trainerType";
+import useCheckLoggedIn from "./../../../../../hooks/afterLogin/users/useCheckLoggedIn";
 
 export default function UserInfoCard({ user }: { user: ITrainerInfoType }) {
-  const { data } = useMe();
+  const { data } = useCheckLoggedIn();
   return (
     <div className="bg-white rounded-lg border border-(--mt-gray-light) p-6 space-y-6">
       <div className="flex flex-col items-center gap-4">
@@ -19,6 +20,7 @@ export default function UserInfoCard({ user }: { user: ITrainerInfoType }) {
                 src={user?.profileImage}
                 alt="프로필 이미지"
                 fill
+                sizes="100%"
                 className="object-cover"
               />
             </div>

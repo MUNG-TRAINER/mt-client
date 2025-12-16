@@ -3,7 +3,7 @@ import { ITrainerInfoType } from "@/types/trainer/trainerType";
 import TagBadges from "@/components/shared/badges/TagBadges";
 import { CheckBadgeIcon } from "@/components/icons/badges";
 
-export default function TrainerDetailSection({
+export default function TrainerDetailCard({
   trainer,
 }: {
   trainer: ITrainerInfoType;

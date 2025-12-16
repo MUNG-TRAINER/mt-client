@@ -6,11 +6,9 @@ import { EnvelopeIcon } from "@/components/icons/envelope";
 import { PhoneIcon } from "@/components/icons/phone";
 import { CheckBadgeIcon } from "@/components/icons/badges";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { trainerApi } from "@/apis/trainer/trainerApi";
-import { set } from "zod";
-import { profile } from "console";
 
 interface ITrainerEditFormProps {
   trainer: ITrainerInfoType;
@@ -47,7 +45,7 @@ export default function TrainerEditForm({
   const [certFile, setCertFile] = useState<File | null>(null);
 
   const pickValue = (current: string, initial: string) => {
-    const trimmed = current?.trim?.();
+    const trimmed = current.trim();
     return trimmed ? trimmed : initial ?? "";
   };
 
@@ -58,6 +56,7 @@ export default function TrainerEditForm({
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // ✅ Object URL 생성 + 이전 blob revoke
   const handleImageUpload = (
     e: React.ChangeEvent<HTMLInputElement>,
     type: "profile" | "cert"
@@ -66,14 +65,37 @@ export default function TrainerEditForm({
     if (!file) return;
 
     const previewUrl = URL.createObjectURL(file);
+
     if (type === "profile") {
-      setProfilePreview(previewUrl);
+      setProfilePreview((prev) => {
+        if (prev?.startsWith("blob:")) {
+          URL.revokeObjectURL(prev);
+        }
+        return previewUrl;
+      });
       setProfileFile(file);
     } else {
-      setCertPreview(previewUrl);
+      setCertPreview((prev) => {
+        if (prev?.startsWith("blob:")) {
+          URL.revokeObjectURL(prev);
+        }
+        return previewUrl;
+      });
       setCertFile(file);
     }
   };
+
+  // ✅ 페이지 이탈 시 남은 blob 정리
+  useEffect(() => {
+    return () => {
+      if (profilePreview?.startsWith("blob:")) {
+        URL.revokeObjectURL(profilePreview);
+      }
+      if (certPreview?.startsWith("blob:")) {
+        URL.revokeObjectURL(certPreview);
+      }
+    };
+  }, [profilePreview, certPreview]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -82,40 +104,39 @@ export default function TrainerEditForm({
     try {
       setSubmitting(true);
 
-      let nextProfileImageKey = trainer.profileImage ?? null;
-      let nextCertImageKey = trainer.certificationImageUrl ?? null;
+      let nextProfileImageKey = null;
+      let nextCertImageKey = null;
 
-      /** 1. 프로필 이미지 업로드 */
       if (profileFile) {
-        const { uploadUrl, fileKey } = await trainerApi.getPresignedUrl(
+        const res = await trainerApi.getPresignedUrl(
           "user-profile",
           profileFile.name,
           profileFile.type
         );
+        console.log("presignedUrl response:", res);
+        const { uploadUrl, fileKey } = res;
         await trainerApi.fileUpload(uploadUrl, profileFile);
         nextProfileImageKey = fileKey;
       }
-      /** 2. 자격증 이미지 업로드 */
+
       if (certFile) {
         const { uploadUrl, fileKey } = await trainerApi.getPresignedUrl(
           "trainer-certification",
           certFile.name,
           certFile.type
         );
-
         await trainerApi.fileUpload(uploadUrl, certFile);
         nextCertImageKey = fileKey;
       }
 
-      /** 3. JSON Payload 구성 */
       const payload: ITrainerInfoType = {
-        trainerId: trainer.trainerId, // 서버에서 안 쓰면 제거 가능
+        trainerId: trainer.trainerId,
         name: pickValue(formData.name, trainer.name),
         email: pickValue(formData.email, trainer.email),
         phone: pickValue(formData.phone, trainer.phone),
         careerInfo: pickValue(formData.careerInfo, trainer.careerInfo),
         introduce: pickValue(formData.introduce, trainer.introduce),
-        description: trainer.description, // 수정 안 하면 유지
+        description: trainer.description,
         style: pickValue(formData.style, trainer.style),
         tag: pickValue(formData.tag, trainer.tag),
         profileImage: nextProfileImageKey,
@@ -149,6 +170,7 @@ export default function TrainerEditForm({
                   src={profilePreview}
                   alt="프로필 이미지"
                   fill
+                  sizes="100%"
                   className="object-cover"
                 />
               </div>
@@ -158,15 +180,22 @@ export default function TrainerEditForm({
               </div>
             )}
           </div>
-          <label className="cursor-pointer px-4 py-2 bg-(--mt-blue-point) text-white rounded-lg font-medium hover:bg-(--mt-blue) transition-colors">
+          <label
+            htmlFor="profile-image-upload"
+            className="cursor-pointer px-4 py-2 bg-(--mt-blue-point) text-white rounded-lg font-medium hover:bg-(--mt-blue) transition-colors"
+          >
             이미지 업로드
-            <input
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={(e) => handleImageUpload(e, "profile")}
-            />
           </label>
+          <input
+            id="profile-image-upload"
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={(e) => handleImageUpload(e, "profile")}
+          />
+          <p className="text-xs text-(--mt-gray)">
+            지원 파일 형식: JPG, PNG 등 이미지 파일
+          </p>
         </div>
       </div>
 
