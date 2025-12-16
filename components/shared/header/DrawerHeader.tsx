@@ -20,7 +20,7 @@ export default function DrawerHeader() {
     await refetch();
     resetUserCheck();
     offToggle();
-    router.push("/login");
+    router.push("/");
   };
   return (
     <>
