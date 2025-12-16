@@ -34,6 +34,7 @@ export default function DogProfileCard({ dog }: IDogProfileCardProps) {
               src={dog.profileImage}
               alt={dog.name}
               fill
+              sizes="64px"
               className="object-cover"
               priority
             />

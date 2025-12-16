@@ -83,8 +83,6 @@ export default function EditDogForm({ dogId }: { dogId: number }) {
         updateData.profileImage = uploadedImageKey;
       }
 
-      console.log("전송할 데이터:", updateData);
-
       await mutateAsync({ dogId, dogData: updateData });
 
       if (previewUrl) URL.revokeObjectURL(previewUrl);
@@ -132,10 +130,13 @@ export default function EditDogForm({ dogId }: { dogId: number }) {
         <div className="flex flex-col items-center gap-2">
           {previewUrl ? (
             <div className="relative size-30 rounded-full overflow-hidden bg-blue-300">
-              <img
+              <Image
                 src={previewUrl}
                 alt="반려견 프로필 미리보기"
-                className="w-full h-full object-cover"
+                fill
+                sizes="120px"
+                className="object-cover"
+                unoptimized
               />
             </div>
           ) : dogData.profileImage ? (
@@ -144,6 +145,7 @@ export default function EditDogForm({ dogId }: { dogId: number }) {
                 src={dogData.profileImage}
                 alt="반려견 프로필"
                 fill
+                sizes="120px"
                 className="object-cover"
                 priority
               />

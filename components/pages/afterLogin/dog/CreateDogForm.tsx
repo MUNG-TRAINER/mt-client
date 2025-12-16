@@ -1,6 +1,8 @@
 "use client";
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
+
+import Image from "next/image";
 import DogInput from "@/components/shared/inputs/DogInput";
 import useCreateDog from "@/hooks/afterLogin/dogs/useCreateDog";
 import { UserIcon } from "@/components/icons/user";
@@ -99,10 +101,13 @@ export default function CreateDogForm() {
         <div className="flex flex-col items-center gap-2">
           {previewUrl ? (
             <div className="relative size-30 rounded-full overflow-hidden bg-blue-300">
-              <img
+              <Image
                 src={previewUrl}
                 alt="반려견 프로필 미리보기"
-                className="w-full h-full object-cover"
+                fill
+                sizes="120px"
+                className="object-cover"
+                unoptimized
               />
             </div>
           ) : (
@@ -122,6 +127,7 @@ export default function CreateDogForm() {
             onClick={() => fileInputRef.current?.click()}
             disabled={isUploading || isPending}
             className="text-sm text-(--mt-gray) disabled:opacity-50 disabled:cursor-not-allowed"
+            aria-label={previewUrl ? "이미지 변경" : "이미지 선택"}
           >
             {previewUrl ? "이미지 변경" : "이미지 선택"}
           </button>

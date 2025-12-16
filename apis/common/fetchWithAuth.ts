@@ -24,7 +24,6 @@ export async function fetchWithAuth(
       return await res.json();
     }
     if (!res.ok) {
-      // console.log(await res.json());
       window.location.href = "/login";
     }
     return res;

@@ -44,8 +44,6 @@ export const presignedUrlApi = {
         body: file,
       });
 
-      console.log("[uploadToS3] response status:", response.status);
-
       if (!response.ok) {
         const text = await response.text().catch(() => "");
         console.error("[uploadToS3] error body:", text);
@@ -55,7 +53,6 @@ export const presignedUrlApi = {
       // URL에서 S3 키(파일 경로)만 추출
       const url = new URL(presignedUrl);
       const s3Key = url.pathname.substring(1); // 맨 앞의 '/' 제거
-      console.log("[uploadToS3] success S3 key:", s3Key);
       return s3Key;
     } catch (error) {
       console.error("[uploadToS3] fetch error:", error);
