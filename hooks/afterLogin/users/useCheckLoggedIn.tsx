@@ -6,6 +6,7 @@ export default function useCheckLoggedIn() {
   const {data, isPending, isError} = useQuery({
     queryKey: ["loggedIn"],
     queryFn: () => loginAPi.check(),
+    retry: false,
   });
   const refreshUserCheck = () => {
     queryClient.invalidateQueries({queryKey: ["loggedIn"]});
