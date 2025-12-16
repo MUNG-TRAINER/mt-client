@@ -5,6 +5,8 @@ import CreateCourseInput from "../CreateCourseInput";
 import CourseTypeBtn from "./common/CourseTypeBtn";
 import CourseCountBtn from "./courseType/CourseCountBtn";
 import {useSessionState} from "@/stores/sessionState";
+import MaxStudents from "./session/MaxStudents";
+import SessionPrice from "./session/SessionPrice";
 
 export default function CourseType() {
   const [isActive, setIsActive] = useState(true);
@@ -81,6 +83,15 @@ export default function CourseType() {
           plusFn={handleCountPlus}
         />
       </div>
+      <CreateCourseInput name="sessionNo" readOnly />
+      {/* <SessionDate /> */}
+      <CreateCourseInput
+        name="locationDetail"
+        type="text"
+        placeholder="세부 위치"
+      />
+      <MaxStudents inputId="" />
+      <SessionPrice inputId="" />
     </>
   );
 }
