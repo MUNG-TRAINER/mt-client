@@ -1,76 +1,37 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { z } from "zod";
-import Image from "next/image";
-import DogInput from "@/components/shared/inputs/DogInput";
 import useCreateDog from "@/hooks/afterLogin/dogs/useCreateDog";
-import { UserIcon } from "@/components/icons/user";
+import useDogImageUpload from "@/hooks/afterLogin/dogs/useDogImageUpload";
 import { IDogCreateRequestType } from "@/types/dog/dogType";
-import { presignedUrlApi } from "@/apis/common/presignedUrl";
-import { imageFileSchema } from "@/schemas/fileSchema";
 import ErrorMessage from "@/components/shared/feedback/ErrorMessage";
+import DogImageUploader from "@/components/shared/dog/DogImageUploader";
+import DogFormFields from "@/components/shared/dog/DogFormFields";
 
 export default function CreateDogForm() {
   const router = useRouter();
   const { mutateAsync, isPending } = useCreateDog();
   const [error, setError] = useState<string>("");
-  const [fileError, setFileError] = useState<string>("");
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string>("");
-  const [isUploading, setIsUploading] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    // 에러 초기화
-    setFileError("");
-
-    // Zod를 사용한 파일 검증
-    const validation = imageFileSchema.safeParse(file);
-
-    if (!validation.success) {
-      const errorMessage =
-        validation.error.issues[0]?.message || "파일 업로드에 실패했습니다.";
-      setFileError(errorMessage);
-      e.target.value = ""; // input 초기화
-      return;
-    }
-
-    setSelectedFile(file);
-    const preview = URL.createObjectURL(file);
-    setPreviewUrl(preview);
-  };
+  const {
+    previewUrl,
+    fileError,
+    isUploading,
+    fileInputRef,
+    handleFileSelect,
+    uploadImage,
+    cleanup,
+  } = useDogImageUpload();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
 
-    // FormData를 먼저 생성 (이벤트가 무효화되기 전에)
     const formData = new FormData(e.currentTarget);
 
     try {
-      let uploadedImageUrl = "";
-
-      // 선택된 파일이 있으면 S3에 업로드
-      if (selectedFile) {
-        setIsUploading(true);
-
-        const presignedUrl = await presignedUrlApi.getPresignedUrl({
-          category: "dog-profile",
-          fileName: selectedFile.name,
-          contentType: selectedFile.type,
-        });
-
-        uploadedImageUrl = await presignedUrlApi.uploadToS3(
-          presignedUrl,
-          selectedFile
-        );
-
-        setIsUploading(false);
-      }
+      // 이미지 업로드 (선택된 파일이 있으면)
+      const uploadedImageUrl = await uploadImage();
 
       const dogData: IDogCreateRequestType = {
         name: formData.get("name") as string,
@@ -86,12 +47,9 @@ export default function CreateDogForm() {
       };
 
       await mutateAsync(dogData);
-
-      if (previewUrl) URL.revokeObjectURL(previewUrl);
-
+      cleanup();
       router.push("/mydogs");
     } catch (err) {
-      setIsUploading(false);
       setError("반려견 등록에 실패했습니다. 다시 시도해주세요.");
       console.error(err);
     }
@@ -104,199 +62,20 @@ export default function CreateDogForm() {
       </div>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        {/* 프로필 이미지 업로드 */}
-        <div className="flex flex-col items-center gap-2">
-          {previewUrl ? (
-            <div className="relative size-30 rounded-full overflow-hidden bg-blue-300">
-              <Image
-                src={previewUrl}
-                alt="반려견 프로필 미리보기"
-                fill
-                sizes="120px"
-                className="object-cover"
-                unoptimized
-              />
-            </div>
-          ) : (
-            <div className="flex items-center justify-center relative size-30 rounded-full overflow-hidden bg-blue-300">
-              <UserIcon className="size-16 text-(--mt-blue-point)" />
-            </div>
-          )}
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            onChange={handleFileSelect}
-            className="hidden"
-          />
-          <button
-            type="button"
-            onClick={() => fileInputRef.current?.click()}
-            disabled={isUploading || isPending}
-            className="text-sm text-(--mt-gray) disabled:opacity-50 disabled:cursor-not-allowed"
-            aria-label={previewUrl ? "이미지 변경" : "이미지 선택"}
-          >
-            {previewUrl ? "이미지 변경" : "이미지 선택"}
-          </button>
+        <DogImageUploader
+          previewUrl={previewUrl}
+          fileInputRef={fileInputRef}
+          fileError={fileError}
+          isUploading={isUploading}
+          isDisabled={isPending || isUploading}
+          onFileSelect={handleFileSelect}
+          onButtonClick={() => fileInputRef.current?.click()}
+        />
 
-          {/* 파일 에러 메시지 */}
-          <ErrorMessage message={fileError} className="w-full text-center" />
-        </div>
+        <DogFormFields />
 
-        {/* 기본 정보 */}
-        <div className="flex flex-col gap-3">
-          <h2 className="text-lg font-bold text-(--mt-black)">기본 정보</h2>
-
-          <DogInput
-            labelTxt="이름"
-            id="name"
-            name="name"
-            type="text"
-            placeholder="반려견 이름을 입력하세요"
-            headIcon={<UserIcon />}
-            required={true}
-          />
-
-          <DogInput
-            labelTxt="견종"
-            id="breed"
-            name="breed"
-            type="text"
-            placeholder="예: 골든 리트리버, 포메라니안"
-            required={true}
-          />
-
-          <div className="grid grid-cols-2 gap-3">
-            <DogInput
-              labelTxt="나이"
-              id="age"
-              name="age"
-              type="number"
-              placeholder="나이 (살)"
-              required={true}
-              min="0"
-              max="30"
-            />
-
-            <DogInput
-              labelTxt="체중"
-              id="weight"
-              name="weight"
-              type="number"
-              placeholder="체중 (kg)"
-              required={true}
-              min="0"
-              step="0.1"
-            />
-          </div>
-
-          {/* 성별 */}
-          <div className="flex flex-col gap-2">
-            <label className="font-bold">
-              성별<span className="text-red-500 ml-1">*</span>
-            </label>
-            <div className="flex gap-4">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  name="gender"
-                  value="M"
-                  required
-                  className="size-4"
-                />
-                <span>남</span>
-              </label>
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  name="gender"
-                  value="F"
-                  required
-                  className="size-4"
-                />
-                <span>여</span>
-              </label>
-            </div>
-          </div>
-
-          {/* 중성화 여부 */}
-          <div className="flex flex-col gap-2">
-            <label className="font-bold">
-              중성화 여부<span className="text-red-500 ml-1">*</span>
-            </label>
-            <div className="flex gap-4">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  name="isNeutered"
-                  value="true"
-                  required
-                  className="size-4"
-                />
-                <span>완료</span>
-              </label>
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  name="isNeutered"
-                  value="false"
-                  required
-                  className="size-4"
-                />
-                <span>미완료</span>
-              </label>
-            </div>
-          </div>
-        </div>
-
-        {/* 상세 정보 */}
-        <div className="flex flex-col gap-3">
-          <h2 className="text-lg font-bold text-(--mt-black)">상세 정보</h2>
-
-          <div className="flex flex-col gap-2">
-            <label htmlFor="personality" className="font-bold">
-              성격<span className="text-red-500 ml-1">*</span>
-            </label>
-            <textarea
-              id="personality"
-              name="personality"
-              placeholder="반려견의 성격을 입력하세요 (예: 활발하고 사람을 좋아함)"
-              required
-              className="border border-(--mt-gray-light) p-3 rounded-xl min-h-24 resize-none"
-            />
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <label htmlFor="habits" className="font-bold">
-              습관/특징<span className="text-red-500 ml-1">*</span>
-            </label>
-            <textarea
-              id="habits"
-              name="habits"
-              placeholder="반려견의 습관이나 특징을 입력하세요 (예: 산책을 좋아하고 공놀이를 즐김)"
-              required
-              className="border border-(--mt-gray-light) p-3 rounded-xl min-h-24 resize-none"
-            />
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <label htmlFor="healthInfo" className="font-bold">
-              건강 정보<span className="text-red-500 ml-1">*</span>
-            </label>
-            <textarea
-              id="healthInfo"
-              name="healthInfo"
-              placeholder="건강 상태나 특이사항을 입력하세요 (예: 건강 상태 양호, 슬개골 탈구 있음)"
-              required
-              className="border border-(--mt-gray-light) p-3 rounded-xl min-h-24 resize-none"
-            />
-          </div>
-        </div>
-
-        {/* 에러 메시지 */}
         <ErrorMessage message={error} />
 
-        {/* 버튼 */}
         <div className="flex gap-3 sticky bottom-0 bg-white pt-2 pb-2">
           <button
             type="button"

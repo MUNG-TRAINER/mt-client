@@ -5,7 +5,6 @@ import { UserIcon } from "@/components/icons/user";
 import useDogDetail from "@/hooks/afterLogin/dogs/useDogDetail";
 import useDeleteDog from "@/hooks/afterLogin/dogs/useDeleteDog";
 import Image from "next/image";
-import { IDogProfileType } from "@/types/dog/dogType";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -14,15 +13,7 @@ import ConfirmModal from "@/components/shared/modal/ConfirmModal";
 
 export default function DogDetail({ dogId }: { dogId: number }) {
   const router = useRouter();
-  const {
-    data,
-    isPending,
-    isError,
-  }: {
-    data: IDogProfileType | undefined;
-    isPending: boolean;
-    isError: boolean;
-  } = useDogDetail(dogId);
+  const { data, isPending, isError } = useDogDetail(dogId);
   const { mutateAsync: deleteDog, isPending: isDeleting } = useDeleteDog();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleteError, setDeleteError] = useState<string>("");
