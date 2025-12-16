@@ -12,4 +12,5 @@ export interface ApplicationType {
   tags: string;
   sessionSchedule: string;
   dogName: string;
+  rejectReason?: string;
 }

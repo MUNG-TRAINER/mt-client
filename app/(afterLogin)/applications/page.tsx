@@ -16,7 +16,6 @@ const ApplicationsPage = () => {
         "Content-Type": "application/json",
       },
     })
-    
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch applications");
         return res.json();

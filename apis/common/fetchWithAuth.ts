@@ -1,5 +1,5 @@
 "use client";
-import { API_BASE_URL } from "@/util/env";
+import {API_BASE_URL} from "@/util/env";
 
 const TOKEN_EXPIRED = "TOKEN_EXPIRED";
 const UNAUTHORIZED = "UNAUTHORIZED";
@@ -23,8 +23,8 @@ export async function fetchWithAuth(
     if (res.status === 400) {
       return res.json();
     }
-    const result = await res.json();
     if (res.status === 401) {
+      const result = await res.json();
       if (result.code === TOKEN_EXPIRED) {
         await refreshToken();
         res = await fetchData(input, init);
