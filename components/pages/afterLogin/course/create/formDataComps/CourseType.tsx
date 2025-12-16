@@ -25,7 +25,7 @@ export default function CourseType() {
   const handleMultiActive = useCallback(() => {
     multiRef.current?.click();
     setIsActive(false);
-    setCount(null);
+    setCount(1);
   }, [setCount]);
 
   const handleCountChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -82,15 +82,19 @@ export default function CourseType() {
           plusFn={handleCountPlus}
         />
       </div>
-      <CreateCourseInput name="sessionNo" readOnly />
-      {/* <SessionDate /> */}
-      <CreateCourseInput
-        name="locationDetail"
-        type="text"
-        placeholder="세부 위치"
-      />
-      <MaxStudents inputId="" />
-      <SessionPrice inputId="" />
+      {Array.from({length: count!}, (_, index) => (
+        <>
+          <CreateCourseInput name="sessionNo" readOnly value={index + 1} />
+          {/* <SessionDate /> */}
+          <CreateCourseInput
+            name="locationDetail"
+            type="text"
+            placeholder="세부 위치"
+          />
+          <MaxStudents inputId="" />
+          <SessionPrice inputId="" />
+        </>
+      ))}
     </>
   );
 }
