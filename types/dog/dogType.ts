@@ -29,7 +29,7 @@ export interface IDogCreateRequestType {
   personality: string;
   habits: string;
   healthInfo: string;
-  profileImageUrl?: string;
+  profileImage?: string;
 }
 
 // 반려견 프로필 수정 요청 타입
@@ -43,7 +43,7 @@ export interface IDogUpdateRequestType {
   personality?: string;
   habits?: string;
   healthInfo?: string;
-  profileImageUrl?: string;
+  profileImage?: string;
 }
 
 // 반려견 리스트 응답 타입

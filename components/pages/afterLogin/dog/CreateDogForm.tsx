@@ -73,7 +73,7 @@ export default function CreateDogForm() {
         personality: formData.get("personality") as string,
         habits: formData.get("habits") as string,
         healthInfo: formData.get("healthInfo") as string,
-        profileImageUrl: uploadedImageUrl || undefined,
+        profileImage: uploadedImageUrl || undefined,
       };
 
       await mutateAsync(dogData);

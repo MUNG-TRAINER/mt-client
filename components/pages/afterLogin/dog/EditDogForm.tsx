@@ -1,24 +1,42 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import DogInput from "@/components/shared/inputs/DogInput";
 import useUpdateDog from "@/hooks/afterLogin/dogs/useUpdateDog";
 import useDogDetail from "@/hooks/afterLogin/dogs/useDogDetail";
 import { UserIcon } from "@/components/icons/user";
 import { IDogUpdateRequestType } from "@/types/dog/dogType";
+import { presignedUrlApi } from "@/apis/common/presignedUrl";
 
 export default function EditDogForm({ dogId }: { dogId: number }) {
   const router = useRouter();
   const { data: dogData, isPending: isLoading } = useDogDetail(dogId);
   const { mutateAsync, isPending } = useUpdateDog();
   const [error, setError] = useState<string>("");
-  const [profileImage, setProfileImage] = useState<string>("");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string>("");
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    if (dogData?.profileImage) {
-      setProfileImage(dogData.profileImage);
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      alert("이미지 파일만 업로드 가능합니다.");
+      return;
     }
-  }, [dogData]);
+
+    if (file.size > 5 * 1024 * 1024) {
+      alert("파일 크기는 5MB 이하여야 합니다.");
+      return;
+    }
+
+    setSelectedFile(file);
+    const preview = URL.createObjectURL(file);
+    setPreviewUrl(preview);
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -26,23 +44,54 @@ export default function EditDogForm({ dogId }: { dogId: number }) {
 
     const formData = new FormData(e.currentTarget);
 
-    const updateData: IDogUpdateRequestType = {
-      name: formData.get("name") as string,
-      breed: formData.get("breed") as string,
-      age: Number(formData.get("age")),
-      gender: formData.get("gender") as "M" | "F",
-      isNeutered: formData.get("isNeutered") === "true",
-      weight: Number(formData.get("weight")),
-      personality: formData.get("personality") as string,
-      habits: formData.get("habits") as string,
-      healthInfo: formData.get("healthInfo") as string,
-      profileImageUrl: profileImage || undefined,
-    };
-
     try {
+      // 새로운 파일이 선택되었으면 S3에 업로드
+      let uploadedImageKey: string | undefined = undefined;
+
+      if (selectedFile) {
+        setIsUploading(true);
+
+        const presignedUrl = await presignedUrlApi.getPresignedUrl({
+          category: "dog-profile",
+          fileName: selectedFile.name,
+          contentType: selectedFile.type,
+        });
+
+        uploadedImageKey = await presignedUrlApi.uploadToS3(
+          presignedUrl,
+          selectedFile
+        );
+
+        console.log("업로드된 이미지 키:", uploadedImageKey);
+        setIsUploading(false);
+      }
+
+      const updateData: IDogUpdateRequestType = {
+        name: formData.get("name") as string,
+        breed: formData.get("breed") as string,
+        age: Number(formData.get("age")),
+        gender: formData.get("gender") as "M" | "F",
+        isNeutered: formData.get("isNeutered") === "true",
+        weight: Number(formData.get("weight")),
+        personality: formData.get("personality") as string,
+        habits: formData.get("habits") as string,
+        healthInfo: formData.get("healthInfo") as string,
+      };
+
+      // 새 이미지를 업로드했으면 profileImage 추가
+      if (uploadedImageKey) {
+        updateData.profileImage = uploadedImageKey;
+      }
+
+      console.log("전송할 데이터:", updateData);
+
       await mutateAsync({ dogId, dogData: updateData });
+
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+
       router.push(`/mydogs/${dogId}`);
     } catch (err) {
+      setIsUploading(false);
       setError("반려견 정보 수정에 실패했습니다. 다시 시도해주세요.");
       console.error(err);
     }
@@ -81,12 +130,22 @@ export default function EditDogForm({ dogId }: { dogId: number }) {
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         {/* 프로필 이미지 업로드 */}
         <div className="flex flex-col items-center gap-2">
-          {profileImage ? (
+          {previewUrl ? (
             <div className="relative size-30 rounded-full overflow-hidden bg-blue-300">
               <img
-                src={profileImage}
-                alt="반려견 프로필"
+                src={previewUrl}
+                alt="반려견 프로필 미리보기"
                 className="w-full h-full object-cover"
+              />
+            </div>
+          ) : dogData.profileImage ? (
+            <div className="relative size-30 rounded-full overflow-hidden bg-blue-300">
+              <Image
+                src={dogData.profileImage}
+                alt="반려견 프로필"
+                fill
+                className="object-cover"
+                priority
               />
             </div>
           ) : (
@@ -99,15 +158,20 @@ export default function EditDogForm({ dogId }: { dogId: number }) {
               <UserIcon className="size-16 text-white" />
             </div>
           )}
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handleFileSelect}
+            className="hidden"
+          />
           <button
             type="button"
-            className="text-sm text-(--mt-gray)"
-            onClick={() => {
-              // TODO: 이미지 업로드 로직 구현
-              alert("이미지 업로드 기능은 추후 구현 예정입니다.");
-            }}
+            onClick={() => fileInputRef.current?.click()}
+            disabled={isUploading || isPending}
+            className="text-sm text-(--mt-gray) disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            프로필 이미지 변경
+            {previewUrl ? "이미지 변경" : "이미지 선택"}
           </button>
         </div>
 
@@ -283,10 +347,14 @@ export default function EditDogForm({ dogId }: { dogId: number }) {
           </button>
           <button
             type="submit"
-            disabled={isPending}
+            disabled={isPending || isUploading}
             className="flex-1 py-3 bg-(--mt-blue-point) text-(--mt-white) rounded-xl font-bold shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isPending ? "수정 중..." : "수정하기"}
+            {isUploading
+              ? "이미지 업로드 중..."
+              : isPending
+              ? "수정 중..."
+              : "수정하기"}
           </button>
         </div>
       </form>
