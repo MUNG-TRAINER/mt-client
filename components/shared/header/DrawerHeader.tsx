@@ -13,8 +13,8 @@ export default function DrawerHeader() {
   // functions
   /* 로그인페이지 이동 */
   const goToLogin = () => {
-    router.push("/login");
     offToggle();
+    router.push("/login");
   };
   const handleLogout = async () => {
     await refetch();
@@ -32,7 +32,7 @@ export default function DrawerHeader() {
           </i>
         </button>
       </li>
-      {check && !("code" in check) ? (
+      {check && !("code" in check.data) ? (
         <li>
           <button
             onClick={handleLogout}

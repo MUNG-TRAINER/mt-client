@@ -6,13 +6,13 @@ import SessionPrice from "./SessionPrice";
 import {useSessionState} from "@/stores/sessionState";
 import SessionSchedule from "./SessionSchedule";
 import CourseLocation from "../CourseLocation";
-import {IUploadCoureTypes} from "@/types/course/courseType";
+import {IUploadCourseTypes} from "@/types/course/courseType";
 
 const SessionItems = React.memo(function SessionItems({
   val,
   index,
 }: {
-  val: IUploadCoureTypes[];
+  val: IUploadCourseTypes[];
   index: number;
 }) {
   const {free, price, setPrice} = useSessionState();

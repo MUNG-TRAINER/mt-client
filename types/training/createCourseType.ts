@@ -5,7 +5,7 @@ export interface ICreateCourseType {
   detailImage: string;
   schedule: string;
   isFree: string;
-  lessionForm: string;
+  lessonForm: string;
   difficulty: string;
   dogSize: string;
   description: string;

@@ -1,23 +1,16 @@
 "use client";
 
-import {loginAction} from "@/app/(beforeLogin)/login/actions";
 import {EyeIcon, EyeSlashIcon} from "@/components/icons/eye";
 import {LockClosedIcon} from "@/components/icons/lock";
 import {UserIcon} from "@/components/icons/user";
 import AuthInput from "@/components/shared/inputs/AuthInput";
 import useLogin from "@/hooks/beforeLogin/login/useLogin";
 import {loginSchema} from "@/schemas/loginSchema";
-import {IFormResultType, ZodErrorTree} from "@/types/formResultType";
-import {ILoginResponse} from "@/types/login/loginDataType";
-import {useRouter} from "next/navigation";
-import {FormEvent, useActionState, useState} from "react";
+import {ZodErrorTree} from "@/types/formResultType";
+import {FormEvent, useState} from "react";
 import {treeifyError} from "zod";
-const initialState = {
-  errMsg: undefined,
-  resMsg: undefined,
-};
+
 export default function LoginForm() {
-  const router = useRouter();
   const [togglePwd, setTogglePwd] = useState(false);
   const [fieldErrors, setFieldErrors] =
     useState<ZodErrorTree<typeof loginSchema>>();

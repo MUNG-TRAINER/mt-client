@@ -3,3 +3,7 @@ export interface IResultResponse {
   code: number;
   message: string;
 }
+
+export interface IResultResponseData<T> {
+  data: T;
+}

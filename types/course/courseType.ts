@@ -19,7 +19,7 @@ export interface ICourseType {
   dogSize: string;
   tags: string; // Comma-separated tags
 }
-export interface IUploadCoureTypes {
+export interface IUploadCourseTypes {
   sessionNo: number;
   status: string;
   maxStudents: number;

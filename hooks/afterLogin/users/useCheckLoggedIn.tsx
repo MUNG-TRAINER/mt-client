@@ -12,6 +12,7 @@ export default function useCheckLoggedIn() {
     refetchInterval: ACCESS_TOKEN_EXPIRE_TIME - 30_000,
     retry: false,
   });
+
   const refreshUserCheck = () => {
     queryClient.invalidateQueries({queryKey: ["loggedIn"]});
   };

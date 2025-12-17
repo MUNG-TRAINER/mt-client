@@ -5,16 +5,16 @@ export interface ILoginDataType {
   password: string;
 }
 
-export interface ICheckLoggedInType {
-  userId: number;
-  role: UserRoleType;
-  username: string;
-}
-
 export interface ILoginResponse {
   status: number;
   code: string;
   message: string;
+}
+
+export interface ICheckLoggedInType {
+  userId: number;
+  role: UserRoleType;
+  username: string;
 }
 
 export interface IFailedCheckLoggedInType {

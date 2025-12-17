@@ -1,6 +1,6 @@
 "use client";
 
-import {IUploadCoureTypes} from "@/types/course/courseType";
+import {IUploadCourseTypes} from "@/types/course/courseType";
 import SessionItems from "./SessionItems";
 
 export default function SessionComp({count}: {count: number}) {
@@ -17,7 +17,7 @@ export default function SessionComp({count}: {count: number}) {
         maxStudents: 1,
         price: 0,
         content: "",
-      } as IUploadCoureTypes)
+      } as IUploadCourseTypes)
   );
 
   return (

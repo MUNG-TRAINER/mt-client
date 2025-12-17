@@ -1,11 +1,13 @@
 import {IResultResponse} from "@/types/response/resultResponse";
 import {presignedUrlApi} from "../common/presignedUrl";
-import {IUploadCoureTypes} from "@/types/course/courseType";
+import {IUploadCourseTypes} from "@/types/course/courseType";
 
 export const courseApi = {
   createCourse: async (formData: FormData, count: number) => {
+    // zod
+    // file size validate
     const detailImageUrl: string[] = [];
-    const sessions: IUploadCoureTypes[] = [];
+    const sessions: IUploadCourseTypes[] = [];
 
     for (let i = 0; i < count; i++) {
       const sessionNo =
@@ -60,8 +62,8 @@ export const courseApi = {
       formData.set("mainImgUrl", mainImgUrl);
     }
     for (let i = 0; i < 3; i++) {
-      const file = formData.get(`detailImage${[i]}.detailImage`) as File;
-      if (!file) continue;
+      const file = formData.get(`detailImage[${i}].detailImage`) as File;
+      if (!file || file.size === 0) continue;
       const response = await fetch("/api/s3/getPresignedUrl", {
         method: "POST",
         headers: {

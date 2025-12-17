@@ -15,19 +15,21 @@ export function cookieExtractor(cookies: string[]) {
     const maxAgePart = parts.find((p) => p.startsWith("Max-Age="));
     const maxAge = maxAgePart ? maxAgePart.split("=")[1] : undefined;
 
-    if (name === "access_token") {
+    if (name === NAME_ACCESS_TOKEN) {
       accessToken = value;
       accessMaxAge = maxAge ?? "";
     }
 
-    if (name === "refresh_token") {
+    if (name === NAME_REFRESH_TOKEN) {
       refreshToken = value;
       refreshMaxAge = maxAge ?? "";
     }
   }
 
   if (!accessToken || !refreshToken) {
-    throw new Error("Required auth cookies not found");
+    throw new Error(
+      "필요한 인증 쿠키(access_token, refresh_token)를 찾을 수 없습니다"
+    );
   }
 
   return {

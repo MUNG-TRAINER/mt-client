@@ -1,5 +1,5 @@
 "use client";
-import {courseApi} from "@/apis/training/courseApi";
+
 import CreateCourseCard from "../CreateCourseCard";
 import CourseTextAtrea from "./common/CourseTextAtrea";
 import CourseDifficulty from "./CourseDifficulty";
@@ -20,14 +20,14 @@ import {FormEvent} from "react";
 export default function CreateCourse() {
   const {count} = useSessionState();
   const {mutate, isPending, isError} = useCourseUpload();
-  const handleSumbit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.currentTarget;
     const formData = new FormData(form);
     mutate({formData, count});
   };
   return (
-    <form onSubmit={handleSumbit} className="flex flex-col gap-3">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-3">
       <fieldset className="flex flex-col gap-3">
         <legend className="w-full! h-full! opacity-100! text-center font-bold mb-4 text-xl">
           훈련과정업로드
@@ -96,6 +96,7 @@ export default function CreateCourse() {
           className={`w-full ${
             isPending ? "bg-(--mt-gray)" : "bg-(--mt-blue-point)"
           }  py-2 rounded-lg shadow text-(--mt-white) font-bold`}
+          disabled={isPending}
         >
           {isPending ? "로딩중..." : "개설하기"}
         </button>

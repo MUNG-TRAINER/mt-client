@@ -1,5 +1,7 @@
+import {NAME_ACCESS_TOKEN, NAME_REFRESH_TOKEN} from "@/util/cookieExtractor";
 import {API_BASE_URL} from "@/util/env";
 import {cookies} from "next/headers";
+import {NextResponse} from "next/server";
 
 export async function GET() {
   const cookie = await cookies();
@@ -10,5 +12,24 @@ export async function GET() {
       "Content-Type": "application/json",
     },
   });
-  return res;
+  if (!res.ok) {
+    throw new Error("로그아웃하는데 실패하였습니다.");
+  }
+  const data = await res.json();
+  const response = NextResponse.json({data});
+  response.cookies.set(NAME_REFRESH_TOKEN, "", {
+    httpOnly: true,
+    secure: false,
+    path: "/",
+    maxAge: 0,
+    sameSite: "none",
+  });
+  response.cookies.set(NAME_ACCESS_TOKEN, "", {
+    httpOnly: true,
+    secure: false,
+    path: "/",
+    maxAge: 0,
+    sameSite: "none",
+  });
+  return response;
 }

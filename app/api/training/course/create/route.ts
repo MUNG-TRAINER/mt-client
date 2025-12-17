@@ -14,6 +14,7 @@ export async function POST(req: NextRequest) {
     body: JSON.stringify(json),
   });
   if (!res.ok) {
+    //에러처리메세지 사용자에게 전달하는 코드
     throw new Error("훈련과정 저장에 실패했습니다.");
   }
   const result = await res.json();

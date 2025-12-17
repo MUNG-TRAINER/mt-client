@@ -3,6 +3,10 @@ import {
   IFailedCheckLoggedInType,
   ILoginDataType,
 } from "@/types/login/loginDataType";
+import {
+  IResultResponse,
+  IResultResponseData,
+} from "@/types/response/resultResponse";
 
 export const loginApi = {
   login: async (data: ILoginDataType) => {
@@ -28,18 +32,20 @@ export const loginApi = {
     if (!res?.ok) {
       throw new Error("로그아웃하는데 실패하였습니다.");
     }
-    return await res.json();
+    const data: IResultResponseData<IResultResponse> = await res.json();
+    return data;
   },
   check: async () => {
     const res = await fetch(`/api/auth/check`);
     if (res.status === 401) {
-      const data: IFailedCheckLoggedInType = await res.json();
+      const data: IResultResponseData<IFailedCheckLoggedInType> =
+        await res.json();
       return data;
     }
     if (!res?.ok) {
       throw new Error("유저의 정보를 불러올 수 없습니다.");
     }
-    const data: ICheckLoggedInType = await res.json();
+    const data: IResultResponseData<ICheckLoggedInType> = await res.json();
     return data;
   },
 };
