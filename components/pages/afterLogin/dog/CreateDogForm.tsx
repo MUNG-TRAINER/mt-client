@@ -19,6 +19,7 @@ export default function CreateDogForm() {
     isUploading,
     fileInputRef,
     handleFileSelect,
+    handleImageDelete,
     uploadImage,
     cleanup,
   } = useDogImageUpload();
@@ -33,23 +34,39 @@ export default function CreateDogForm() {
       try {
         const uploadedImageUrl = await uploadImage();
 
+        // 선택 필드 trim 처리
+        const weight = formData.get("weight") as string;
+        const personality = (formData.get("personality") as string)?.trim();
+        const habits = (formData.get("habits") as string)?.trim();
+        const healthInfo = (formData.get("healthInfo") as string)?.trim();
+
         const dogData: IDogCreateRequestType = {
+          // 필수값
           name: (formData.get("name") as string) || "",
           breed: (formData.get("breed") as string) || "",
           age: Number(formData.get("age") || 0),
           gender: (formData.get("gender") as "M" | "F") || "M",
           isNeutered: formData.get("isNeutered") === "true",
-          weight: Number(formData.get("weight") || 0),
-          personality: (formData.get("personality") as string) || "",
-          habits: (formData.get("habits") as string) || "",
-          healthInfo: (formData.get("healthInfo") as string) || "",
-          profileImage: uploadedImageUrl || undefined,
+          humanSocialization:
+            (formData.get("humanSocialization") as "LOW" | "MEDIUM" | "HIGH") ||
+            "MEDIUM",
+          animalSocialization:
+            (formData.get("animalSocialization") as
+              | "LOW"
+              | "MEDIUM"
+              | "HIGH") || "MEDIUM",
+          // 선택값 (값이 있을 때만 포함)
+          ...(weight && { weight: Number(weight) }),
+          ...(personality && { personality }),
+          ...(habits && { habits }),
+          ...(healthInfo && { healthInfo }),
+          ...(uploadedImageUrl && { profileImage: uploadedImageUrl }),
         };
 
         await mutateAsync(dogData);
         cleanup();
         router.push("/mydogs");
-      } catch (err) {
+      } catch {
         setError("반려견 등록에 실패했습니다. 다시 시도해주세요.");
       }
     },
@@ -70,6 +87,7 @@ export default function CreateDogForm() {
           isDisabled={isPending || isUploading}
           onFileSelect={handleFileSelect}
           onButtonClick={() => fileInputRef.current?.click()}
+          onImageDelete={handleImageDelete}
         />
 
         <DogFormFields />

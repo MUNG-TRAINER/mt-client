@@ -7,6 +7,7 @@ export default function useDogImageUpload() {
   const [previewUrl, setPreviewUrl] = useState<string>("");
   const [fileError, setFileError] = useState<string>("");
   const [isUploading, setIsUploading] = useState(false);
+  const [isDeleted, setIsDeleted] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -15,6 +16,7 @@ export default function useDogImageUpload() {
 
     // 에러 초기화
     setFileError("");
+    setIsDeleted(false); // 파일 선택 시 삭제 상태 해제
 
     // Zod를 사용한 파일 검증
     const validation = imageFileSchema.safeParse(file);
@@ -30,6 +32,19 @@ export default function useDogImageUpload() {
     setSelectedFile(file);
     const preview = URL.createObjectURL(file);
     setPreviewUrl(preview);
+  };
+
+  const handleImageDelete = () => {
+    // 메모리 누수 방지: 기존 previewUrl 해제
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+    }
+    setSelectedFile(null);
+    setPreviewUrl("");
+    setIsDeleted(true);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
   };
 
   const uploadImage = async (): Promise<string | undefined> => {
@@ -74,8 +89,10 @@ export default function useDogImageUpload() {
     previewUrl,
     fileError,
     isUploading,
+    isDeleted,
     fileInputRef,
     handleFileSelect,
+    handleImageDelete,
     uploadImage,
     cleanup,
     resetFileInput,
