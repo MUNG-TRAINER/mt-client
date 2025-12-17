@@ -32,7 +32,7 @@ export default function CourseBasicsSection({
         title="수강료"
         content={
           <p className="text-lg font-bold text-(--mt-blue-point)">
-            {((firstSessionPrice || 0) * sessionCount).toLocaleString() || "0"}
+            {((firstSessionPrice || 0) * sessionCount).toLocaleString()}
             원
           </p>
         }
