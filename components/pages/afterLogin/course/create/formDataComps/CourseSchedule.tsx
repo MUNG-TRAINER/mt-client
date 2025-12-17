@@ -1,15 +1,25 @@
+import {InputHTMLAttributes, useId} from "react";
 import CreateCourseInput from "../CreateCourseInput";
-
-export default function CourseSchedule() {
+import CourseLabelBox from "./common/CourseLabelBox";
+interface ICourseSchedule extends InputHTMLAttributes<HTMLInputElement> {
+  labelId: string;
+  inputName: string;
+}
+export default function CourseSchedule({
+  labelId,
+  inputName,
+  ...props
+}: ICourseSchedule) {
+  const id = useId();
   return (
-    <>
-      <label htmlFor="schedule">일자</label>
+    <CourseLabelBox>
+      <label htmlFor={`${id}_${labelId}`}>일자</label>
       <CreateCourseInput
-        id="schedule"
-        name="schedule"
-        type="date"
-        placeholder="일자"
+        id={`${id}_${labelId}`}
+        name={inputName}
+        type="text"
+        {...props}
       />
-    </>
+    </CourseLabelBox>
   );
 }

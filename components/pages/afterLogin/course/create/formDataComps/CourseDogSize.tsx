@@ -1,6 +1,6 @@
 export default function CourseDogSize() {
   return (
-    <>
+    <div className="flex flex-col gap-1 [&>label]:font-bold">
       <label htmlFor="dogSize">반려견 크기</label>
       <select
         name="dogSize"
@@ -12,6 +12,6 @@ export default function CourseDogSize() {
         <option value="중">중</option>
         <option value="대">대</option>
       </select>
-    </>
+    </div>
   );
 }

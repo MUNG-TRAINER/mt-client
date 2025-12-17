@@ -2,23 +2,24 @@
 
 import {useCallback, useRef, useState} from "react";
 import CourseTypeBtn from "./common/CourseTypeBtn";
+import {useSessionState} from "@/stores/sessionState";
 
 export default function CourseIsFree() {
-  const [state, setState] = useState(true);
+  const {free, setFreeTrue, setFreeFalse} = useSessionState();
   const [price, setPrice] = useState("");
   const freeRef = useRef<HTMLInputElement | null>(null);
   const nonFreeRef = useRef<HTMLInputElement | null>(null);
   /* fn */
   const handleTruePrice = useCallback(() => {
     setPrice("");
-    setState(true);
-  }, []);
+    setFreeTrue();
+  }, [setFreeTrue]);
   const handleFalsePrice = useCallback(() => {
     setPrice("0");
-    setState(false);
-  }, []);
+    setFreeFalse();
+  }, [setFreeFalse]);
   return (
-    <>
+    <div className="flex flex-col gap-2 justify-around *:flex *:gap-2">
       <h5 className="font-bold">유료 / 무료</h5>
       <div className="w-full flex justify-around *:w-full">
         <CourseTypeBtn
@@ -27,7 +28,7 @@ export default function CourseIsFree() {
           inputRef={freeRef}
           name="isFree"
           inputValue={"true"}
-          isActive={state}
+          isActive={free}
           handleFn={handleTruePrice}
           defaultChecked
         />
@@ -37,10 +38,10 @@ export default function CourseIsFree() {
           name="isFree"
           inputRef={nonFreeRef}
           inputValue={"false"}
-          isActive={!state}
+          isActive={!free}
           handleFn={handleFalsePrice}
         />
       </div>
-    </>
+    </div>
   );
 }

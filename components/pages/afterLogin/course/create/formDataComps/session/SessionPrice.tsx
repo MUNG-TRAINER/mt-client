@@ -2,13 +2,16 @@
 
 import {InputHTMLAttributes, useId} from "react";
 import CreateCourseInput from "../../CreateCourseInput";
+import CourseLabelBox from "../common/CourseLabelBox";
 
 interface ISessionPriceProps extends InputHTMLAttributes<HTMLInputElement> {
+  index: number;
   inputId: string;
-  state?: boolean;
+  state: boolean;
   classNames?: string;
 }
 export default function SessionPrice({
+  index,
   inputId,
   state = false,
   classNames = "",
@@ -16,14 +19,17 @@ export default function SessionPrice({
 }: ISessionPriceProps) {
   const id = useId();
   return (
-    <div className="flex flex-col gap-1">
-      <h5 className="font-bold">가격</h5>
-      <CreateCourseInput
-        id={`${id}_${inputId}`}
-        {...props}
-        readOnly={state}
-        classNames={classNames}
-      />
-    </div>
+    <CourseLabelBox>
+      <label htmlFor={`${id}_${index}_${inputId}`}>가격</label>
+      <div className="flex items-center gap-2">
+        <CreateCourseInput
+          id={`${id}_${index}_${inputId}`}
+          classNames={classNames}
+          {...props}
+          readOnly={state}
+        />
+        <span className="font-bold">원</span>
+      </div>
+    </CourseLabelBox>
   );
 }

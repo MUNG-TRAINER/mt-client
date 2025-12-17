@@ -1,6 +1,6 @@
 export default function CourseDifficulty() {
   return (
-    <>
+    <div className="flex flex-col gap-1 [&>label]:font-bold">
       <label htmlFor="difficulty">난이도</label>
       <select
         name="difficulty"
@@ -12,6 +12,6 @@ export default function CourseDifficulty() {
         <option value="중">중</option>
         <option value="하">하</option>
       </select>
-    </>
+    </div>
   );
 }
