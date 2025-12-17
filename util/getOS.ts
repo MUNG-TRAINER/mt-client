@@ -1,5 +1,6 @@
 type TReturnOS = "ios" | "android" | "mac" | "windows" | "unknown";
 const getOS = (): TReturnOS => {
+  if (typeof window === "undefined") return "unknown";
   const ua = navigator.userAgent;
   if (/iPhone|iPad|iPod/i.test(ua)) return "ios";
   if (/Android/i.test(ua)) return "android";

@@ -22,7 +22,7 @@ export default function CourseTypeBtn({
 }: ICourseTypeBtnProps) {
   const id = useId();
   return (
-    <div>
+    <div className="w-full">
       <label
         htmlFor={`${id}_${labelFor}`}
         onClick={handleFn}
@@ -30,7 +30,7 @@ export default function CourseTypeBtn({
           isActive
             ? "bg-(--mt-blue-point) text-(--mt-white)"
             : "border border-(--mt-gray) bg-(--mt-gray-light) text-(--mt-gray)"
-        } block p-2 rounded-md w-full text-center`}
+        } flex items-center justify-center p-2 rounded-md w-full text-center`}
       >
         {labelTxt}
       </label>
