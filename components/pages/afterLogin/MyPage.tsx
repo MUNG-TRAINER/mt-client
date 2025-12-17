@@ -1,20 +1,14 @@
 "use client";
-import {UserIcon} from "@/components/icons/user";
+import { UserIcon } from "@/components/icons/user";
 import UserBadge from "@/components/shared/badges/UserBadge";
 import ToggleSlide from "@/components/shared/toggleSlide/ToggleSlide";
 import useMe from "@/hooks/afterLogin/users/useMe";
-import {IMyPageTypes} from "@/types/mypage/myPageType";
 import Image from "next/image";
 import Link from "next/link";
-import {Suspense, useState} from "react";
+import { useState } from "react";
 
 export default function MyPage() {
-  const {
-    data,
-    isPending,
-    isError,
-  } =
-    useMe();
+  const { data, isPending, isError } = useMe();
   const [showDogs, setShowDogs] = useState(false);
   return (
     <div className="bg-white w-full h-full m-auto p-6 rounded-md flex flex-col gap-3 overflow-y-auto">

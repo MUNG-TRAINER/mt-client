@@ -3,6 +3,15 @@ import { API_BASE_URL } from "@/util/env";
 import { ITrainerInfoType } from "@/types/trainer/trainerType";
 
 export const trainerApi = {
+  getProfile: async (trainerId: string) => {
+    const res = await fetch(`${API_BASE_URL}/users/trainer/${trainerId}`, {
+      method: "GET",
+    });
+    if (!res.ok) {
+      throw new Error("트레이너 정보를 불러오는데 실패하였습니다.");
+    }
+    return await res.json();
+  },
   uploadProfile: async (data: ITrainerInfoType) => {
     const res = await fetchWithAuth(`${API_BASE_URL}/trainer/me`, {
       method: "PATCH",
