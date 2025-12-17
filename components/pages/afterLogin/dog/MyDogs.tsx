@@ -27,7 +27,7 @@ export default function MyDogs() {
       {/* 헤더 */}
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold text-(--mt-black)">나의 반려견</h1>
-        {/* 반려견이 1마리 이상일 때만 추가 버튼 표시 */}
+        {/* 반려견이 있을 때만 헤더에 추가 버튼 표시 */}
         {dogs && dogs.length > 0 && (
           <Link
             href="/mydogs/create"

@@ -107,7 +107,13 @@ export default function DogDetail({ dogId }: { dogId: number }) {
             )}
             <span>{data.gender === "M" ? "남" : "여"}</span>
           </span>
-          <span className="flex items-center gap-1.5 text-sm px-3 py-1 rounded-full bg-green-100 text-green-700 font-medium">
+          <span
+            className={`flex items-center gap-1.5 text-sm px-3 py-1 rounded-full font-medium ${
+              data.isNeutered
+                ? "bg-green-100 text-green-700"
+                : "bg-gray-100 text-gray-700"
+            }`}
+          >
             {data.isNeutered && <CheckIcon className="size-3.5" />}
             <span>{data.isNeutered ? "중성화 완료" : "중성화 미완료"}</span>
           </span>

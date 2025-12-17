@@ -34,6 +34,12 @@ export default function CreateDogForm() {
       try {
         const uploadedImageUrl = await uploadImage();
 
+        // 선택 필드 trim 처리
+        const weight = formData.get("weight") as string;
+        const personality = (formData.get("personality") as string)?.trim();
+        const habits = (formData.get("habits") as string)?.trim();
+        const healthInfo = (formData.get("healthInfo") as string)?.trim();
+
         const dogData: IDogCreateRequestType = {
           // 필수값
           name: (formData.get("name") as string) || "",
@@ -50,18 +56,10 @@ export default function CreateDogForm() {
               | "MEDIUM"
               | "HIGH") || "MEDIUM",
           // 선택값 (값이 있을 때만 포함)
-          ...(formData.get("weight") && {
-            weight: Number(formData.get("weight")),
-          }),
-          ...(formData.get("personality") && {
-            personality: formData.get("personality") as string,
-          }),
-          ...(formData.get("habits") && {
-            habits: formData.get("habits") as string,
-          }),
-          ...(formData.get("healthInfo") && {
-            healthInfo: formData.get("healthInfo") as string,
-          }),
+          ...(weight && { weight: Number(weight) }),
+          ...(personality && { personality }),
+          ...(habits && { habits }),
+          ...(healthInfo && { healthInfo }),
           ...(uploadedImageUrl && { profileImage: uploadedImageUrl }),
         };
 

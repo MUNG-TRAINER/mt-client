@@ -49,6 +49,7 @@ export interface IDogUpdateRequestType {
   gender?: DogGenderType;
   isNeutered?: boolean;
   weight?: number;
+  clearWeight?: boolean; // 체중 삭제 플래그
   personality?: string;
   habits?: string;
   healthInfo?: string;
