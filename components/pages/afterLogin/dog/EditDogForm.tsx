@@ -19,8 +19,10 @@ export default function EditDogForm({ dogId }: { dogId: number }) {
     previewUrl,
     fileError,
     isUploading,
+    isDeleted,
     fileInputRef,
     handleFileSelect,
+    handleImageDelete,
     uploadImage,
     cleanup,
   } = useDogImageUpload();
@@ -35,30 +37,82 @@ export default function EditDogForm({ dogId }: { dogId: number }) {
       try {
         const uploadedImageKey = await uploadImage();
 
-        const updateData: IDogUpdateRequestType = {
-          name: formData.get("name") as string,
-          breed: formData.get("breed") as string,
-          age: Number(formData.get("age")),
-          gender: formData.get("gender") as "M" | "F",
-          isNeutered: formData.get("isNeutered") === "true",
-          weight: Number(formData.get("weight")),
-          personality: formData.get("personality") as string,
-          habits: formData.get("habits") as string,
-          healthInfo: formData.get("healthInfo") as string,
-        };
+        const updateData: IDogUpdateRequestType = {};
 
-        if (uploadedImageKey) {
+        // 필수 필드 - 비어있지 않을 때만 추가
+        const name = formData.get("name") as string;
+        if (name && name.trim()) updateData.name = name;
+
+        const breed = formData.get("breed") as string;
+        if (breed && breed.trim()) updateData.breed = breed;
+
+        const age = formData.get("age");
+        if (age) updateData.age = Number(age);
+
+        const gender = formData.get("gender") as "M" | "F";
+        if (gender) updateData.gender = gender;
+
+        const isNeutered = formData.get("isNeutered");
+        if (isNeutered !== null) updateData.isNeutered = isNeutered === "true";
+
+        const humanSocialization = formData.get("humanSocialization") as
+          | "LOW"
+          | "MEDIUM"
+          | "HIGH";
+        if (humanSocialization)
+          updateData.humanSocialization = humanSocialization;
+
+        const animalSocialization = formData.get("animalSocialization") as
+          | "LOW"
+          | "MEDIUM"
+          | "HIGH";
+        if (animalSocialization)
+          updateData.animalSocialization = animalSocialization;
+
+        // 선택 필드 - 빈 값도 전송하여 삭제 가능하도록 처리
+        // weight는 숫자 타입이므로 빈 문자열("")을 보낼 수 없음
+        // 따라서 clearWeight 플래그로 삭제 의사를 전달 (백엔드에서 NULL 처리)
+        const weight = formData.get("weight") as string | null;
+        if (weight !== null) {
+          const trimmedWeight = weight.trim();
+          if (trimmedWeight) {
+            updateData.weight = Number(trimmedWeight);
+          } else {
+            updateData.clearWeight = true; // 체중 삭제 플래그
+          }
+        }
+
+        // 텍스트 필드는 빈 문자열("")을 보내면 백엔드에서 NULL로 처리됨
+        const personality = formData.get("personality") as string;
+        if (personality !== null) {
+          updateData.personality = personality.trim() || "";
+        }
+
+        const habits = formData.get("habits") as string;
+        if (habits !== null) {
+          updateData.habits = habits.trim() || "";
+        }
+
+        const healthInfo = formData.get("healthInfo") as string;
+        if (healthInfo !== null) {
+          updateData.healthInfo = healthInfo.trim() || "";
+        }
+
+        // 이미지 처리: 삭제, 업로드, 또는 유지
+        if (isDeleted) {
+          updateData.profileImage = ""; // 빈 문자열 전송 → 백엔드에서 NULL 처리
+        } else if (uploadedImageKey) {
           updateData.profileImage = uploadedImageKey;
         }
 
         await mutateAsync({ dogId, dogData: updateData });
         cleanup();
         router.push(`/mydogs/${dogId}`);
-      } catch (err) {
+      } catch {
         setError("반려견 정보 수정에 실패했습니다. 다시 시도해주세요.");
       }
     },
-    [uploadImage, mutateAsync, cleanup, router, dogId]
+    [uploadImage, mutateAsync, cleanup, router, dogId, isDeleted]
   );
 
   if (isLoading) {
@@ -74,7 +128,7 @@ export default function EditDogForm({ dogId }: { dogId: number }) {
       <div className="bg-white w-full h-full m-auto p-6 rounded-md flex flex-col items-center justify-center gap-4">
         <p className="text-(--mt-gray)">반려견 정보를 불러올 수 없습니다.</p>
         <button
-          onClick={() => router.back()}
+          onClick={() => router.push("/mydogs")}
           className="py-2 px-6 bg-(--mt-blue-point) text-(--mt-white) rounded-xl font-bold"
         >
           돌아가기
@@ -99,8 +153,10 @@ export default function EditDogForm({ dogId }: { dogId: number }) {
           fileInputRef={fileInputRef}
           fileError={fileError}
           isDisabled={isPending || isUploading}
+          isDeleted={isDeleted}
           onFileSelect={handleFileSelect}
           onButtonClick={() => fileInputRef.current?.click()}
+          onImageDelete={handleImageDelete}
         />
 
         <DogFormFields defaultValues={dogData} />
@@ -110,7 +166,7 @@ export default function EditDogForm({ dogId }: { dogId: number }) {
         <div className="flex gap-3 sticky bottom-0 bg-white pt-2 pb-2">
           <button
             type="button"
-            onClick={() => router.back()}
+            onClick={() => router.push(`/mydogs/${dogId}`)}
             className="flex-1 py-3 border border-(--mt-gray-light) text-(--mt-gray) rounded-xl font-bold"
           >
             취소

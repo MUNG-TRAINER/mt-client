@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { memo } from "react";
-import { UserIcon } from "@/components/icons/user";
+import { DogIcon } from "@/components/icons/dog";
 import ErrorMessage from "@/components/shared/feedback/ErrorMessage";
 
 interface DogImageUploaderProps {
@@ -10,8 +10,10 @@ interface DogImageUploaderProps {
   fileInputRef: React.RefObject<HTMLInputElement | null>;
   fileError: string;
   isDisabled: boolean;
+  isDeleted?: boolean;
   onFileSelect: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onButtonClick: () => void;
+  onImageDelete?: () => void;
 }
 
 const DogImageUploader = memo(function DogImageUploader({
@@ -21,8 +23,10 @@ const DogImageUploader = memo(function DogImageUploader({
   fileInputRef,
   fileError,
   isDisabled,
+  isDeleted,
   onFileSelect,
   onButtonClick,
+  onImageDelete,
 }: DogImageUploaderProps) {
   const getPlaceholderColor = () => {
     if (dogId !== undefined) {
@@ -30,6 +34,8 @@ const DogImageUploader = memo(function DogImageUploader({
     }
     return "hsl(200, 70%, 80%)";
   };
+
+  const hasImage = previewUrl || (existingImageUrl && !isDeleted);
 
   return (
     <div className="flex flex-col items-center gap-2">
@@ -44,7 +50,7 @@ const DogImageUploader = memo(function DogImageUploader({
             unoptimized
           />
         </div>
-      ) : existingImageUrl ? (
+      ) : existingImageUrl && !isDeleted ? (
         <div className="relative size-30 rounded-full overflow-hidden bg-blue-300">
           <Image
             src={existingImageUrl}
@@ -62,7 +68,7 @@ const DogImageUploader = memo(function DogImageUploader({
             backgroundColor: getPlaceholderColor(),
           }}
         >
-          <UserIcon className="size-16 text-white" />
+          <DogIcon className="size-16 text-white" />
         </div>
       )}
       <input
@@ -72,15 +78,28 @@ const DogImageUploader = memo(function DogImageUploader({
         onChange={onFileSelect}
         className="hidden"
       />
-      <button
-        type="button"
-        onClick={onButtonClick}
-        disabled={isDisabled}
-        className="text-sm text-(--mt-gray) disabled:opacity-50 disabled:cursor-not-allowed"
-        aria-label={previewUrl ? "이미지 변경" : "이미지 선택"}
-      >
-        {previewUrl ? "이미지 변경" : "이미지 선택"}
-      </button>
+      <div className="flex items-center gap-3">
+        <button
+          type="button"
+          onClick={onButtonClick}
+          disabled={isDisabled}
+          className="text-sm text-(--mt-gray) disabled:opacity-50 disabled:cursor-not-allowed hover:text-(--mt-blue-point)"
+          aria-label={previewUrl ? "이미지 변경" : "이미지 선택"}
+        >
+          {previewUrl ? "이미지 변경" : "이미지 선택"}
+        </button>
+        {hasImage && onImageDelete && (
+          <button
+            type="button"
+            onClick={onImageDelete}
+            disabled={isDisabled}
+            className="text-sm text-red-500 disabled:opacity-50 disabled:cursor-not-allowed hover:text-red-700"
+            aria-label="이미지 삭제"
+          >
+            이미지 삭제
+          </button>
+        )}
+      </div>
 
       <ErrorMessage message={fileError} className="w-full text-center" />
     </div>

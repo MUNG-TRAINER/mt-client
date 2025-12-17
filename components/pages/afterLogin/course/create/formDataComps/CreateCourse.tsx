@@ -1,8 +1,9 @@
 "use client";
 import CreateCourseCard from "../CreateCourseCard";
-import CourseDescription from "./CourseDescription";
+import CourseTextAtrea from "./common/CourseTextAtrea";
 import CourseDifficulty from "./CourseDifficulty";
 import CourseDogSize from "./CourseDogSize";
+import CourseImage from "./CourseImage";
 import CourseIsFree from "./CourseIsFree";
 import CourseItems from "./CourseItems";
 import CourseLessonForm from "./CourseLessonForm";
@@ -19,17 +20,44 @@ export default function CreateCourse() {
         <legend className="w-full! h-full! opacity-100! text-center font-bold mb-4 text-xl">
           훈련과정업로드
         </legend>
-        <CreateCourseCard classNames="[&>label]:font-bold">
+
+        <CreateCourseCard>
+          {/* 훈련 제목 */}
           <CourseTitle />
+          {/* 훈련 장소 */}
           <CourseLocation />
         </CreateCourseCard>
+
+        {/* 이미지 업로드 */}
         <CreateCourseCard>
-          <div className="flex flex-col gap-2 justify-around *:flex *:gap-2 *:py-2">
-            {/* 유-무료 */}
-            <CourseIsFree />
-          </div>
+          <CourseImage />
+        </CreateCourseCard>
+
+        <CreateCourseCard>
+          {/* 훈련 일자 */}
+          <CourseSchedule
+            labelId="schedule"
+            inputName="schedule"
+            placeholder="예 :: yyyy년 mm월 dd일 ~ yyyy년 mm월 dd일"
+          />
+        </CreateCourseCard>
+
+        <CreateCourseCard>
+          {/* 유-무료 */}
+          <CourseIsFree />
           {/* 수업 유형 */}
           <CourseLessonForm />
+          {/* 수업 난이도 */}
+          <CourseDifficulty />
+          {/* 반려견 사이즈 */}
+          <CourseDogSize />
+          <CourseTextAtrea
+            inputId="description"
+            labelTxt="훈련과정내용"
+            name="description"
+            row={5}
+            placeholder="대략적인 해당 훈련내용을 작성해주세요."
+          />
           {/* 회차여부 */}
           <CourseType />
           <p className="p-2 text-(--mt-blue) bg-(--mt-blue-light) rounded-md">
@@ -37,23 +65,11 @@ export default function CreateCourse() {
           </p>
         </CreateCourseCard>
 
-        <CreateCourseCard classNames="[&>h5]:font-bold">
-          <CourseDifficulty />
-          <CourseDogSize />
-        </CreateCourseCard>
-
-        <CreateCourseCard classNames="[&>label]:font-bold">
-          <CourseDescription />
-        </CreateCourseCard>
-        <CreateCourseCard classNames="[&>label]:font-bold">
+        <CreateCourseCard>
           <CourseRefundPolicy />
         </CreateCourseCard>
 
-        <CreateCourseCard classNames="[&>label]:font-bold">
-          <CourseSchedule />
-        </CreateCourseCard>
-
-        <CreateCourseCard classNames="[&>label]:font-bold">
+        <CreateCourseCard>
           <CourseItems />
         </CreateCourseCard>
       </fieldset>
