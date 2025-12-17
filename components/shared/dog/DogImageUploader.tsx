@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { memo } from "react";
-import { UserIcon } from "@/components/icons/user";
+import { DogIcon } from "@/components/icons/dog";
 import ErrorMessage from "@/components/shared/feedback/ErrorMessage";
 
 interface DogImageUploaderProps {
@@ -62,7 +62,7 @@ const DogImageUploader = memo(function DogImageUploader({
             backgroundColor: getPlaceholderColor(),
           }}
         >
-          <UserIcon className="size-16 text-white" />
+          <DogIcon className="size-16 text-white" />
         </div>
       )}
       <input
