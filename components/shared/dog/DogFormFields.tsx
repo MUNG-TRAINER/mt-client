@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useState, useRef } from "react";
 import DogInput from "@/components/shared/inputs/DogInput";
 import { DogIcon } from "@/components/icons/dog";
 import { IDogProfileType } from "@/types/dog/dogType";
@@ -10,6 +10,30 @@ interface DogFormFieldsProps {
 const DogFormFields = memo(function DogFormFields({
   defaultValues,
 }: DogFormFieldsProps) {
+  const genderRef = useRef<HTMLInputElement>(null);
+  const neuteredRef = useRef<HTMLInputElement>(null);
+
+  const [selectedGender, setSelectedGender] = useState<"M" | "F">(
+    defaultValues?.gender || "M"
+  );
+  const [selectedNeutered, setSelectedNeutered] = useState<boolean>(
+    defaultValues?.isNeutered ?? false
+  );
+
+  const handleGenderClick = (value: "M" | "F") => {
+    setSelectedGender(value);
+    if (genderRef.current) {
+      genderRef.current.value = value;
+    }
+  };
+
+  const handleNeuteredClick = (value: boolean) => {
+    setSelectedNeutered(value);
+    if (neuteredRef.current) {
+      neuteredRef.current.value = String(value);
+    }
+  };
+
   return (
     <div className="flex flex-col gap-6">
       {/* 필수 정보 섹션 */}
@@ -59,29 +83,36 @@ const DogFormFields = memo(function DogFormFields({
           <label className="font-bold">
             성별<span className="text-red-500 ml-1">*</span>
           </label>
-          <div className="flex gap-4">
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="radio"
-                name="gender"
-                value="M"
-                required
-                defaultChecked={defaultValues?.gender === "M"}
-                className="size-4"
-              />
-              <span>남</span>
-            </label>
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="radio"
-                name="gender"
-                value="F"
-                required
-                defaultChecked={defaultValues?.gender === "F"}
-                className="size-4"
-              />
-              <span>여</span>
-            </label>
+          <input
+            type="hidden"
+            name="gender"
+            ref={genderRef}
+            defaultValue={defaultValues?.gender || "M"}
+            required
+          />
+          <div className="flex gap-3">
+            <button
+              type="button"
+              onClick={() => handleGenderClick("M")}
+              className={`flex-1 py-3 rounded-xl font-medium transition-colors ${
+                selectedGender === "M"
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-100 text-(--mt-gray)"
+              }`}
+            >
+              남
+            </button>
+            <button
+              type="button"
+              onClick={() => handleGenderClick("F")}
+              className={`flex-1 py-3 rounded-xl font-medium transition-colors ${
+                selectedGender === "F"
+                  ? "bg-pink-500 text-white"
+                  : "bg-gray-100 text-(--mt-gray)"
+              }`}
+            >
+              여
+            </button>
           </div>
         </div>
 
@@ -90,29 +121,36 @@ const DogFormFields = memo(function DogFormFields({
           <label className="font-bold">
             중성화 여부<span className="text-red-500 ml-1">*</span>
           </label>
-          <div className="flex gap-4">
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="radio"
-                name="isNeutered"
-                value="true"
-                required
-                defaultChecked={defaultValues?.isNeutered === true}
-                className="size-4"
-              />
-              <span>완료</span>
-            </label>
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="radio"
-                name="isNeutered"
-                value="false"
-                required
-                defaultChecked={defaultValues?.isNeutered === false}
-                className="size-4"
-              />
-              <span>미완료</span>
-            </label>
+          <input
+            type="hidden"
+            name="isNeutered"
+            ref={neuteredRef}
+            defaultValue={String(defaultValues?.isNeutered ?? false)}
+            required
+          />
+          <div className="flex gap-3">
+            <button
+              type="button"
+              onClick={() => handleNeuteredClick(true)}
+              className={`flex-1 py-3 rounded-xl font-medium transition-colors ${
+                selectedNeutered
+                  ? "bg-green-500 text-white"
+                  : "bg-gray-100 text-(--mt-gray)"
+              }`}
+            >
+              완료
+            </button>
+            <button
+              type="button"
+              onClick={() => handleNeuteredClick(false)}
+              className={`flex-1 py-3 rounded-xl font-medium transition-colors ${
+                !selectedNeutered
+                  ? "bg-gray-400 text-white"
+                  : "bg-gray-100 text-(--mt-gray)"
+              }`}
+            >
+              미완료
+            </button>
           </div>
         </div>
 
