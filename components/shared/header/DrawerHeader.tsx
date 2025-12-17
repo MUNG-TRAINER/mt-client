@@ -22,6 +22,7 @@ export default function DrawerHeader() {
     offToggle();
     router.push("/");
   };
+
   return (
     <>
       <li>
@@ -31,22 +32,22 @@ export default function DrawerHeader() {
           </i>
         </button>
       </li>
-      {!check ? (
-        <li>
-          <button
-            onClick={goToLogin}
-            className="bg-(--mt-white) px-2 py-1 rounded-lg font-semibold text-sm hover:bg-(--mt-blue-light) hover:outline-2 hover:outline-(--mt-blue-point) transition-colors ease-in-out duration-200"
-          >
-            로그인
-          </button>
-        </li>
-      ) : (
+      {check && !("code" in check) ? (
         <li>
           <button
             onClick={handleLogout}
             className="bg-(--mt-white) px-2 py-1 rounded-lg font-semibold text-sm hover:bg-(--mt-blue-light) hover:outline-2 hover:outline-(--mt-blue-point) transition-colors ease-in-out duration-200"
           >
             로그아웃
+          </button>
+        </li>
+      ) : (
+        <li>
+          <button
+            onClick={goToLogin}
+            className="bg-(--mt-white) px-2 py-1 rounded-lg font-semibold text-sm hover:bg-(--mt-blue-light) hover:outline-2 hover:outline-(--mt-blue-point) transition-colors ease-in-out duration-200"
+          >
+            로그인
           </button>
         </li>
       )}

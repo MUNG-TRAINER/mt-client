@@ -10,3 +10,14 @@ export interface ICheckLoggedInType {
   role: UserRoleType;
   username: string;
 }
+
+export interface ILoginResponse {
+  status: number;
+  code: string;
+  message: string;
+}
+
+export interface IFailedCheckLoggedInType {
+  code: string;
+  message: string;
+}

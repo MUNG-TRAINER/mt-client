@@ -1,4 +1,5 @@
 "use client";
+import {courseApi} from "@/apis/training/courseApi";
 import CreateCourseCard from "../CreateCourseCard";
 import CourseTextAtrea from "./common/CourseTextAtrea";
 import CourseDifficulty from "./CourseDifficulty";
@@ -12,20 +13,36 @@ import CourseRefundPolicy from "./CourseRefundPolicy";
 import CourseSchedule from "./CourseSchedule";
 import CourseTitle from "./CourseTitle";
 import CourseType from "./CourseType";
+import {useSessionState} from "@/stores/sessionState";
+import useCourseUpload from "@/hooks/afterLogin/course/useCourseUpload";
+import {FormEvent} from "react";
 
 export default function CreateCourse() {
+  const {count} = useSessionState();
+  const {mutate, isPending, isError} = useCourseUpload();
+  const handleSumbit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+    mutate({formData, count});
+  };
   return (
-    <form className="flex flex-col gap-3">
+    <form onSubmit={handleSumbit} className="flex flex-col gap-3">
       <fieldset className="flex flex-col gap-3">
         <legend className="w-full! h-full! opacity-100! text-center font-bold mb-4 text-xl">
           훈련과정업로드
         </legend>
 
         <CreateCourseCard>
+          <input type="text" name="status" defaultValue="SCHEDULED" hidden />
           {/* 훈련 제목 */}
           <CourseTitle />
           {/* 훈련 장소 */}
-          <CourseLocation />
+          <CourseLocation
+            inputName="location"
+            labelTxt="훈련 장소"
+            placeholder="훈련 장소"
+          />
         </CreateCourseCard>
 
         {/* 이미지 업로드 */}
@@ -73,12 +90,19 @@ export default function CreateCourse() {
           <CourseItems />
         </CreateCourseCard>
       </fieldset>
-      <button
-        type="submit"
-        className="w-full bg-(--mt-blue-point) py-2 rounded-lg shadow text-(--mt-white) font-bold"
-      >
-        개설하기
-      </button>
+      <CreateCourseCard>
+        <button
+          type="submit"
+          className={`w-full ${
+            isPending ? "bg-(--mt-gray)" : "bg-(--mt-blue-point)"
+          }  py-2 rounded-lg shadow text-(--mt-white) font-bold`}
+        >
+          {isPending ? "로딩중..." : "개설하기"}
+        </button>
+        {isError && (
+          <p className="text-red-500 text-center">업로드에 실패하였습니다.</p>
+        )}
+      </CreateCourseCard>
     </form>
   );
 }

@@ -1,4 +1,3 @@
-import {ISessionDataTypes} from "@/types/course/sessionType";
 import React from "react";
 import SessionDate from "./SessionDate";
 import MaxStudents from "./MaxStudents";
@@ -6,15 +5,17 @@ import CourseTextAtrea from "../common/CourseTextAtrea";
 import SessionPrice from "./SessionPrice";
 import {useSessionState} from "@/stores/sessionState";
 import SessionSchedule from "./SessionSchedule";
+import CourseLocation from "../CourseLocation";
+import {IUploadCoureTypes} from "@/types/course/courseType";
 
 const SessionItems = React.memo(function SessionItems({
   val,
   index,
 }: {
-  val: ISessionDataTypes[];
+  val: IUploadCoureTypes[];
   index: number;
 }) {
-  const {free} = useSessionState();
+  const {free, price, setPrice} = useSessionState();
   return (
     <div className="flex flex-col gap-1 p-3 border border-(--mt-blue-smoke) rounded-md shadow">
       <span className="font-bold text-xl">{index + 1}회차</span>
@@ -34,7 +35,7 @@ const SessionItems = React.memo(function SessionItems({
       <MaxStudents
         index={index}
         name={`session[${index}].maxStudents`}
-        value={val[index].maxStudents}
+        defaultValue={val[index].maxStudents}
       />
       <SessionPrice
         index={index}
@@ -42,7 +43,8 @@ const SessionItems = React.memo(function SessionItems({
         name={`session[${index}].price`}
         state={free}
         type="number"
-        defaultValue={free ? val[index].price + "" : ""}
+        defaultValue={price + ""}
+        onChange={(e) => setPrice(Number(e.target.value))}
         classNames={free ? "text-(--mt-gray)" : ""}
         placeholder="가격을 입력해주세요"
       />
@@ -50,6 +52,11 @@ const SessionItems = React.memo(function SessionItems({
         index={index}
         labelId="sessionDate"
         inputName={`session[${index}].sessionDate`}
+      />
+      <CourseLocation
+        inputName={`session[${index}].locationDetail`}
+        labelTxt="훈련 세부 장소"
+        placeholder="훈련 세부 장소"
       />
       <SessionDate
         index={index}
