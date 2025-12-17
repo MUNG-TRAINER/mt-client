@@ -31,11 +31,10 @@ export default function SessionAccordion({ session }: ISessionAccordionProps) {
   };
 
   const formatTime = (timeStr: string) => {
-    try {
-      return timeStr.slice(0, 5);
-    } catch {
+    if (!timeStr) {
       return timeStr;
     }
+    return timeStr.slice(0, 5);
   };
 
   const formatDateForDisplay = (dateStr: string) => {

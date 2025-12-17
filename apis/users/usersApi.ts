@@ -8,7 +8,6 @@ export const usersApi = {
       method: "GET",
     });
 
-    console.log("resposne:", resposne);
     if (!resposne?.ok) {
       throw new Error("유정의 정보를 불러올 수 없습니다.");
     }

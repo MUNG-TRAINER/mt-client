@@ -1,4 +1,3 @@
-"use client";
 import { API_BASE_URL } from "@/util/env";
 
 export const courseAPI = {

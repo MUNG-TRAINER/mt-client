@@ -11,7 +11,7 @@ export default function useCourseWithTrainer(courseId: string) {
   });
 
   const trainerId = courseQuery.data?.trainerId;
-  const trainerQuery = useTrainerProfile(String(trainerId) || ""); // 내부 enabled: !!trainerId
+  const trainerQuery = useTrainerProfile(trainerId ? String(trainerId) : ""); // 내부 enabled: !!trainerId
 
   return {
     course: courseQuery.data,

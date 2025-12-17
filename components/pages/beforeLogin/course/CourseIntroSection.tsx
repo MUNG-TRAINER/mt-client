@@ -41,8 +41,10 @@ export default function CourseIntroSection({
           <div className="flex-1">
             <h3 className="font-bold text-yellow-800 mb-2">주의사항</h3>
             <ul className="space-y-1 text-sm text-yellow-700">
-              <li>• 교정서이 있는 반려견은 사전 상담 필요</li>
-              <li>• 예방접종 완료 필수</li>
+              <li>
+                • 수업 시 다른 강아지를 만지면 물거나 공격할 수 있으니
+                주의해주세요.
+              </li>
             </ul>
           </div>
         </div>

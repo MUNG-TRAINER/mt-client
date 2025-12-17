@@ -41,9 +41,9 @@ export default function CourseDetailCard({ courseId }: { courseId: string }) {
 
   const {
     course: courseDetail,
-    courseIsPending: courseIsPending,
-    trainer: trainer,
-    trainerIsPending: trainerIsPending,
+    courseIsPending,
+    trainer,
+    trainerIsPending,
   } = useCourseWithTrainer(courseId);
 
   const { data: sessionList, isPending: sessionIsPending } =

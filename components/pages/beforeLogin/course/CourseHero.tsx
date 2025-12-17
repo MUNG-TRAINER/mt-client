@@ -42,7 +42,7 @@ export default function CourseHero({
       ) : (
         <div className="w-full h-64 bg-(--mt-gray-light) flex flex-col items-center justify-center">
           <PhotoIcon />
-          <p className="text-sm text-(--mt-gray) mt-2">콘텐 프로그램 배너</p>
+          <p className="text-sm text-(--mt-gray) mt-2">콘텐츠 프로그램 배너</p>
         </div>
       )}
 
