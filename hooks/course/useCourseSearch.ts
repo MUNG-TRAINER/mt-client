@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { courseApi } from "@/apis/course/courseApi";
+import { courseAPI } from "@/apis/course/courseApi";
 
 interface UseCourseSearchParams {
   keyword?: string;
@@ -19,7 +19,7 @@ export const useCourseSearch = ({
 }: UseCourseSearchParams = {}) => {
   return useQuery({
     queryKey: ["courses", "search", keyword, page, size],
-    queryFn: () => courseApi.searchCourses({ keyword, page, size }),
+    queryFn: () => courseAPI.searchCourses({ keyword, page, size }),
     enabled,
     staleTime: 1000 * 60 * 5, // 5분
   });

@@ -1,6 +1,6 @@
-import {API_BASE_URL} from "@/util/env";
-import {fetchWithAuth} from "../common/fetchWithAuth";
-import {IMyPageTypes} from "@/types/mypage/myPageType";
+import { API_BASE_URL } from "@/util/env";
+import { fetchWithAuth } from "../common/fetchWithAuth";
+import { IMyPageTypes } from "@/types/mypage/myPageType";
 
 export const usersApi = {
   me: async () => {
@@ -13,7 +13,6 @@ export const usersApi = {
     }
 
     const data: IMyPageTypes = await resposne.json();
-
     return data;
   },
 };
