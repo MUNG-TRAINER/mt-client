@@ -19,6 +19,7 @@ export default function CreateDogForm() {
     isUploading,
     fileInputRef,
     handleFileSelect,
+    handleImageDelete,
     uploadImage,
     cleanup,
   } = useDogImageUpload();
@@ -88,6 +89,7 @@ export default function CreateDogForm() {
           isDisabled={isPending || isUploading}
           onFileSelect={handleFileSelect}
           onButtonClick={() => fileInputRef.current?.click()}
+          onImageDelete={handleImageDelete}
         />
 
         <DogFormFields />
