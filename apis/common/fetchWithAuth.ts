@@ -23,8 +23,8 @@ export async function fetchWithAuth(
     if (res.status === 400) {
       return res.json();
     }
-    const result = await res.json();
     if (res.status === 401) {
+      const result = await res.json();
       if (result.code === TOKEN_EXPIRED) {
         await refreshToken();
         res = await fetchData(input, init);
