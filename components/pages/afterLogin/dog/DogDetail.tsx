@@ -10,9 +10,30 @@ import useDeleteDog from "@/hooks/afterLogin/dogs/useDeleteDog";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import type { SocializationLevel } from "@/types/dog/dogType";
 
 import ErrorMessage from "@/components/shared/feedback/ErrorMessage";
 import ConfirmModal from "@/components/shared/modal/ConfirmModal";
+import DogDeleteConfirm from "./DogDeleteConfirm";
+
+/**
+ * 사회화 수준을 한글로 변환하는 헬퍼 함수
+ * 모든 케이스를 명시적으로 처리하여 타입 안전성 보장
+ */
+function getSocializationLevelText(level: SocializationLevel): string {
+  switch (level) {
+    case "LOW":
+      return "낮음";
+    case "MEDIUM":
+      return "보통";
+    case "HIGH":
+      return "높음";
+    default:
+      // 예상치 못한 값에 대한 폴백
+      console.error(`Unknown socialization level: ${level}`);
+      return "알 수 없음";
+  }
+}
 
 export default function DogDetail({ dogId }: { dogId: number }) {
   const router = useRouter();
@@ -133,22 +154,10 @@ export default function DogDetail({ dogId }: { dogId: number }) {
           )}
 
           <h3>사람 사회화 수준</h3>
-          <span>
-            {data.humanSocialization === "LOW"
-              ? "낮음"
-              : data.humanSocialization === "MEDIUM"
-              ? "보통"
-              : "높음"}
-          </span>
+          <span>{getSocializationLevelText(data.humanSocialization)}</span>
 
           <h3>동물 사회화 수준</h3>
-          <span>
-            {data.animalSocialization === "LOW"
-              ? "낮음"
-              : data.animalSocialization === "MEDIUM"
-              ? "보통"
-              : "높음"}
-          </span>
+          <span>{getSocializationLevelText(data.animalSocialization)}</span>
 
           {data.personality && (
             <>
@@ -203,7 +212,7 @@ export default function DogDetail({ dogId }: { dogId: number }) {
       <ConfirmModal
         isOpen={showDeleteConfirm}
         title="반려견 삭제"
-        message={`정말로 <span class="font-bold text-(--mt-black)">${data?.name}</span>의 정보를 삭제하시겠습니까?<br/><br/>삭제하려면 반려견 이름 <span class="font-bold text-(--mt-black)">${data?.name}</span>을(를) 입력해주세요.`}
+        message={<DogDeleteConfirm name={data?.name} />}
         confirmText="삭제"
         cancelText="취소"
         confirmButtonClass="bg-red-500 text-white"

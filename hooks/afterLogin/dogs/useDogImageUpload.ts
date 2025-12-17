@@ -35,6 +35,10 @@ export default function useDogImageUpload() {
   };
 
   const handleImageDelete = () => {
+    // 메모리 누수 방지: 기존 previewUrl 해제
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+    }
     setSelectedFile(null);
     setPreviewUrl("");
     setIsDeleted(true);

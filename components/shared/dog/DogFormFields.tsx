@@ -68,9 +68,11 @@ const DogFormFields = memo(function DogFormFields({
             성별<span className="text-red-500 ml-1">*</span>
           </label>
           <input type="hidden" name="gender" value={selectedGender} readOnly />
-          <div className="flex gap-3">
+          <div className="flex gap-3" role="radiogroup" aria-label="성별 선택">
             <button
               type="button"
+              role="radio"
+              aria-checked={selectedGender === "M"}
               onClick={() => setSelectedGender("M")}
               className={`flex-1 py-3 rounded-xl font-medium transition-colors ${
                 selectedGender === "M"
@@ -82,6 +84,8 @@ const DogFormFields = memo(function DogFormFields({
             </button>
             <button
               type="button"
+              role="radio"
+              aria-checked={selectedGender === "F"}
               onClick={() => setSelectedGender("F")}
               className={`flex-1 py-3 rounded-xl font-medium transition-colors ${
                 selectedGender === "F"
@@ -105,9 +109,15 @@ const DogFormFields = memo(function DogFormFields({
             value={String(selectedNeutered)}
             readOnly
           />
-          <div className="flex gap-3">
+          <div
+            className="flex gap-3"
+            role="radiogroup"
+            aria-label="중성화 여부 선택"
+          >
             <button
               type="button"
+              role="radio"
+              aria-checked={selectedNeutered}
               onClick={() => setSelectedNeutered(true)}
               className={`flex-1 py-3 rounded-xl font-medium transition-colors ${
                 selectedNeutered
@@ -119,6 +129,8 @@ const DogFormFields = memo(function DogFormFields({
             </button>
             <button
               type="button"
+              role="radio"
+              aria-checked={!selectedNeutered}
               onClick={() => setSelectedNeutered(false)}
               className={`flex-1 py-3 rounded-xl font-medium transition-colors ${
                 !selectedNeutered

@@ -94,6 +94,7 @@ const DogImageUploader = memo(function DogImageUploader({
             onClick={onImageDelete}
             disabled={isDisabled}
             className="text-sm text-red-500 disabled:opacity-50 disabled:cursor-not-allowed hover:text-red-700"
+            aria-label="이미지 삭제"
           >
             이미지 삭제
           </button>

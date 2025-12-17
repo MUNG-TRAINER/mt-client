@@ -70,6 +70,8 @@ export default function EditDogForm({ dogId }: { dogId: number }) {
           updateData.animalSocialization = animalSocialization;
 
         // 선택 필드 - 빈 값도 전송하여 삭제 가능하도록 처리
+        // weight는 숫자 타입이므로 빈 문자열("")을 보낼 수 없음
+        // 따라서 clearWeight 플래그로 삭제 의사를 전달 (백엔드에서 NULL 처리)
         const weight = formData.get("weight") as string | null;
         if (weight !== null) {
           const trimmedWeight = weight.trim();

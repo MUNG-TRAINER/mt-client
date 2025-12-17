@@ -1,10 +1,10 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface ConfirmModalProps {
   isOpen: boolean;
   title: string;
-  message: string;
+  message: React.ReactNode;
   confirmText?: string;
   cancelText?: string;
   confirmButtonClass?: string;
@@ -35,6 +35,13 @@ export default function ConfirmModal({
     ? inputValue !== requireInput || isLoading
     : isLoading;
 
+  // 모달이 열릴 때마다 입력값을 깨끗한 상태로 초기화
+  useEffect(() => {
+    return () => {
+      setInputValue("");
+    };
+  }, [isOpen]);
+
   const handleCancel = () => {
     setInputValue("");
     onCancel();
@@ -51,10 +58,7 @@ export default function ConfirmModal({
     <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50">
       <div className="bg-white rounded-2xl p-6 max-w-sm w-full mx-4 shadow-xl">
         <h3 className="text-lg font-bold text-(--mt-black) mb-2">{title}</h3>
-        <div
-          className="text-(--mt-gray) mb-4"
-          dangerouslySetInnerHTML={{ __html: message }}
-        />
+        <p className="text-(--mt-gray) mb-4">{message}</p>
         {requireInput && (
           <div className="mb-6">
             <input
