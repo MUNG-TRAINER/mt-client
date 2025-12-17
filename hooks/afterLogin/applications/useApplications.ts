@@ -44,12 +44,15 @@ export const useApplications = (initialData: ApplicationType[]) => {
     }
 
     try {
-      const res = await fetch("http://localhost:8080/api/application", {
-        method: "DELETE",
-        credentials: "include",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({applicationId: selectedIds}),
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/application`,
+        {
+          method: "DELETE",
+          credentials: "include",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({applicationId: selectedIds}),
+        }
+      );
 
       if (!res.ok) throw new Error();
 

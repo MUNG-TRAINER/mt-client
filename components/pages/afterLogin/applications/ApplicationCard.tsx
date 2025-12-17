@@ -50,37 +50,6 @@ const ApplicationCard: React.FC<Props> = ({app, onSelect, isSelected}) => {
     return `${formatTime(start)} ~ ${formatTime(end)}`;
   };
 
-  // 유저 반려견 리스트 가져오기
-  useEffect(() => {
-    fetch("http://localhost:8080/api/dogs", {
-      method: "GET",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to fetch dogs");
-        return res.json();
-      })
-      .then((data) => setMyDogs(data))
-      .catch((err) => console.error(err));
-  }, []);
-
-  const handleDogChange = () => {
-    fetch(`/api/application/${app.applicationId}`, {
-      method: "PATCH",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({dogId: selectedDogId}),
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("강아지 변경 실패");
-        return res.json();
-      })
-      .then(() => alert("강아지 변경 완료"))
-      .catch((err) => console.error(err));
-  };
-
   return (
     <li
       className="relative cursor-pointer flex flex-col rounded-2xl shadow-md bg-white p-4"

@@ -9,7 +9,7 @@ const ApplicationsPage = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/application/list", {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/application/list`, {
       method: "GET",
       credentials: "include", // 쿠키/세션 포함
       headers: {
