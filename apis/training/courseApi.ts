@@ -40,7 +40,26 @@ export const courseApi = {
         locationDetail,
       });
     }
+    const MAX_SIZE = 5 * 1024 * 1024;
+    const allowedTypes = [
+      "image/jpeg",
+      "image/png",
+      "image/webp",
+      "image/jpg",
+      "image/gif",
+    ];
+
     const mainImgFile = formData.get(`mainImage`) as File;
+    //파일크키 유효성검사 추가
+    if (mainImgFile.size === 0) {
+      throw new Error("빈파일은 업로드할 수 없습니다.");
+    }
+    if (mainImgFile.size > MAX_SIZE) {
+      throw new Error("이미지 파일은 5MB이하만 업로드 가능합니다.");
+    }
+    if (!allowedTypes.includes(mainImgFile.type)) {
+      throw new Error("지원하지않는 파일 입니다.");
+    }
     if (mainImgFile) {
       const response = await fetch("/api/s3/getPresignedUrl", {
         method: "POST",
