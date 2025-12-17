@@ -1,3 +1,6 @@
+"use client";
+import { useState } from "react";
+
 interface ConfirmModalProps {
   isOpen: boolean;
   title: string;
@@ -9,6 +12,8 @@ interface ConfirmModalProps {
   onCancel: () => void;
   isLoading?: boolean;
   loadingText?: string;
+  requireInput?: string; // 입력 확인이 필요한 경우 일치해야 할 텍스트
+  inputPlaceholder?: string;
 }
 
 export default function ConfirmModal({
@@ -22,28 +27,58 @@ export default function ConfirmModal({
   onCancel,
   isLoading = false,
   loadingText = "처리 중...",
+  requireInput,
+  inputPlaceholder = "입력하세요",
 }: ConfirmModalProps) {
+  const [inputValue, setInputValue] = useState("");
+  const isConfirmDisabled = requireInput
+    ? inputValue !== requireInput || isLoading
+    : isLoading;
+
+  const handleCancel = () => {
+    setInputValue("");
+    onCancel();
+  };
+
+  const handleConfirm = () => {
+    setInputValue("");
+    onConfirm();
+  };
+
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50">
       <div className="bg-white rounded-2xl p-6 max-w-sm w-full mx-4 shadow-xl">
         <h3 className="text-lg font-bold text-(--mt-black) mb-2">{title}</h3>
         <div
-          className="text-(--mt-gray) mb-6"
+          className="text-(--mt-gray) mb-4"
           dangerouslySetInnerHTML={{ __html: message }}
         />
+        {requireInput && (
+          <div className="mb-6">
+            <input
+              type="text"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              placeholder={inputPlaceholder}
+              disabled={isLoading}
+              className="w-full px-4 py-3 border border-(--mt-gray-light) rounded-xl focus:outline-none focus:border-(--mt-blue-point) disabled:opacity-50 disabled:cursor-not-allowed"
+              autoFocus
+            />
+          </div>
+        )}
         <div className="flex gap-3">
           <button
-            onClick={onCancel}
+            onClick={handleCancel}
             disabled={isLoading}
             className="flex-1 py-3 border border-(--mt-gray-light) text-(--mt-gray) rounded-xl font-bold disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {cancelText}
           </button>
           <button
-            onClick={onConfirm}
-            disabled={isLoading}
+            onClick={handleConfirm}
+            disabled={isConfirmDisabled}
             className={`flex-1 py-3 rounded-xl font-bold disabled:opacity-50 disabled:cursor-not-allowed ${confirmButtonClass}`}
           >
             {isLoading ? loadingText : confirmText}

@@ -1,29 +1,15 @@
 "use client";
 import Image from "next/image";
-import { useState } from "react";
 import { IDogProfileType } from "@/types/dog/dogType";
 import Link from "next/link";
 import { ChevronRightIcon } from "@/components/icons/chevron";
+import { DogIcon } from "@/components/icons/dog";
 
 interface IDogProfileCardProps {
   dog: IDogProfileType;
 }
 
 export default function DogProfileCard({ dog }: IDogProfileCardProps) {
-  const [randomInt] = useState(() => Math.floor(Math.random() * 10));
-  const bgClass = [
-    "bg-red-200",
-    "bg-orange-200",
-    "bg-yellow-200",
-    "bg-lime-200",
-    "bg-green-200",
-    "bg-teal-200",
-    "bg-blue-200",
-    "bg-sky-200",
-    "bg-indigo-200",
-    "bg-pink-200",
-  ];
-
   return (
     <Link href={`/mydogs/${dog.dogId}`}>
       <article className="p-4 bg-gray-100 rounded-2xl flex items-center gap-3 hover:bg-gray-200 transition-colors cursor-pointer">
@@ -39,7 +25,14 @@ export default function DogProfileCard({ dog }: IDogProfileCardProps) {
               priority
             />
           ) : (
-            <div className={`${bgClass[randomInt]} size-16 rounded-full`} />
+            <div
+              className="flex items-center justify-center size-16 rounded-full"
+              style={{
+                backgroundColor: `hsl(${(dog.dogId * 137.5) % 360}, 70%, 80%)`,
+              }}
+            >
+              <DogIcon className="size-8 text-white" />
+            </div>
           )}
         </div>
 

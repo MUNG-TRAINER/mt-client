@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { UserIcon } from "@/components/icons/user";
+import { DogIcon } from "@/components/icons/dog";
 import { CakeIcon } from "@/components/icons/cake";
 import { MaleIcon, FemaleIcon } from "@/components/icons/gender";
 import { CheckIcon } from "@/components/icons/check";
@@ -84,7 +84,7 @@ export default function DogDetail({ dogId }: { dogId: number }) {
               backgroundColor: `hsl(${(data.dogId * 137.5) % 360}, 70%, 80%)`,
             }}
           >
-            <UserIcon className="size-16 text-white" />
+            <DogIcon className="size-16 text-white" />
           </div>
         )}
         <h2 className="font-bold text-xl">{data.name}</h2>
@@ -197,7 +197,7 @@ export default function DogDetail({ dogId }: { dogId: number }) {
       <ConfirmModal
         isOpen={showDeleteConfirm}
         title="반려견 삭제"
-        message={`정말로 <span class="font-bold text-(--mt-black)">${data?.name}</span>의 정보를 삭제하시겠습니까?`}
+        message={`정말로 <span class="font-bold text-(--mt-black)">${data?.name}</span>의 정보를 삭제하시겠습니까?<br/><br/>삭제하려면 반려견 이름 <span class="font-bold text-(--mt-black)">${data?.name}</span>을(를) 입력해주세요.`}
         confirmText="삭제"
         cancelText="취소"
         confirmButtonClass="bg-red-500 text-white"
@@ -205,6 +205,8 @@ export default function DogDetail({ dogId }: { dogId: number }) {
         onCancel={handleDeleteCancel}
         isLoading={isDeleting}
         loadingText="삭제 중..."
+        requireInput={data?.name}
+        inputPlaceholder={`반려견 이름 입력`}
       />
     </div>
   );
