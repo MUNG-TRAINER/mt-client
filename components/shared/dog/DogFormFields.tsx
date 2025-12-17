@@ -1,4 +1,4 @@
-import { memo, useState, useRef } from "react";
+import { memo, useState } from "react";
 import DogInput from "@/components/shared/inputs/DogInput";
 import { DogIcon } from "@/components/icons/dog";
 import { IDogProfileType } from "@/types/dog/dogType";
@@ -10,29 +10,13 @@ interface DogFormFieldsProps {
 const DogFormFields = memo(function DogFormFields({
   defaultValues,
 }: DogFormFieldsProps) {
-  const genderRef = useRef<HTMLInputElement>(null);
-  const neuteredRef = useRef<HTMLInputElement>(null);
-
+  // defaultValues를 초기값으로만 사용 (리렌더링 시에도 자동 반영)
   const [selectedGender, setSelectedGender] = useState<"M" | "F">(
-    defaultValues?.gender || "M"
+    () => defaultValues?.gender || "M"
   );
   const [selectedNeutered, setSelectedNeutered] = useState<boolean>(
-    defaultValues?.isNeutered ?? false
+    () => defaultValues?.isNeutered ?? false
   );
-
-  const handleGenderClick = (value: "M" | "F") => {
-    setSelectedGender(value);
-    if (genderRef.current) {
-      genderRef.current.value = value;
-    }
-  };
-
-  const handleNeuteredClick = (value: boolean) => {
-    setSelectedNeutered(value);
-    if (neuteredRef.current) {
-      neuteredRef.current.value = String(value);
-    }
-  };
 
   return (
     <div className="flex flex-col gap-6">
@@ -83,17 +67,11 @@ const DogFormFields = memo(function DogFormFields({
           <label className="font-bold">
             성별<span className="text-red-500 ml-1">*</span>
           </label>
-          <input
-            type="hidden"
-            name="gender"
-            ref={genderRef}
-            defaultValue={defaultValues?.gender || "M"}
-            required
-          />
+          <input type="hidden" name="gender" value={selectedGender} readOnly />
           <div className="flex gap-3">
             <button
               type="button"
-              onClick={() => handleGenderClick("M")}
+              onClick={() => setSelectedGender("M")}
               className={`flex-1 py-3 rounded-xl font-medium transition-colors ${
                 selectedGender === "M"
                   ? "bg-blue-500 text-white"
@@ -104,7 +82,7 @@ const DogFormFields = memo(function DogFormFields({
             </button>
             <button
               type="button"
-              onClick={() => handleGenderClick("F")}
+              onClick={() => setSelectedGender("F")}
               className={`flex-1 py-3 rounded-xl font-medium transition-colors ${
                 selectedGender === "F"
                   ? "bg-pink-500 text-white"
@@ -124,14 +102,13 @@ const DogFormFields = memo(function DogFormFields({
           <input
             type="hidden"
             name="isNeutered"
-            ref={neuteredRef}
-            defaultValue={String(defaultValues?.isNeutered ?? false)}
-            required
+            value={String(selectedNeutered)}
+            readOnly
           />
           <div className="flex gap-3">
             <button
               type="button"
-              onClick={() => handleNeuteredClick(true)}
+              onClick={() => setSelectedNeutered(true)}
               className={`flex-1 py-3 rounded-xl font-medium transition-colors ${
                 selectedNeutered
                   ? "bg-green-500 text-white"
@@ -142,7 +119,7 @@ const DogFormFields = memo(function DogFormFields({
             </button>
             <button
               type="button"
-              onClick={() => handleNeuteredClick(false)}
+              onClick={() => setSelectedNeutered(false)}
               className={`flex-1 py-3 rounded-xl font-medium transition-colors ${
                 !selectedNeutered
                   ? "bg-gray-400 text-white"

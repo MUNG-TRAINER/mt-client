@@ -68,7 +68,7 @@ export default function CreateDogForm() {
         await mutateAsync(dogData);
         cleanup();
         router.push("/mydogs");
-      } catch (err) {
+      } catch {
         setError("반려견 등록에 실패했습니다. 다시 시도해주세요.");
       }
     },
