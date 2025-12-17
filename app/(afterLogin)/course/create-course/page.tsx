@@ -5,7 +5,7 @@ export const metadata: Metadata = {
 };
 export default function page() {
   return (
-    <div className="w-full h-full p-6">
+    <div className="w-full h-full overflow-y-auto">
       <CreateCourse />
     </div>
   );

@@ -3,6 +3,7 @@ import CreateCourseCard from "../CreateCourseCard";
 import CourseTextAtrea from "./common/CourseTextAtrea";
 import CourseDifficulty from "./CourseDifficulty";
 import CourseDogSize from "./CourseDogSize";
+import CourseImage from "./CourseImage";
 import CourseIsFree from "./CourseIsFree";
 import CourseItems from "./CourseItems";
 import CourseLessonForm from "./CourseLessonForm";
@@ -25,6 +26,11 @@ export default function CreateCourse() {
           <CourseTitle />
           {/* 훈련 장소 */}
           <CourseLocation />
+        </CreateCourseCard>
+
+        {/* 이미지 업로드 */}
+        <CreateCourseCard>
+          <CourseImage />
         </CreateCourseCard>
 
         <CreateCourseCard>
