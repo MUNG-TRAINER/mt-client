@@ -1,6 +1,6 @@
-import {API_BASE_URL} from "@/util/env";
-import {fetchWithAuth} from "../common/fetchWithAuth";
-import {IMyPageTypes} from "@/types/mypage/myPageType";
+import { API_BASE_URL } from "@/util/env";
+import { fetchWithAuth } from "../common/fetchWithAuth";
+import { IMyPageTypes } from "@/types/mypage/myPageType";
 
 export const usersApi = {
   me: async () => {
@@ -8,12 +8,12 @@ export const usersApi = {
       method: "GET",
     });
 
+    console.log("resposne:", resposne);
     if (!resposne?.ok) {
       throw new Error("유정의 정보를 불러올 수 없습니다.");
     }
 
     const data: IMyPageTypes = await resposne.json();
-
     return data;
   },
 };
