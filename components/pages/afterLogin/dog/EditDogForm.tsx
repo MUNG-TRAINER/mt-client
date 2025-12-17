@@ -19,8 +19,10 @@ export default function EditDogForm({ dogId }: { dogId: number }) {
     previewUrl,
     fileError,
     isUploading,
+    isDeleted,
     fileInputRef,
     handleFileSelect,
+    handleImageDelete,
     uploadImage,
     cleanup,
   } = useDogImageUpload();
@@ -89,18 +91,21 @@ export default function EditDogForm({ dogId }: { dogId: number }) {
           updateData.healthInfo = healthInfo.trim() || "";
         }
 
-        if (uploadedImageKey) {
+        // 이미지 처리: 삭제, 업로드, 또는 유지
+        if (isDeleted) {
+          updateData.profileImage = ""; // 빈 문자열 전송 → 백엔드에서 NULL 처리
+        } else if (uploadedImageKey) {
           updateData.profileImage = uploadedImageKey;
         }
 
         await mutateAsync({ dogId, dogData: updateData });
         cleanup();
         router.push(`/mydogs/${dogId}`);
-      } catch (err) {
+      } catch {
         setError("반려견 정보 수정에 실패했습니다. 다시 시도해주세요.");
       }
     },
-    [uploadImage, mutateAsync, cleanup, router, dogId]
+    [uploadImage, mutateAsync, cleanup, router, dogId, isDeleted]
   );
 
   if (isLoading) {
@@ -141,8 +146,10 @@ export default function EditDogForm({ dogId }: { dogId: number }) {
           fileInputRef={fileInputRef}
           fileError={fileError}
           isDisabled={isPending || isUploading}
+          isDeleted={isDeleted}
           onFileSelect={handleFileSelect}
           onButtonClick={() => fileInputRef.current?.click()}
+          onImageDelete={handleImageDelete}
         />
 
         <DogFormFields defaultValues={dogData} />
