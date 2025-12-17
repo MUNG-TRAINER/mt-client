@@ -1,17 +1,17 @@
 "use client";
 
-import Image from "next/image";
+import React, {useState} from "react";
 import {ApplicationType} from "@/types/applications/applicationsType";
-import {useRouter} from "next/navigation";
-import {useState} from "react";
+import CardList from "../../../shared/cards/CardLst";
+import Image from "next/image";
 
 interface Props {
   app: ApplicationType;
-  onSelect: (id: number, checked: boolean) => void; //  체크박스 선택 이벤트
-  isSelected: boolean; //  선택 여부
+  onSelect: (id: number, checked: boolean) => void;
+  isSelected: boolean;
 }
 
-const statusTextMap: Record<string, string> = {
+const statusTextMap: Record<ApplicationType["applicationStatus"], string> = {
   APPLIED: "승인 대기중",
   WAITING: "대기 예약",
   ACCEPT: "승인 완료",
@@ -19,30 +19,17 @@ const statusTextMap: Record<string, string> = {
   CANCELLED: "취소됨",
 };
 
-const tagStyleMap = [
-  {bg: "#E7F5FF", text: "#4263EB"},
-  {bg: "#FFF3BF", text: "#F59F00"},
-  {bg: "#E5DBFF", text: "#7950F2"},
-];
-
 const ApplicationCard: React.FC<Props> = ({app, onSelect, isSelected}) => {
-  const tags = app.tags?.split(",") ?? [];
   const statusText = statusTextMap[app.applicationStatus];
   const [isRejectModalOpen, setRejectModalOpen] = useState(false);
+  const tags = app.tags?.split(",") ?? [];
 
-  // 시간 포맷 함수
-  const formatSchedule = (schedule?: string) => {
-    if (!schedule) return "";
-    const [start, end] = schedule.split(" ~ ");
-    const formatTime = (datetime: string) => {
-      if (!datetime) return "";
-      const [date, time] = datetime.split(" ");
-      if (!time) return date;
-      const [hh, mm] = time.split(":");
-      return `${date} ${hh}:${mm}`;
-    };
-    return `${formatTime(start)} ~ ${formatTime(end)}`;
-  };
+  // mainImage fallback 처리
+  const imageSrc =
+    app.mainImage &&
+    (app.mainImage.startsWith("http") || app.mainImage.startsWith("/"))
+      ? app.mainImage
+      : "/images/application/test.jpg"; // public/images/application/test.jpg 필요
 
   return (
     <li
@@ -58,75 +45,35 @@ const ApplicationCard: React.FC<Props> = ({app, onSelect, isSelected}) => {
           type="checkbox"
           style={{accentColor: "var(--mt-blue-point)"}}
           className="w-6 h-6 cursor-pointer"
-          checked={isSelected} // 상위 상태 반영
-          onChange={(e) => onSelect(app.applicationId, e.target.checked)} // 상위로 전달
+          checked={isSelected}
+          onChange={(e) => onSelect(app.applicationId, e.target.checked)}
         />
       </div>
 
-      {/* 이미지 + 텍스트 영역 */}
-      <div className="flex gap-4 pb-2">
-        <div className="relative w-24 h-24 sm:w-40 sm:h-40 rounded-xl overflow-hidden flex-shrink-0">
-          <Image
-            src={
-              app.mainImage &&
-              (app.mainImage.startsWith("http") ||
-                app.mainImage.startsWith("/"))
-                ? app.mainImage
-                : "/images/application/test.jpg"
-            }
-            alt={app.title}
-            fill
-            className="object-cover"
-          />
-        </div>
-
-        <div className="flex-1 pr-10">
-          <h2 className="text-[16px] font-semibold mb-1">{app.title}</h2>
-          <p className="text-xs text-gray-500 mb-2">{app.description}</p>
-
-          <div className="flex gap-1 flex-wrap mb-2">
-            {tags.map((tag, idx) => {
-              const style = tagStyleMap[idx % tagStyleMap.length];
-              return (
-                <span
-                  key={idx}
-                  className="text-xs px-2 py-0.5 rounded-full"
-                  style={{backgroundColor: style.bg, color: style.text}}
-                >
-                  {tag}
-                </span>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-
-      {/* 강아지 이름 + 일정 */}
-      <div className="flex mb-2 text-xs gap-4">
-        <div className="flex items-center justify-center gap-2 p-1 text-gray-400">
+      {/* 디자인 영역은 ApplicationInfo에 맡김 */}
+      <CardList
+        title={app.title}
+        description={app.description}
+        tags={tags}
+        mainImage={imageSrc}
+        sessionSchedule={app.sessionSchedule}
+        location={app.location}
+      />
+      {/* 도그 네임 */}
+      {app.dogName && (
+        <div className=" flex items-center p-1 text-sm font-medium text-gray-700 mb-2 gap-1">
           <Image
             src="/images/application/dog.jpg"
-            alt="강아지"
-            width={18}
-            height={18}
-          />
-          {app.dogName}
-        </div>
-        <p className="text-xs text-gray-400 mb-1 flex gap-1 items-center">
-          <Image
-            src="/images/application/calendar.jpg"
             alt="달력"
-            width={13}
-            height={5}
-            className="w-[14px] h-[15px] items-center"
+            width={19}
+            height={19} // height도 width 비슷하게 맞춰주는게 좋음
           />
-          {formatSchedule(app.sessionSchedule)}
-        </p>
-      </div>
+          신청 강아지 : {app.dogName}
+        </div>
+      )}
 
-      {/* 상태별 버튼 */}
+      {/* 버튼 영역 */}
       <div className="flex gap-2 mt-2">
-        {/* 거절 */}
         {app.applicationStatus === "REJECTED" && (
           <>
             <button
@@ -149,7 +96,6 @@ const ApplicationCard: React.FC<Props> = ({app, onSelect, isSelected}) => {
           </>
         )}
 
-        {/* 승인 완료 */}
         {app.applicationStatus === "ACCEPT" && (
           <>
             <button
@@ -167,34 +113,9 @@ const ApplicationCard: React.FC<Props> = ({app, onSelect, isSelected}) => {
           </>
         )}
 
-        {/* 승인 대기 */}
-        {app.applicationStatus === "APPLIED" && (
-          <button
-            className="flex-1 flex items-center justify-center gap-2 py-2 text-sm font-semibold rounded-lg"
-            style={{border: "1px solid #C5C5C5", color: "#374151"}}
-          >
-            <Image
-              src="/images/application/clock.jpg"
-              alt="승인 대기중"
-              width={20}
-              height={19}
-            />
-            {statusText}
-          </button>
-        )}
-
-        {/* 신청 취소 */}
-        {app.applicationStatus === "CANCELLED" && (
-          <button
-            className="flex-1 flex items-center justify-center gap-2 py-2 text-sm font-semibold rounded-lg"
-            style={{border: "1px solid #C5C5C5", color: "#374151"}}
-          >
-            {statusText}
-          </button>
-        )}
-
-        {/* 대기중 */}
-        {app.applicationStatus === "WAITING" && (
+        {["APPLIED", "CANCELLED", "WAITING"].includes(
+          app.applicationStatus
+        ) && (
           <button
             className="flex-1 flex items-center justify-center gap-2 py-2 text-sm font-semibold rounded-lg"
             style={{border: "1px solid #C5C5C5", color: "#374151"}}
@@ -208,11 +129,11 @@ const ApplicationCard: React.FC<Props> = ({app, onSelect, isSelected}) => {
       {isRejectModalOpen && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
-          onClick={() => setRejectModalOpen(false)} // 오버레이 클릭
+          onClick={() => setRejectModalOpen(false)}
         >
           <div
             className="bg-white rounded-xl p-6 w-80 relative"
-            onClick={(e) => e.stopPropagation()} // 전파 차단
+            onClick={(e) => e.stopPropagation()}
           >
             <h3 className="text-lg font-semibold mb-2">거절 사유</h3>
             <p className="text-sm text-gray-700 bg-blue-100 p-4">

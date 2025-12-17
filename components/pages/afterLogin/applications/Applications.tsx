@@ -5,6 +5,7 @@ import ApplicationsTabs from "./ApplicationsTabs";
 import ApplicationsActionButton from "./ActionButton";
 import {ApplicationType} from "@/types/applications/applicationsType";
 import {useApplications} from "@/hooks/afterLogin/applications/useApplications";
+import ApplicationInfo from "../../../shared/cards/CardLst";
 
 interface ApplicationsProps {
   initialData: ApplicationType[];
@@ -34,7 +35,6 @@ const Applications: React.FC<ApplicationsProps> = ({initialData}) => {
           />
         ))}
       </ul>
-
       <ApplicationsActionButton activeTab={activeTab} onClick={handleAction} />
     </div>
   );
