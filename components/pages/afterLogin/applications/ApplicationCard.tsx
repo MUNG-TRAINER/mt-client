@@ -7,11 +7,13 @@ import {useState, useEffect} from "react";
 
 interface Props {
   app: ApplicationType;
+  onSelect: (id: number, checked: boolean) => void; //  체크박스 선택 이벤트
+  isSelected: boolean; //  선택 여부
 }
 
 const statusTextMap: Record<string, string> = {
   APPLIED: "승인 대기중",
-  WAITING: "대기중",
+  WAITING: "대기 예약",
   ACCEPT: "승인 완료",
   REJECTED: "승인 거절",
   CANCELLED: "취소됨",
@@ -23,7 +25,7 @@ const tagStyleMap = [
   {bg: "#E5DBFF", text: "#7950F2"},
 ];
 
-const ApplicationCard: React.FC<Props> = ({app}) => {
+const ApplicationCard: React.FC<Props> = ({app, onSelect, isSelected}) => {
   const router = useRouter();
   const tags = app.tags?.split(",") ?? [];
   const statusText = statusTextMap[app.applicationStatus];
@@ -91,7 +93,10 @@ const ApplicationCard: React.FC<Props> = ({app}) => {
       >
         <input
           type="checkbox"
-          className="w-6 h-6 accent-blue-500 cursor-pointer"
+          style={{accentColor: "var(--mt-blue-point)"}}
+          className="w-6 h-6 cursor-pointer"
+          checked={isSelected} // 상위 상태 반영
+          onChange={(e) => onSelect(app.applicationId, e.target.checked)} // 상위로 전달
         />
       </div>
 
@@ -186,12 +191,12 @@ const ApplicationCard: React.FC<Props> = ({app}) => {
           <>
             <button
               className="flex-1 flex items-center justify-center gap-2 py-2 text-sm font-semibold rounded-lg"
-              style={{border: "1px solid #C5C5C5", color: "#10B981"}}
+              style={{border: "1px solid #C5C5C5", color: "#374151"}}
             >
               승인 완료
             </button>
             <button
-              className="flex-1 flex items-center justify-center gap-2 py-2 text-sm font-semibold rounded-lg bg-blue-100 text-blue-600"
+              className="flex-1 flex items-center justify-center gap-2 py-2 text-sm font-semibold rounded-lg bg-blue-100 text-(--mt-blue-point)"
               onClick={() => console.log("결제하기 클릭")}
             >
               결제하기
@@ -214,6 +219,26 @@ const ApplicationCard: React.FC<Props> = ({app}) => {
             {statusText}
           </button>
         )}
+
+        {/* 신청 취소 */}
+        {app.applicationStatus === "CANCELLED" && (
+          <button
+            className="flex-1 flex items-center justify-center gap-2 py-2 text-sm font-semibold rounded-lg"
+            style={{border: "1px solid #C5C5C5", color: "#374151"}}
+          >
+            {statusText}
+          </button>
+        )}
+
+        {/* 대기중 */}
+        {app.applicationStatus === "WAITING" && (
+          <button
+            className="flex-1 flex items-center justify-center gap-2 py-2 text-sm font-semibold rounded-lg"
+            style={{border: "1px solid #C5C5C5", color: "#374151"}}
+          >
+            {statusText}
+          </button>
+        )}
       </div>
 
       {/* 거절사유 모달 */}
@@ -221,11 +246,11 @@ const ApplicationCard: React.FC<Props> = ({app}) => {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
           <div className="bg-white rounded-xl p-6 w-80 relative">
             <h3 className="text-lg font-semibold mb-2">거절 사유</h3>
-            <p className="text-sm text-gray-700">
+            <p className="text-sm text-gray-700 bg-blue-100 p-4">
               {app.rejectReason?.trim() || "사유 없음"}
             </p>
             <button
-              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+              className="absolute top-2 right-4 text-gray-500 hover:text-gray-700"
               onClick={() => setRejectModalOpen(false)}
             >
               ✕
