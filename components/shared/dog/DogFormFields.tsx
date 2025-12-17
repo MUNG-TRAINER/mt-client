@@ -1,6 +1,6 @@
 import { memo } from "react";
 import DogInput from "@/components/shared/inputs/DogInput";
-import { UserIcon } from "@/components/icons/user";
+import { DogIcon } from "@/components/icons/dog";
 import { IDogProfileType } from "@/types/dog/dogType";
 
 interface DogFormFieldsProps {
@@ -27,7 +27,7 @@ const DogFormFields = memo(function DogFormFields({
           name="name"
           type="text"
           placeholder="반려견 이름을 입력하세요"
-          headIcon={<UserIcon />}
+          headIcon={<DogIcon />}
           required={true}
           defaultValue={defaultValues?.name}
         />
