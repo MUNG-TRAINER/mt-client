@@ -15,5 +15,5 @@ export default function useMe() {
       router.replace("/login");
     }
   }, [isError, router]);
-  return {data, isPending};
+  return {data, isPending, isError};
 }
