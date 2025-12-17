@@ -63,6 +63,7 @@ export const useApplications = (initialData: ApplicationType[]) => {
       );
       setSelectedIds([]);
     } catch (e) {
+      console.error("신청 취소 실패:", e);
       alert("신청 취소에 실패했습니다.");
     }
   };

@@ -3,7 +3,7 @@
 import Image from "next/image";
 import {ApplicationType} from "@/types/applications/applicationsType";
 import {useRouter} from "next/navigation";
-import {useState, useEffect} from "react";
+import {useState} from "react";
 
 interface Props {
   app: ApplicationType;
@@ -26,15 +26,9 @@ const tagStyleMap = [
 ];
 
 const ApplicationCard: React.FC<Props> = ({app, onSelect, isSelected}) => {
-  const router = useRouter();
   const tags = app.tags?.split(",") ?? [];
   const statusText = statusTextMap[app.applicationStatus];
-
-  const [myDogs, setMyDogs] = useState<{id: number; name: string}[]>([]);
-  const [selectedDogId, setSelectedDogId] = useState<number>(app.dogId ?? 0);
   const [isRejectModalOpen, setRejectModalOpen] = useState(false);
-
-  const closeModal = () => setRejectModalOpen(false);
 
   // 시간 포맷 함수
   const formatSchedule = (schedule?: string) => {
@@ -212,8 +206,14 @@ const ApplicationCard: React.FC<Props> = ({app, onSelect, isSelected}) => {
 
       {/* 거절사유 모달 */}
       {isRejectModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="bg-white rounded-xl p-6 w-80 relative">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+          onClick={() => setRejectModalOpen(false)} // 오버레이 클릭
+        >
+          <div
+            className="bg-white rounded-xl p-6 w-80 relative"
+            onClick={(e) => e.stopPropagation()} // 전파 차단
+          >
             <h3 className="text-lg font-semibold mb-2">거절 사유</h3>
             <p className="text-sm text-gray-700 bg-blue-100 p-4">
               {app.rejectReason?.trim() || "사유 없음"}
