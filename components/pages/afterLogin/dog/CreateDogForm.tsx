@@ -34,16 +34,34 @@ export default function CreateDogForm() {
         const uploadedImageUrl = await uploadImage();
 
         const dogData: IDogCreateRequestType = {
+          // 필수값
           name: (formData.get("name") as string) || "",
           breed: (formData.get("breed") as string) || "",
           age: Number(formData.get("age") || 0),
           gender: (formData.get("gender") as "M" | "F") || "M",
           isNeutered: formData.get("isNeutered") === "true",
-          weight: Number(formData.get("weight") || 0),
-          personality: (formData.get("personality") as string) || "",
-          habits: (formData.get("habits") as string) || "",
-          healthInfo: (formData.get("healthInfo") as string) || "",
-          profileImage: uploadedImageUrl || undefined,
+          humanSocialization:
+            (formData.get("humanSocialization") as "LOW" | "MEDIUM" | "HIGH") ||
+            "MEDIUM",
+          animalSocialization:
+            (formData.get("animalSocialization") as
+              | "LOW"
+              | "MEDIUM"
+              | "HIGH") || "MEDIUM",
+          // 선택값 (값이 있을 때만 포함)
+          ...(formData.get("weight") && {
+            weight: Number(formData.get("weight")),
+          }),
+          ...(formData.get("personality") && {
+            personality: formData.get("personality") as string,
+          }),
+          ...(formData.get("habits") && {
+            habits: formData.get("habits") as string,
+          }),
+          ...(formData.get("healthInfo") && {
+            healthInfo: formData.get("healthInfo") as string,
+          }),
+          ...(uploadedImageUrl && { profileImage: uploadedImageUrl }),
         };
 
         await mutateAsync(dogData);

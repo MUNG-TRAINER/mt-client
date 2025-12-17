@@ -101,17 +101,54 @@ export default function DogDetail({ dogId }: { dogId: number }) {
           <h3>성별</h3>
           <span>{data.gender === "M" ? "수컷" : "암컷"}</span>
 
-          <h3>체중</h3>
-          <span>{data.weight}kg</span>
+          <h3>중성화 여부</h3>
+          <span>{data.isNeutered ? "완료" : "미완료"}</span>
 
-          <h3>성격</h3>
-          <span className="whitespace-pre-wrap">{data.personality}</span>
+          {data.weight !== undefined && data.weight !== null && (
+            <>
+              <h3>체중</h3>
+              <span>{data.weight}kg</span>
+            </>
+          )}
 
-          <h3>습관 및 특징</h3>
-          <span className="whitespace-pre-wrap">{data.habits}</span>
+          <h3>사람 사회화 수준</h3>
+          <span>
+            {data.humanSocialization === "LOW"
+              ? "낮음"
+              : data.humanSocialization === "MEDIUM"
+              ? "보통"
+              : "높음"}
+          </span>
 
-          <h3>건강 정보</h3>
-          <span className="whitespace-pre-wrap">{data.healthInfo}</span>
+          <h3>동물 사회화 수준</h3>
+          <span>
+            {data.animalSocialization === "LOW"
+              ? "낮음"
+              : data.animalSocialization === "MEDIUM"
+              ? "보통"
+              : "높음"}
+          </span>
+
+          {data.personality && (
+            <>
+              <h3>성격</h3>
+              <span className="whitespace-pre-wrap">{data.personality}</span>
+            </>
+          )}
+
+          {data.habits && (
+            <>
+              <h3>습관 및 특징</h3>
+              <span className="whitespace-pre-wrap">{data.habits}</span>
+            </>
+          )}
+
+          {data.healthInfo && (
+            <>
+              <h3>건강 정보</h3>
+              <span className="whitespace-pre-wrap">{data.healthInfo}</span>
+            </>
+          )}
         </div>
       </div>
 

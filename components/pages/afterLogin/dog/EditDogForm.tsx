@@ -35,17 +35,50 @@ export default function EditDogForm({ dogId }: { dogId: number }) {
       try {
         const uploadedImageKey = await uploadImage();
 
-        const updateData: IDogUpdateRequestType = {
-          name: formData.get("name") as string,
-          breed: formData.get("breed") as string,
-          age: Number(formData.get("age")),
-          gender: formData.get("gender") as "M" | "F",
-          isNeutered: formData.get("isNeutered") === "true",
-          weight: Number(formData.get("weight")),
-          personality: formData.get("personality") as string,
-          habits: formData.get("habits") as string,
-          healthInfo: formData.get("healthInfo") as string,
-        };
+        const updateData: IDogUpdateRequestType = {};
+
+        // 각 필드가 존재하고 비어있지 않을 때만 추가
+        const name = formData.get("name") as string;
+        if (name && name.trim()) updateData.name = name;
+
+        const breed = formData.get("breed") as string;
+        if (breed && breed.trim()) updateData.breed = breed;
+
+        const age = formData.get("age");
+        if (age) updateData.age = Number(age);
+
+        const gender = formData.get("gender") as "M" | "F";
+        if (gender) updateData.gender = gender;
+
+        const isNeutered = formData.get("isNeutered");
+        if (isNeutered !== null) updateData.isNeutered = isNeutered === "true";
+
+        const humanSocialization = formData.get("humanSocialization") as
+          | "LOW"
+          | "MEDIUM"
+          | "HIGH";
+        if (humanSocialization)
+          updateData.humanSocialization = humanSocialization;
+
+        const animalSocialization = formData.get("animalSocialization") as
+          | "LOW"
+          | "MEDIUM"
+          | "HIGH";
+        if (animalSocialization)
+          updateData.animalSocialization = animalSocialization;
+
+        const weight = formData.get("weight");
+        if (weight) updateData.weight = Number(weight);
+
+        const personality = formData.get("personality") as string;
+        if (personality && personality.trim())
+          updateData.personality = personality;
+
+        const habits = formData.get("habits") as string;
+        if (habits && habits.trim()) updateData.habits = habits;
+
+        const healthInfo = formData.get("healthInfo") as string;
+        if (healthInfo && healthInfo.trim()) updateData.healthInfo = healthInfo;
 
         if (uploadedImageKey) {
           updateData.profileImage = uploadedImageKey;
