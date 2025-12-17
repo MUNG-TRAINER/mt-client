@@ -35,6 +35,7 @@ export default function useCheckValidation({
       ...prev,
       userName: !isValid,
     }));
+    console.log("username ::" + ableStatus);
   };
   // 유저 이메일 확인
   const handleCheckEmail = async () => {
@@ -53,6 +54,7 @@ export default function useCheckValidation({
       ...prev,
       email: !isValid,
     }));
+    console.log("email ::" + ableStatus);
   };
   // Reset State
   const handleResetState = useCallback(() => {
