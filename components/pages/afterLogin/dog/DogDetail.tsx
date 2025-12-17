@@ -51,7 +51,7 @@ export default function DogDetail({ dogId }: { dogId: number }) {
       <div className="bg-white w-full h-full m-auto p-6 rounded-md flex flex-col items-center justify-center gap-4">
         <p className="text-(--mt-gray)">반려견 정보를 불러올 수 없습니다.</p>
         <button
-          onClick={() => router.back()}
+          onClick={() => router.push("/mydogs")}
           className="py-2 px-6 bg-(--mt-blue-point) text-(--mt-white) rounded-xl font-bold"
         >
           돌아가기
@@ -172,7 +172,7 @@ export default function DogDetail({ dogId }: { dogId: number }) {
       </div>
 
       <button
-        onClick={() => router.back()}
+        onClick={() => router.push("/mydogs")}
         className="border text-(--mt-gray) py-3 rounded-md font-bold"
       >
         돌아가기

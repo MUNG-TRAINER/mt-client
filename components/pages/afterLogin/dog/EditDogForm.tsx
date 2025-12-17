@@ -37,7 +37,7 @@ export default function EditDogForm({ dogId }: { dogId: number }) {
 
         const updateData: IDogUpdateRequestType = {};
 
-        // 각 필드가 존재하고 비어있지 않을 때만 추가
+        // 필수 필드 - 비어있지 않을 때만 추가
         const name = formData.get("name") as string;
         if (name && name.trim()) updateData.name = name;
 
@@ -67,18 +67,27 @@ export default function EditDogForm({ dogId }: { dogId: number }) {
         if (animalSocialization)
           updateData.animalSocialization = animalSocialization;
 
-        const weight = formData.get("weight");
-        if (weight) updateData.weight = Number(weight);
+        // 선택 필드 - 빈 값도 전송하여 삭제 가능하도록 처리
+        const weight = formData.get("weight") as string;
+        if (weight && weight.trim()) {
+          updateData.weight = Number(weight);
+        }
 
+        // 텍스트 필드는 빈 문자열("")을 보내면 백엔드에서 NULL로 처리됨
         const personality = formData.get("personality") as string;
-        if (personality && personality.trim())
-          updateData.personality = personality;
+        if (personality !== null) {
+          updateData.personality = personality.trim() || "";
+        }
 
         const habits = formData.get("habits") as string;
-        if (habits && habits.trim()) updateData.habits = habits;
+        if (habits !== null) {
+          updateData.habits = habits.trim() || "";
+        }
 
         const healthInfo = formData.get("healthInfo") as string;
-        if (healthInfo && healthInfo.trim()) updateData.healthInfo = healthInfo;
+        if (healthInfo !== null) {
+          updateData.healthInfo = healthInfo.trim() || "";
+        }
 
         if (uploadedImageKey) {
           updateData.profileImage = uploadedImageKey;
@@ -107,7 +116,7 @@ export default function EditDogForm({ dogId }: { dogId: number }) {
       <div className="bg-white w-full h-full m-auto p-6 rounded-md flex flex-col items-center justify-center gap-4">
         <p className="text-(--mt-gray)">반려견 정보를 불러올 수 없습니다.</p>
         <button
-          onClick={() => router.back()}
+          onClick={() => router.push("/mydogs")}
           className="py-2 px-6 bg-(--mt-blue-point) text-(--mt-white) rounded-xl font-bold"
         >
           돌아가기
@@ -143,7 +152,7 @@ export default function EditDogForm({ dogId }: { dogId: number }) {
         <div className="flex gap-3 sticky bottom-0 bg-white pt-2 pb-2">
           <button
             type="button"
-            onClick={() => router.back()}
+            onClick={() => router.push(`/mydogs/${dogId}`)}
             className="flex-1 py-3 border border-(--mt-gray-light) text-(--mt-gray) rounded-xl font-bold"
           >
             취소
