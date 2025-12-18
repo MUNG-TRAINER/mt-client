@@ -1,15 +1,23 @@
 import CreateCourseInput from "../CreateCourseInput";
 import CourseLabelBox from "./common/CourseLabelBox";
-
-export default function CourseLocation() {
+interface ICourseLocation {
+  labelTxt: string;
+  inputName: string;
+  placeholder: string;
+}
+export default function CourseLocation({
+  inputName,
+  labelTxt,
+  placeholder,
+}: ICourseLocation) {
   return (
     <CourseLabelBox>
-      <label htmlFor="location">훈련 장소</label>
+      <label htmlFor={inputName}>{labelTxt}</label>
       <CreateCourseInput
-        id="location"
-        name="location"
+        id={inputName}
+        name={inputName}
         type="text"
-        placeholder="훈련 장소"
+        placeholder={placeholder}
       />
     </CourseLabelBox>
   );
