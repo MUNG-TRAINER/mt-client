@@ -92,3 +92,23 @@ export interface IUploadCourseTypes {
   content: string;
   locationDetail: string;
 }
+export interface IDifficultyBadge {
+  label: string;
+  className: string;
+}
+
+export interface ICourseHeroProps {
+  course: ICourseType;
+  durationMinutes: number;
+  maxStudents: number;
+  lessonFormLabel: string;
+  difficultyBadge: IDifficultyBadge;
+}
+export interface ICourseBasicsSectionProps {
+  course: ICourseType;
+  dogSizeMap: Record<string, string>;
+  totalSessions: number;
+  schedule: string;
+  firstSessionPrice?: number;
+  sessionCount: number;
+}
