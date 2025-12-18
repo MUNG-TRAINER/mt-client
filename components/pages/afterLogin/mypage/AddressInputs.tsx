@@ -1,6 +1,7 @@
 import AuthInput from "@/components/shared/inputs/AuthInput";
 import { BuildingOffice2Icon, HomeIcon } from "@/components/icons/home";
 import { MapIcon, MapPinIcon } from "@/components/icons/location";
+import { EnvelopeIcon } from "@/components/icons/envelope";
 import { onClickAddr } from "@/util/address/address";
 import { Dispatch, SetStateAction } from "react";
 
@@ -79,7 +80,7 @@ export default function AddressInputs({
           type="text"
           labelTxt="우편번호"
           placeholder="주소를 검색하세요"
-          headIcon={<HomeIcon />}
+          headIcon={<EnvelopeIcon />}
           value={postcode}
           readOnly
         />

@@ -15,7 +15,7 @@ import AddressInputs from "./AddressInputs";
 export default function MyPageEdit() {
   const router = useRouter();
   const { data, isPending } = useMe();
-  const { mutate, isPending: isUpdating } = useUpdateUserInfo();
+  const { mutate, isPending: isUpdating, isError, error } = useUpdateUserInfo();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [profileImage, setProfileImage] = useState<string | null>(null);
@@ -29,6 +29,12 @@ export default function MyPageEdit() {
   const [roadname, setRoadname] = useState("");
   const [postcode, setPostcode] = useState("");
   const [restAddress, setRestAddress] = useState("");
+
+  useEffect(() => {
+    if (isError) {
+      console.error("사용자 정보 수정 실패:", error);
+    }
+  }, [isError, error]);
 
   useEffect(() => {
     const kakaoScript = document.createElement("script");
