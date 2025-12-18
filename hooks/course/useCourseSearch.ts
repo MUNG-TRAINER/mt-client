@@ -17,7 +17,7 @@ export const useCourseSearch = ({
 }: UseCourseSearchParams = {}) => {
   return useInfiniteQuery({
     queryKey: ["courses", "search", keyword, size],
-    queryFn: ({ pageParam }) =>
+    queryFn: ({ pageParam }: { pageParam: number | undefined }) =>
       courseAPI.searchCourses({
         keyword,
         lastCourseId: pageParam, // 커서로 사용
@@ -27,7 +27,7 @@ export const useCourseSearch = ({
       // hasMore가 true이고 lastCourseId가 있으면 반환
       return lastPage.hasMore ? lastPage.lastCourseId : undefined;
     },
-    initialPageParam: undefined, // 첫 페이지는 lastCourseId 없음
+    initialPageParam: undefined as number | undefined, // 첫 페이지는 lastCourseId 없음
     enabled,
   });
 };
