@@ -121,9 +121,12 @@ export default function MyPage() {
           </span>
         </div>
       </div>
-      <button className="bg-(--mt-blue) text-(--mt-white) py-3 rounded-md font-bold">
+      <Link
+        href="/mypage/edit"
+        className="bg-(--mt-blue) text-(--mt-white) py-3 rounded-md font-bold text-center"
+      >
         수정
-      </button>
+      </Link>
       <button className="border text-(--mt-gray) py-3 rounded-md font-bold">
         비밀번호변경
       </button>
