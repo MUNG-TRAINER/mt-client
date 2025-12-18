@@ -17,7 +17,12 @@ interface CourseCardProps {
 }
 
 export const CourseCard = ({ course, onReserve }: CourseCardProps) => {
-  const handleReserve = () => {
+  const handleReserve = (e: React.MouseEvent) => {
+    e.stopPropagation(); // 카드 클릭 이벤트 전파 방지
+    onReserve?.(course.courseId);
+  };
+
+  const handleCardClick = () => {
     onReserve?.(course.courseId);
   };
 
@@ -37,7 +42,10 @@ export const CourseCard = ({ course, onReserve }: CourseCardProps) => {
     : [];
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100">
+    <div
+      onClick={handleCardClick}
+      className="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100 cursor-pointer hover:shadow-md transition-shadow"
+    >
       {/* 이미지 섹션 */}
       <div className="relative w-full h-44 bg-gray-200">
         {course.mainImage ? (
@@ -61,6 +69,30 @@ export const CourseCard = ({ course, onReserve }: CourseCardProps) => {
                 clipRule="evenodd"
               />
             </svg>
+          </div>
+        )}
+
+        {/* 상태 배지 */}
+        {course.status === "CANCELLED" && (
+          <div className="absolute top-3 right-3 px-3 py-1.5 bg-red-500 text-white text-xs font-bold rounded-lg shadow-lg">
+            취소됨
+          </div>
+        )}
+        {course.status === "DONE" && (
+          <div className="absolute top-3 right-3 px-3 py-1.5 bg-green-500 text-white text-xs font-bold rounded-lg shadow-lg">
+            마감
+          </div>
+        )}
+        {!course.session &&
+          course.status !== "CANCELLED" &&
+          course.status !== "DONE" && (
+            <div className="absolute top-3 right-3 px-3 py-1.5 bg-red-500 text-white text-xs font-bold rounded-lg shadow-lg">
+              신청불가
+            </div>
+          )}
+        {course.status === "SCHEDULED" && course.session && (
+          <div className="absolute top-3 right-3 px-3 py-1.5 bg-blue-500 text-white text-xs font-bold rounded-lg shadow-lg">
+            모집중
           </div>
         )}
       </div>
@@ -152,7 +184,7 @@ export const CourseCard = ({ course, onReserve }: CourseCardProps) => {
         <div className="flex items-end justify-between pt-2 border-t border-gray-100">
           {course.session ? (
             <div>
-              <p className="text-[10px] text-gray-500 mb-0.5">참가비</p>
+              <p className="text-[10px] text-gray-500 mb-0.5">수강료</p>
               <p className="text-lg font-bold text-gray-900">
                 <span className="text-sm text-gray-500 font-medium mr-1">
                   회당
@@ -166,33 +198,21 @@ export const CourseCard = ({ course, onReserve }: CourseCardProps) => {
               <p className="text-sm text-gray-500">가격 미정</p>
             </div>
           )}
-          {course.status === "CANCELLED" ? (
+          {course.status === "CANCELLED" ||
+          course.status === "DONE" ||
+          !course.session ? (
             <button
-              disabled
-              className="px-6 py-2.5 text-sm font-bold rounded-xl bg-gray-300 text-gray-500 cursor-not-allowed whitespace-nowrap"
+              onClick={handleReserve}
+              className="px-6 py-2.5 text-sm font-bold rounded-xl bg-gray-300 text-gray-600 hover:bg-gray-400 transition-colors whitespace-nowrap"
             >
-              취소됨
-            </button>
-          ) : course.status === "DONE" ? (
-            <button
-              disabled
-              className="px-6 py-2.5 text-sm font-bold rounded-xl bg-gray-300 text-gray-500 cursor-not-allowed whitespace-nowrap"
-            >
-              완료됨
-            </button>
-          ) : !course.session ? (
-            <button
-              disabled
-              className="px-6 py-2.5 text-sm font-bold rounded-xl bg-gray-300 text-gray-500 cursor-not-allowed whitespace-nowrap"
-            >
-              신청불가
+              상세보기
             </button>
           ) : (
             <button
               onClick={handleReserve}
               className="px-6 py-2.5 text-sm font-bold rounded-xl bg-blue-600 text-white hover:bg-blue-700 transition-colors whitespace-nowrap"
             >
-              신청하기
+              상세보기
             </button>
           )}
         </div>
