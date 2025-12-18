@@ -1,5 +1,5 @@
 "use client";
-import {API_BASE_URL} from "@/util/env";
+import { API_BASE_URL } from "@/util/env";
 
 const TOKEN_EXPIRED = "TOKEN_EXPIRED";
 const UNAUTHORIZED = "UNAUTHORIZED";
@@ -20,27 +20,35 @@ export async function fetchWithAuth(
 ) {
   try {
     let res = await fetchData(input, init);
-    if (res.status === 400) {
-      return res.json();
+
+    // 성공 응답은 바로 반환
+    if (res.ok) {
+      return res;
     }
+
+    if (res.status === 400) {
+      return res;
+    }
+
     if (res.status === 401) {
       const result = await res.json();
       if (result.code === TOKEN_EXPIRED) {
         await refreshToken();
         res = await fetchData(input, init);
+        return res;
       }
       if (result.code === REFRESH_EXPIRED || result.code === UNAUTHORIZED) {
         window.location.href = "/login";
+        return res;
       }
     }
 
-    if (!res.ok) {
-      window.location.href = "/login";
-    }
-
+    // 그 외 에러는 콘솔에 로그만 남기고 응답 반환
+    console.error("API Error:", res.status, res.statusText);
     return res;
-  } catch {
-    window.location.href = "/login";
+  } catch (error) {
+    console.error("Fetch error:", error);
+    throw error;
   }
 }
 
