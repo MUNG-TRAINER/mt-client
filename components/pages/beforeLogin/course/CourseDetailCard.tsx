@@ -64,6 +64,7 @@ export default function CourseDetailCard({ courseId }: { courseId: string }) {
 
   const totalSessions = sessionList?.length || 0;
   const firstSession = sessionList?.[0];
+  const lastSession = sessionList?.[sessionList.length - 1];
   const durationMinutes = firstSession
     ? getDurationMinutes(firstSession.startTime, firstSession.endTime)
     : 0;
@@ -74,35 +75,63 @@ export default function CourseDetailCard({ courseId }: { courseId: string }) {
     label: courseDetail.difficulty || "난이도 정보 없음",
     className: "border-(--mt-gray-light) bg-(--mt-gray-smoke) text-(--mt-gray)",
   };
+  const checkIsClose = () => {
+    const now = new Date();
+    const courseEndDate = new Date(
+      `${lastSession?.sessionDate}T${lastSession?.endTime}`
+    );
+    if (
+      courseDetail.status === "DONE" ||
+      courseDetail.status === "CANCELLED" ||
+      now > courseEndDate
+    ) {
+      return true;
+    }
+    return false;
+  };
+
+  const isClose = checkIsClose();
 
   return (
     <div className="w-full max-w-4xl mx-auto bg-white">
-      <CourseHero
-        course={courseDetail}
-        durationMinutes={durationMinutes}
-        maxStudents={firstSession?.maxStudents || 0}
-        lessonFormLabel={lessonFormLabel}
-        difficultyBadge={difficultyBadge}
-      />
+      {isClose && (
+        <div className="sticky top-0 z-50 w-full bg-red-600 text-white py-3 px-4 text-center font-semibold shadow-md">
+          {/* 빨간색 경고 배너 */}
+          ⚠️ 이 과정은 종료되었습니다. 수강 신청이 불가능합니다.
+        </div>
+      )}
 
-      <div className="pt-5 space-y-6">
-        <TrainerInfoCard trainer={trainer} />
-
-        <CourseBasicsSection
+      <div className={isClose ? "opacity-60 pointer-events-none" : ""}>
+        <CourseHero
           course={courseDetail}
-          dogSizeMap={dogSizeMap}
-          totalSessions={totalSessions}
-          schedule={courseDetail.schedule}
-          firstSessionPrice={firstSession?.price}
-          sessionCount={sessionList?.length || 0}
+          durationMinutes={durationMinutes}
+          maxStudents={firstSession?.maxStudents || 0}
+          lessonFormLabel={lessonFormLabel}
+          difficultyBadge={difficultyBadge}
         />
 
-        <CourseIntroSection course={courseDetail} />
+        <div className="pt-5 space-y-6">
+          <TrainerInfoCard trainer={trainer} />
 
-        <SessionListSection sessions={sessionList} />
+          <CourseBasicsSection
+            course={courseDetail}
+            dogSizeMap={dogSizeMap}
+            totalSessions={totalSessions}
+            schedule={courseDetail.schedule}
+            firstSessionPrice={firstSession?.price}
+            sessionCount={sessionList?.length || 0}
+          />
+
+          <CourseIntroSection course={courseDetail} />
+
+          <SessionListSection sessions={sessionList} />
+        </div>
       </div>
 
-      <CourseActionButtons trainerId={courseDetail?.trainerId} />
+      <CourseActionButtons
+        isClose={isClose}
+        trainerId={courseDetail?.trainerId}
+      />
     </div>
   );
 }

@@ -20,7 +20,8 @@ export const loginApi = {
     if (!res.ok) {
       throw new Error("로그인에 실패하였습니다.");
     }
-    return res;
+    const result = await res.json();
+    return result;
   },
   logout: async () => {
     const res = await fetch(`/api/auth/logout`, {

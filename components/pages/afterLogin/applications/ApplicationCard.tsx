@@ -2,12 +2,11 @@
 
 import Image from "next/image";
 import {ApplicationType} from "@/types/applications/applicationsType";
-import {useRouter} from "next/navigation";
 import {useState} from "react";
+import {useApplicationState} from "@/stores/applicationsState";
 
 interface Props {
   app: ApplicationType;
-  onSelect: (id: number, checked: boolean) => void; //  체크박스 선택 이벤트
   isSelected: boolean; //  선택 여부
 }
 
@@ -25,11 +24,13 @@ const tagStyleMap = [
   {bg: "#E5DBFF", text: "#7950F2"},
 ];
 
-const ApplicationCard: React.FC<Props> = ({app, onSelect, isSelected}) => {
+const ApplicationCard: React.FC<Props> = ({app, isSelected}) => {
+  const {setSelectedIndex} = useApplicationState();
   const tags = app.tags?.split(",") ?? [];
   const statusText = statusTextMap[app.applicationStatus];
   const [isRejectModalOpen, setRejectModalOpen] = useState(false);
 
+  /* fn */
   // 시간 포맷 함수
   const formatSchedule = (schedule?: string) => {
     if (!schedule) return "";
@@ -59,13 +60,15 @@ const ApplicationCard: React.FC<Props> = ({app, onSelect, isSelected}) => {
           style={{accentColor: "var(--mt-blue-point)"}}
           className="w-6 h-6 cursor-pointer"
           checked={isSelected} // 상위 상태 반영
-          onChange={(e) => onSelect(app.applicationId, e.target.checked)} // 상위로 전달
+          onChange={(e) =>
+            setSelectedIndex(app.applicationId, e.target.checked)
+          } // 상위로 전달
         />
       </div>
 
       {/* 이미지 + 텍스트 영역 */}
       <div className="flex gap-4 pb-2">
-        <div className="relative w-24 h-24 sm:w-40 sm:h-40 rounded-xl overflow-hidden flex-shrink-0">
+        <div className="relative w-24 h-24 sm:w-40 sm:h-40 rounded-xl overflow-hidden shrink-0">
           <Image
             src={
               app.mainImage &&

@@ -1,14 +1,9 @@
 "use client";
 
-interface ApplicationsTabsProps {
-  activeTab: "pending" | "completed";
-  setActiveTab: (tab: "pending" | "completed") => void;
-}
+import {useApplicationState} from "@/stores/applicationsState";
 
-const ApplicationsTabs: React.FC<ApplicationsTabsProps> = ({
-  activeTab,
-  setActiveTab,
-}) => {
+const ApplicationsTabs = () => {
+  const {activeTab, setActiveTab} = useApplicationState();
   return (
     <div className="flex border-b border-gray-300 sticky top-0 bg-white z-10">
       <button
