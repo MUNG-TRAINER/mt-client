@@ -1,7 +1,6 @@
 import { fetchWithAuth } from "@/apis/common/fetchWithAuth";
 import { CourseSearchResponse } from "@/types/course/courseType";
 import { API_BASE_URL } from "@/util/env";
-import { fetchWithAuth } from "../common/fetchWithAuth";
 
 interface SearchParams {
   keyword?: string;
