@@ -1,17 +1,14 @@
-import { HeartIcon } from "@/components/icons/courseInfoIcons";
+import {HeartIcon} from "@/components/icons/courseInfoIcons";
 import useCheckLoggedIn from "@/hooks/afterLogin/users/useCheckLoggedIn";
 import Link from "next/link";
-import { is } from "zod/locales";
+import {useCourseState} from "@/stores/courseState";
 
-export default function CourseActionButtons({
-  trainerId,
-  isClose,
-}: {
-  trainerId: number;
-  isClose: boolean;
+export default function CourseActionButtons({trainerId, isClose,
+}: {trainerId: number;  isClose: boolean;
 }) {
-  const { checkIsOwner } = useCheckLoggedIn();
+  const {checkIsOwner} = useCheckLoggedIn();
   const isOwner = checkIsOwner(trainerId);
+  const {setEditModeOn} = useCourseState();
   return (
     <div className="sticky mt-5 bottom-0 z-50 flex flex-col gap-3 w-full">
       {isOwner && (
@@ -30,12 +27,12 @@ export default function CourseActionButtons({
               수정하기
             </div>
           ) : (
-            <Link
-              href={`/`}
+            <button
+              onClick={setEditModeOn}
               className="w-full flex items-center justify-center bg-white gap-2 px-6 py-3 border-2 border-(--mt-gray-light) text-(--mt-gray) rounded-lg font-bold hover:bg-(--mt-gray-smoke) transition-colors"
             >
               수정하기
-            </Link>
+            </button>
           )}
         </div>
       )}
