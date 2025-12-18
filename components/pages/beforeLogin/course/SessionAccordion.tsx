@@ -1,7 +1,7 @@
 "use client";
 
-import { ISessionType } from "@/types/course/sessionType";
-import { useState } from "react";
+import {ISessionType} from "@/types/course/sessionType";
+import {useState} from "react";
 import {
   CalendarIcon,
   ClockIcon,
@@ -14,7 +14,7 @@ interface ISessionAccordionProps {
   session: ISessionType;
 }
 
-export default function SessionAccordion({ session }: ISessionAccordionProps) {
+export default function SessionAccordion({session}: ISessionAccordionProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   const formatDate = (dateStr: string) => {
@@ -49,7 +49,7 @@ export default function SessionAccordion({ session }: ISessionAccordionProps) {
   };
 
   return (
-    <div className="border border-(--mt-gray-light) rounded-lg overflow-hidden">
+    <div className="flex flex-col border border-(--mt-gray-light) rounded-lg overflow-hidden">
       {/* 헤더 */}
       <button
         onClick={() => setIsOpen(!isOpen)}
@@ -80,8 +80,12 @@ export default function SessionAccordion({ session }: ISessionAccordionProps) {
       </button>
 
       {/* 펼친 내용 */}
-      {isOpen && (
-        <div className="border-t border-(--mt-gray-light) p-4 space-y-4 bg-white">
+      {
+        <div
+          className={`border-t border-(--mt-gray-light)  bg-white ${
+            isOpen ? "scale-y-100 max-h-full p-4 space-y-4 " : "scale-y-0 h-0 "
+          } transition-transform duration-200 ease-in-out origin-top`}
+        >
           {/* 세부 정보 */}
           <div className="pt-1 border-(--mt-gray-light) space-y-3">
             <div className="flex items-start gap-2">
@@ -126,7 +130,7 @@ export default function SessionAccordion({ session }: ISessionAccordionProps) {
             </div>
           </div>
         </div>
-      )}
+      }
     </div>
   );
 }

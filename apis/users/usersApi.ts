@@ -10,7 +10,7 @@ export const usersApi = {
     });
 
     if (!resposne?.ok) {
-      throw new Error("유정의 정보를 불러올 수 없습니다.");
+      throw new Error("유저의 정보를 불러올 수 없습니다.");
     }
 
     const data: IMyPageTypes = await resposne.json();
