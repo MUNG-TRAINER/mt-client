@@ -40,12 +40,12 @@ export const loginApi = {
     if (res.status === 401) {
       const data: IResultResponseData<IFailedCheckLoggedInType> =
         await res.json();
-      return data;
+      return data.data;
     }
     if (!res?.ok) {
       throw new Error("유저의 정보를 불러올 수 없습니다.");
     }
     const data: IResultResponseData<ICheckLoggedInType> = await res.json();
-    return data;
+    return data.data;
   },
 };

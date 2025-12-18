@@ -10,10 +10,16 @@ export default function CourseActionButtons({
   return (
     <div className="sticky bottom-0 z-50 flex flex-col gap-3 w-full">
       {data?.userId === trainerId && (
-        <button className="w-full flex items-center justify-center bg-white gap-2 px-6 py-3 border-2 border-(--mt-gray-light) text-(--mt-gray) rounded-lg font-bold hover:bg-(--mt-gray-smoke) transition-colors">
-          수정하기
-        </button>
+        <div>
+          <button className="w-full flex items-center justify-center bg-white gap-2 px-6 py-3 border-2 border-(--mt-gray-light) text-(--mt-gray) rounded-lg font-bold hover:bg-(--mt-gray-smoke) transition-colors">
+            수정하기
+          </button>
+          <button className="w-full flex items-center justify-center bg-white gap-2 px-6 py-3 border-2 border-(--mt-gray-light) text-(--mt-gray) rounded-lg font-bold hover:bg-(--mt-gray-smoke) transition-colors">
+            재업로드하기
+          </button>
+        </div>
       )}
+
       <div className="flex gap-3">
         <button className="flex items-center justify-center bg-white gap-2 px-6 py-3 border-2 border-(--mt-gray-light) text-(--mt-gray) rounded-lg font-bold hover:bg-(--mt-gray-smoke) transition-colors">
           <HeartIcon className="size-5" />
