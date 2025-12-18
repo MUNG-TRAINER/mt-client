@@ -4,7 +4,7 @@ import Applications from "@/components/pages/afterLogin/applications/Application
 import {useApplications} from "@/hooks/afterLogin/applications/useApplications";
 
 const ApplicationsPage = () => {
-  const {applicationsToShow, isError, isPending} = useApplications();
+  const {applicationsToShow, isPending} = useApplications();
 
   if (isPending)
     return (

@@ -2,18 +2,20 @@
 import {useApplicationState} from "@/stores/applicationsState";
 import {useMutation} from "@tanstack/react-query";
 import useCheckLoggedIn from "../users/useCheckLoggedIn";
-import {ICheckLoggedInType} from "@/types/login/loginDataType";
 import {applicationAPI} from "@/apis/applications/applicationAPI";
 import {useApplications} from "./useApplications";
 
 export default function useDeleteApplication() {
+  let userId: number | undefined;
   const {data} = useCheckLoggedIn();
-  const userId = (data?.data as ICheckLoggedInType).userId;
+  if (data && "userId" in data) {
+    userId = data.userId;
+  }
   const {activeTab, selectedIndex, resetSelectedIndex} = useApplicationState();
-  const {refreshApplicatinListCache} = useApplications();
+  const {refreshApplicationListCache} = useApplications();
   const {mutate, isPending, isError} = useMutation({
     mutationKey: ["deleteApplication", userId],
-    mutationFn: async () => {
+    mutationFn: async (data: number[]) => {
       if (activeTab !== "pending") {
         console.log("결제하기 클릭");
         return;
@@ -22,11 +24,11 @@ export default function useDeleteApplication() {
         alert("취소할 신청을 선택해주세요.");
         return;
       }
-      return await applicationAPI.deleteApplication(selectedIndex);
+      return await applicationAPI.deleteApplication(data);
     },
     onSuccess: () => {
       resetSelectedIndex();
-      refreshApplicatinListCache();
+      refreshApplicationListCache();
     },
     retry: false,
   });

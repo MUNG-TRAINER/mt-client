@@ -7,17 +7,16 @@ import {
 import {API_BASE_URL} from "@/util/env";
 
 export async function POST(req: Request) {
-  const json = await req.json();
+  const requestBody = await req.json();
   const res = await fetch(`${API_BASE_URL}/auth/login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(json),
+    body: JSON.stringify(requestBody),
   });
 
   if (!res.ok) {
-    console.log(await res.text());
     throw new Error("로그인에 실패했습니다.");
   }
 

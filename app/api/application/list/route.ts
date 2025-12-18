@@ -12,10 +12,8 @@ export async function GET() {
     },
   });
   if (!res.ok) {
-    console.log(await res.text());
     throw new Error("신청내역 리스트를 불러오는데 실패했습니다.");
   }
   const data = await res.json();
-  console.log(data);
   return NextResponse.json({data});
 }

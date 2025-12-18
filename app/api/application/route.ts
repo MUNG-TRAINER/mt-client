@@ -4,14 +4,14 @@ import {NextRequest, NextResponse} from "next/server";
 
 export async function DELETE(req: NextRequest) {
   const cookie = await cookies();
-  const json = await req.json();
+  const requestBody = await req.json();
   const res = await fetch(`${API_BASE_URL}/application`, {
     method: "DELETE",
     headers: {
       Cookie: cookie.toString(),
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({applicationId: json}),
+    body: JSON.stringify({applicationId: requestBody}),
   });
 
   if (!res.ok) {

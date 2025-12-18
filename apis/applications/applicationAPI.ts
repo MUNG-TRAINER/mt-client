@@ -16,7 +16,7 @@ export const applicationAPI = {
     return data.data;
   },
   deleteApplication: async (data: number[]) => {
-    const res = await fetch("/api/applications", {
+    const res = await fetch("/api/application", {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",

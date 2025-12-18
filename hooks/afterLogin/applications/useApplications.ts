@@ -1,6 +1,5 @@
 "use client";
 
-import {useState} from "react";
 import {ApplicationType} from "@/types/applications/applicationsType";
 import {useQuery, useQueryClient} from "@tanstack/react-query";
 import {applicationAPI} from "@/apis/applications/applicationAPI";
@@ -32,7 +31,7 @@ export const useApplications = () => {
   const applicationsToShow =
     activeTab === "pending" ? pendingApplications : completedApplications;
 
-  const refreshApplicatinListCache = () => {
+  const refreshApplicationListCache = () => {
     queryClient.invalidateQueries({queryKey: ["applicationList"]});
   };
 
@@ -41,6 +40,6 @@ export const useApplications = () => {
     isPending,
     isError,
     selectedIndex,
-    refreshApplicatinListCache,
+    refreshApplicationListCache,
   };
 };
