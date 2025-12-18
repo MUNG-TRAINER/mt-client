@@ -56,7 +56,7 @@ export default function CourseBasicsSection({
 
       <InfoRow
         icon={<CalendarIcon className="size-5 text-(--mt-gray) mt-0.5" />}
-        title="수강 정원"
+        title="수강 회차"
         content={
           <p className="text-sm text-(--mt-gray)">
             {totalSessions}회차 과정 ({schedule})
