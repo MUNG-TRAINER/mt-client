@@ -155,7 +155,7 @@ export default function TrainerDetailCard({
           </div>
         </div>
       )}
-      {trainer.registCode && data?.userId == trainer.trainerId && (
+      {trainer.registCode && data?.userId === trainer.trainerId && (
         <div className="bg-white rounded-lg border border-(--mt-gray-light) p-5">
           <div className="flex items-center gap-2 mb-4">
             <div className="p-2 bg-(--mt-blue-point) rounded-lg">
