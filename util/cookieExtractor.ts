@@ -31,7 +31,6 @@ export function cookieExtractor(cookies: string[]) {
       "필요한 인증 쿠키(access_token, refresh_token)를 찾을 수 없습니다"
     );
   }
-
   return {
     ACCESS_TOKEN: accessToken,
     REFRESH_TOKEN: refreshToken,

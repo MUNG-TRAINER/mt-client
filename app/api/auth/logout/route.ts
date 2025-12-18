@@ -19,17 +19,17 @@ export async function GET() {
   const response = NextResponse.json({data});
   response.cookies.set(NAME_REFRESH_TOKEN, "", {
     httpOnly: true,
-    secure: false,
+    secure: process.env.NODE_ENV === "production",
     path: "/",
     maxAge: 0,
-    sameSite: "none",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
   });
   response.cookies.set(NAME_ACCESS_TOKEN, "", {
     httpOnly: true,
-    secure: false,
+    secure: process.env.NODE_ENV === "production",
     path: "/",
     maxAge: 0,
-    sameSite: "none",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
   });
   return response;
 }
