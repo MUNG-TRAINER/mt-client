@@ -132,7 +132,6 @@ export default function TrainerEditForm({
       const payload: ITrainerInfoType = {
         trainerId: trainer.trainerId,
         name: pickValue(formData.name, trainer.name),
-        email: pickValue(formData.email, trainer.email),
         phone: pickValue(formData.phone, trainer.phone),
         careerInfo: pickValue(formData.careerInfo, trainer.careerInfo),
         introduce: pickValue(formData.introduce, trainer.introduce),
@@ -226,6 +225,7 @@ export default function TrainerEditForm({
           <input
             type="email"
             name="email"
+            disabled
             value={formData.email}
             onChange={handleChange}
             className="w-full p-3 border border-(--mt-gray-light) rounded-lg focus:outline-none focus:ring-2 focus:ring-(--mt-blue-point)"
