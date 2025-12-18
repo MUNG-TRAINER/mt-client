@@ -1,6 +1,7 @@
 import { HeartIcon } from "@/components/icons/courseInfoIcons";
 import useCheckLoggedIn from "@/hooks/afterLogin/users/useCheckLoggedIn";
 import Link from "next/link";
+import { is } from "zod/locales";
 
 export default function CourseActionButtons({
   trainerId,
@@ -11,7 +12,6 @@ export default function CourseActionButtons({
 }) {
   const { checkIsOwner } = useCheckLoggedIn();
   const isOwner = checkIsOwner(trainerId);
-  const disabled = isClose;
   return (
     <div className="sticky mt-5 bottom-0 z-50 flex flex-col gap-3 w-full">
       {isOwner && (
@@ -22,7 +22,7 @@ export default function CourseActionButtons({
           >
             재업로드하기
           </Link>
-          {disabled ? (
+          {isClose ? (
             <div
               aria-disabled="true"
               className="w-full flex items-center justify-center bg-white gap-2 px-6 py-3 border-2 border-(--mt-gray-light) text-(--mt-gray) rounded-lg font-bold opacity-50 cursor-not-allowed pointer-events-none"
@@ -41,7 +41,7 @@ export default function CourseActionButtons({
       )}
 
       <div className="flex justify-center gap-3">
-        {disabled ? (
+        {isClose ? (
           <div
             aria-disabled="true"
             className="flex items-center justify-center bg-white gap-2 px-6 py-3 border-2 border-(--mt-gray-light) text-(--mt-gray) rounded-lg font-bold opacity-50 cursor-not-allowed pointer-events-none"
@@ -58,7 +58,7 @@ export default function CourseActionButtons({
             찜하기
           </Link>
         )}
-        {disabled ? (
+        {isClose ? (
           <div
             aria-disabled="true"
             className="flex-1 flex items-center justify-center py-3 bg-(--mt-blue-point) text-white rounded-lg font-bold shadow-lg opacity-50 cursor-not-allowed pointer-events-none"

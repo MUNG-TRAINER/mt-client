@@ -44,7 +44,7 @@ export default function RootLayout({
                 <HeaderNav />
               </HeaderBar>
               <main
-                className={`relative flex items-center h-[1100px] [body[data-os=android]_&]:h-[750px] [body[data-os=ios]_&]:h-[750px] p-6 overflow-y-auto`}
+                className={`flex items-center h-[1100px] [body[data-os=android]_&]:h-[750px] [body[data-os=ios]_&]:h-[750px] p-6 overflow-y-auto`}
               >
                 {children}
               </main>
