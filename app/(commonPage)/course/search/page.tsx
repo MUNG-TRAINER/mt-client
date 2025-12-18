@@ -54,7 +54,7 @@ export default function CourseSearchPage() {
   };
 
   // 모든 페이지의 데이터를 하나로 합침
-  const allCourses = data?.pages.flatMap((page) => page.courses) || [];
+  const allCourses = data?.pages.flatMap((page: any) => page.courses) || [];
   // 커서 기반에서는 totalCount가 없으므로 현재 로드된 개수만 표시
   const loadedCount = allCourses.length;
 
@@ -76,7 +76,7 @@ export default function CourseSearchPage() {
             <span className="font-semibold text-gray-900">{loadedCount}</span>개
             {keyword && (
               <span className="ml-1">
-                (<span className="font-semibold">"{keyword}"</span>)
+                (<span className="font-semibold">&quot;{keyword}&quot;</span>)
               </span>
             )}
           </p>
