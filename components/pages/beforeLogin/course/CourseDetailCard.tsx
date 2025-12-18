@@ -52,6 +52,7 @@ export default function CourseDetailCard({courseId}: {courseId: string}) {
   const durationMinutes = firstSession
     ? getDurationMinutes(firstSession.startTime, firstSession.endTime)
     : 0;
+  const lastSession = sessionList?.[sessionList.length - 1];
   const lessonFormLabel = courseDetail?.lessonForm
     ? lessonFormMap[courseDetail.lessonForm] ?? "기타"
     : "기타";
@@ -68,13 +69,37 @@ export default function CourseDetailCard({courseId}: {courseId: string}) {
     return <div className="p-6 text-center">과정 정보를 찾을 수 없습니다.</div>;
   }
 
+
   const difficultyBadge = difficultyMap[courseDetail.difficulty] || {
     label: courseDetail.difficulty || "난이도 정보 없음",
     className: "border-(--mt-gray-light) bg-(--mt-gray-smoke) text-(--mt-gray)",
   };
+  const checkIsClose = () => {
+    const now = new Date();
+    const courseEndDate = new Date(
+      `${lastSession?.sessionDate}T${lastSession?.endTime}`
+    );
+    if (
+      courseDetail.status === "DONE" ||
+      courseDetail.status === "CANCELLED" ||
+      now > courseEndDate
+    ) {
+      return true;
+    }
+    return false;
+  };
+
+  const isClose = checkIsClose();
 
   return (
     <div className="w-full max-w-4xl mx-auto bg-white">
+        {isClose && (
+        <div className="sticky top-0 z-50 w-full bg-red-600 text-white py-3 px-4 text-center font-semibold shadow-md">
+          {/* 빨간색 경고 배너 */}
+          ⚠️ 이 과정은 종료되었습니다. 수강 신청이 불가능합니다.
+        </div>
+      )}
+ <div className={isClose ? "opacity-60 pointer-events-none" : ""}>
       {!editMode && (
         <CourseInfoComp
           course={courseDetail}
@@ -93,6 +118,7 @@ export default function CourseDetailCard({courseId}: {courseId: string}) {
           courseId={courseId}
         />
       )}
+      </div>
     </div>
   );
 }
