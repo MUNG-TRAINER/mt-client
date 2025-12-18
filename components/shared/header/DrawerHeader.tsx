@@ -32,7 +32,7 @@ export default function DrawerHeader() {
           </i>
         </button>
       </li>
-      {check && !("code" in check.data) ? (
+      {check && "userId" in check ? (
         <li>
           <button
             onClick={handleLogout}

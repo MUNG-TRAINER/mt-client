@@ -10,7 +10,7 @@ export default function useLogin() {
   const {mutate, isPending, isError, reset} = useMutation({
     mutationKey: ["loginRequest"],
     mutationFn: (data: ILoginDataType) => loginApi.login(data),
-    onSuccess: () => {
+    onSuccess: async () => {
       refreshUserCheck();
       router.replace("/");
     },
