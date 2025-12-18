@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { ICourseType } from "@/types/course/courseType";
+import {ICourseHeroProps} from "@/types/course/courseType";
 import {
   BoltIcon,
   CheckBadgeIcon,
@@ -8,26 +8,13 @@ import {
   UsersIcon,
 } from "@/components/icons/courseInfoIcons";
 
-interface IDifficultyBadge {
-  label: string;
-  className: string;
-}
-
-interface CourseHeroProps {
-  course: ICourseType;
-  durationMinutes: number;
-  maxStudents: number;
-  lessonFormLabel: string;
-  difficultyBadge: IDifficultyBadge;
-}
-
 export default function CourseHero({
   course,
   durationMinutes,
   maxStudents,
   lessonFormLabel,
   difficultyBadge,
-}: CourseHeroProps) {
+}: ICourseHeroProps) {
   return (
     <>
       {course.mainImage ? (

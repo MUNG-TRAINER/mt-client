@@ -1,16 +1,23 @@
-import { HeartIcon } from "@/components/icons/courseInfoIcons";
+import {HeartIcon} from "@/components/icons/courseInfoIcons";
 import useCheckLoggedIn from "@/hooks/afterLogin/users/useCheckLoggedIn";
+import {useCourseState} from "@/stores/courseState";
 
 export default function CourseActionButtons({
   trainerId,
+  courseId,
 }: {
   trainerId: number;
+  courseId: string;
 }) {
-  const { data } = useCheckLoggedIn();
+  const {data} = useCheckLoggedIn();
+  const {setEditModeOn} = useCourseState();
   return (
     <div className="sticky bottom-0 z-50 flex flex-col gap-3 w-full">
       {data?.userId === trainerId && (
-        <button className="w-full flex items-center justify-center bg-white gap-2 px-6 py-3 border-2 border-(--mt-gray-light) text-(--mt-gray) rounded-lg font-bold hover:bg-(--mt-gray-smoke) transition-colors">
+        <button
+          onClick={setEditModeOn}
+          className="w-full flex items-center justify-center bg-white gap-2 px-6 py-3 border-2 border-(--mt-gray-light) text-(--mt-gray) rounded-lg font-bold hover:bg-(--mt-gray-smoke) transition-colors"
+        >
           수정하기
         </button>
       )}

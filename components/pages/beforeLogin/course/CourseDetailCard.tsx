@@ -3,21 +3,17 @@
 import useSessionList from "@/hooks/beforeLogin/course/useSessionList";
 import useCourseWithTrainer from "@/hooks/beforeLogin/course/useCourseWithTrainer";
 import getDurationMinutes from "@/util/time/getDurationMinutes";
-import CourseHero from "./CourseHero";
-import TrainerInfoCard from "./TrainerInfoCard";
-import CourseBasicsSection from "./CourseBasicsSection";
-import CourseIntroSection from "./CourseIntroSection";
-import SessionListSection from "./SessionListSection";
-import CourseActionButtons from "../../afterLogin/course/view/CourseActionButtons";
+import CourseInfoComp from "./getComps/CourseInfoComp";
+import {useCourseState} from "@/stores/courseState";
 
-export default function CourseDetailCard({ courseId }: { courseId: string }) {
+export default function CourseDetailCard({courseId}: {courseId: string}) {
   const lessonFormMap: Record<string, string> = {
     WALK: "산책",
     GROUP: "그룹",
     PRIVATE: "1:1",
   };
 
-  const difficultyMap: Record<string, { label: string; className: string }> = {
+  const difficultyMap: Record<string, {label: string; className: string}> = {
     BASIC: {
       label: "초급",
       className: "border-green-200 bg-green-50 text-green-700",
@@ -46,9 +42,19 @@ export default function CourseDetailCard({ courseId }: { courseId: string }) {
     trainerIsPending,
   } = useCourseWithTrainer(courseId);
 
-  const { data: sessionList, isPending: sessionIsPending } =
+  const {data: sessionList, isPending: sessionIsPending} =
     useSessionList(courseId);
 
+  const {editMode} = useCourseState();
+
+  const totalSessions = sessionList?.length || 0;
+  const firstSession = sessionList?.[0];
+  const durationMinutes = firstSession
+    ? getDurationMinutes(firstSession.startTime, firstSession.endTime)
+    : 0;
+  const lessonFormLabel = courseDetail?.lessonForm
+    ? lessonFormMap[courseDetail.lessonForm] ?? "기타"
+    : "기타";
   if (courseIsPending || sessionIsPending || trainerIsPending) {
     return (
       <div className="flex flex-col items-center justify-center h-[70vh] gap-4 w-full text-align-center">
@@ -62,14 +68,6 @@ export default function CourseDetailCard({ courseId }: { courseId: string }) {
     return <div className="p-6 text-center">과정 정보를 찾을 수 없습니다.</div>;
   }
 
-  const totalSessions = sessionList?.length || 0;
-  const firstSession = sessionList?.[0];
-  const durationMinutes = firstSession
-    ? getDurationMinutes(firstSession.startTime, firstSession.endTime)
-    : 0;
-  const lessonFormLabel = courseDetail?.lessonForm
-    ? lessonFormMap[courseDetail.lessonForm] ?? "기타"
-    : "기타";
   const difficultyBadge = difficultyMap[courseDetail.difficulty] || {
     label: courseDetail.difficulty || "난이도 정보 없음",
     className: "border-(--mt-gray-light) bg-(--mt-gray-smoke) text-(--mt-gray)",
@@ -77,32 +75,24 @@ export default function CourseDetailCard({ courseId }: { courseId: string }) {
 
   return (
     <div className="w-full max-w-4xl mx-auto bg-white">
-      <CourseHero
-        course={courseDetail}
-        durationMinutes={durationMinutes}
-        maxStudents={firstSession?.maxStudents || 0}
-        lessonFormLabel={lessonFormLabel}
-        difficultyBadge={difficultyBadge}
-      />
-
-      <div className="pt-5 space-y-6">
-        <TrainerInfoCard trainer={trainer} />
-
-        <CourseBasicsSection
+      {!editMode && (
+        <CourseInfoComp
           course={courseDetail}
+          durationMinutes={durationMinutes}
+          maxStudents={firstSession?.maxStudents || 0}
+          lessonFormLabel={lessonFormLabel}
+          difficultyBadge={difficultyBadge}
+          trainer={trainer || undefined}
           dogSizeMap={dogSizeMap}
           totalSessions={totalSessions}
           schedule={courseDetail.schedule}
           firstSessionPrice={firstSession?.price}
           sessionCount={sessionList?.length || 0}
+          sessionList={sessionList || []}
+          trainerId={courseDetail?.trainerId}
+          courseId={courseId}
         />
-
-        <CourseIntroSection course={courseDetail} />
-
-        <SessionListSection sessions={sessionList} />
-      </div>
-
-      <CourseActionButtons trainerId={courseDetail?.trainerId} />
+      )}
     </div>
   );
 }

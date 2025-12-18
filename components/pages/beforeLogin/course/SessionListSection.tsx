@@ -1,14 +1,12 @@
 import SessionAccordion from "./SessionAccordion";
-import { ClipboardListIcon } from "@/components/icons/courseInfoIcons";
-import { ISessionType } from "@/types/course/sessionType";
-
-interface SessionListSectionProps {
-  sessions?: ISessionType[];
-}
+import {ClipboardListIcon} from "@/components/icons/courseInfoIcons";
+import {ISessionType} from "@/types/course/sessionType";
 
 export default function SessionListSection({
   sessions,
-}: SessionListSectionProps) {
+}: {
+  sessions?: ISessionType[];
+}) {
   if (!sessions || sessions.length === 0) return null;
 
   return (
