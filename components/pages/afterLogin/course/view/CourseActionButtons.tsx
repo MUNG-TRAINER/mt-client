@@ -2,13 +2,7 @@ import {HeartIcon} from "@/components/icons/courseInfoIcons";
 import useCheckLoggedIn from "@/hooks/afterLogin/users/useCheckLoggedIn";
 import {useCourseState} from "@/stores/courseState";
 
-export default function CourseActionButtons({
-  trainerId,
-  courseId,
-}: {
-  trainerId: number;
-  courseId: string;
-}) {
+export default function CourseActionButtons({trainerId}: {trainerId: number}) {
   const {data} = useCheckLoggedIn();
   const {setEditModeOn} = useCourseState();
   return (

@@ -66,7 +66,7 @@ export default function CourseInfoComp({
         <SessionListSection sessions={sessionList} />
       </div>
 
-      <CourseActionButtons trainerId={trainerId} courseId={courseId} />
+      <CourseActionButtons trainerId={trainerId} />
     </>
   );
 }
