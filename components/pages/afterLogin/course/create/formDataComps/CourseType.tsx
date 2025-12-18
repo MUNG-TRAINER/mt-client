@@ -5,8 +5,6 @@ import CreateCourseInput from "../CreateCourseInput";
 import CourseTypeBtn from "./common/CourseTypeBtn";
 import CourseCountBtn from "./courseType/CourseCountBtn";
 import {useSessionState} from "@/stores/sessionState";
-import MaxStudents from "./session/MaxStudents";
-import SessionPrice from "./session/SessionPrice";
 import SessionComp from "./session/SessionComp";
 
 export default function CourseType() {

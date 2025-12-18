@@ -1,23 +1,23 @@
 "use client";
 
-import {useCallback, useRef, useState} from "react";
+import {useCallback, useRef} from "react";
 import CourseTypeBtn from "./common/CourseTypeBtn";
 import {useSessionState} from "@/stores/sessionState";
 
 export default function CourseIsFree() {
-  const {free, setFreeTrue, setFreeFalse} = useSessionState();
-  const [price, setPrice] = useState("");
+  const {free, setFreeTrue, setFreeFalse, setPrice} = useSessionState();
+
   const freeRef = useRef<HTMLInputElement | null>(null);
   const nonFreeRef = useRef<HTMLInputElement | null>(null);
   /* fn */
   const handleTruePrice = useCallback(() => {
-    setPrice("");
+    setPrice(0);
     setFreeTrue();
-  }, [setFreeTrue]);
+  }, [setFreeTrue, setPrice]);
   const handleFalsePrice = useCallback(() => {
-    setPrice("0");
+    setPrice(null);
     setFreeFalse();
-  }, [setFreeFalse]);
+  }, [setFreeFalse, setPrice]);
   return (
     <div className="flex flex-col gap-2 justify-around *:flex *:gap-2">
       <h5 className="font-bold">유료 / 무료</h5>
