@@ -1,5 +1,5 @@
-import { API_BASE_URL } from "@/util/env";
-import { fetchWithAuth } from "./fetchWithAuth";
+import {API_BASE_URL} from "@/util/env";
+import {fetchWithAuth} from "./fetchWithAuth";
 
 interface IPresignedUrlRequest {
   category: string;
@@ -28,9 +28,17 @@ export const presignedUrlApi = {
   },
 
   // Presigned URL로 S3에 파일 업로드
-  uploadToS3: async (presignedUrl: string, file: File): Promise<string> => {
+  uploadToS3: async (
+    presignedUrl: string | URL | undefined,
+    file: File
+  ): Promise<string> => {
+    if (!presignedUrl) {
+      throw new Error("[uploadToS3] presignedUrl이 없습니다.");
+    }
+    const urlStr =
+      typeof presignedUrl === "string" ? presignedUrl : presignedUrl.toString();
     console.log("[uploadToS3] start:", {
-      url: presignedUrl.substring(0, 120) + "...",
+      url: urlStr.slice(0, 120) + "...",
       contentType: file.type,
       size: file.size,
     });
@@ -44,6 +52,7 @@ export const presignedUrlApi = {
         body: file,
       });
 
+      console.log("업로드 중...");
       if (!response.ok) {
         const text = await response.text().catch(() => "");
         console.error("[uploadToS3] error body:", text);
@@ -53,6 +62,7 @@ export const presignedUrlApi = {
       // URL에서 S3 키(파일 경로)만 추출
       const url = new URL(presignedUrl);
       const s3Key = url.pathname.substring(1); // 맨 앞의 '/' 제거
+      console.log("업로드 완료");
       return s3Key;
     } catch (error) {
       console.error("[uploadToS3] fetch error:", error);

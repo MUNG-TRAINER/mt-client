@@ -3,6 +3,7 @@ import {create} from "zustand";
 interface ISessionStateTypes {
   count: number;
   free: boolean;
+  price: number | null;
 }
 interface ISessionStateMutateTypes extends ISessionStateTypes {
   setCount: (index: number) => void;
@@ -10,11 +11,13 @@ interface ISessionStateMutateTypes extends ISessionStateTypes {
   handleCountPlus: () => void;
   setFreeTrue: () => void;
   setFreeFalse: () => void;
+  setPrice: (i: number | null) => void;
 }
 
 export const useSessionState = create<ISessionStateMutateTypes>((set) => ({
   count: 1,
   free: true,
+  price: 0,
   setCount: (index) => set(() => ({count: index})),
   handleCountMinus: () =>
     set(({count}) => ({
@@ -26,4 +29,5 @@ export const useSessionState = create<ISessionStateMutateTypes>((set) => ({
     })),
   setFreeTrue: () => set(() => ({free: true})),
   setFreeFalse: () => set(() => ({free: false})),
+  setPrice: (index) => set(() => ({price: index})),
 }));

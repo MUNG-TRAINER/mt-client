@@ -1,7 +1,7 @@
 "use client";
 
+import {IUploadCourseTypes} from "@/types/course/courseType";
 import SessionItems from "./SessionItems";
-import {ISessionDataTypes} from "@/types/course/sessionType";
 
 export default function SessionComp({count}: {count: number}) {
   const session = Array.from(
@@ -17,7 +17,7 @@ export default function SessionComp({count}: {count: number}) {
         maxStudents: 1,
         price: 0,
         content: "",
-      } as ISessionDataTypes)
+      } as IUploadCourseTypes)
   );
 
   return (
