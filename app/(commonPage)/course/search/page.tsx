@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { SearchBar } from "@/components/shared/search/SearchBar";
 import { CourseList } from "@/components/shared/course/CourseList";
@@ -9,27 +9,54 @@ import { useCourseSearch } from "@/hooks/course/useCourseSearch";
 export default function CourseSearchPage() {
   const router = useRouter();
   const [keyword, setKeyword] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
+  const observerTarget = useRef<HTMLDivElement>(null);
 
-  const { data, isLoading, error } = useCourseSearch({
+  const {
+    data,
+    isLoading,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useCourseSearch({
     keyword: keyword || undefined,
-    page: currentPage,
   });
+
+  // 무한 스크롤 구현
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
+          fetchNextPage();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    const currentTarget = observerTarget.current;
+    if (currentTarget) {
+      observer.observe(currentTarget);
+    }
+
+    return () => {
+      if (currentTarget) {
+        observer.unobserve(currentTarget);
+      }
+    };
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const handleSearch = (searchKeyword: string) => {
     setKeyword(searchKeyword);
-    setCurrentPage(1); // 새로운 검색 시 첫 페이지로
   };
 
   const handleReserve = (courseId: number) => {
     router.push(`/course/${courseId}`);
   };
 
-  const handleLoadMore = () => {
-    if (data && currentPage < data.totalPages) {
-      setCurrentPage((prev) => prev + 1);
-    }
-  };
+  // 모든 페이지의 데이터를 하나로 합침
+  const allCourses = data?.pages.flatMap((page) => page.courses) || [];
+  // 커서 기반에서는 totalCount가 없으므로 현재 로드된 개수만 표시
+  const loadedCount = allCourses.length;
 
   return (
     <div className="w-full h-full flex flex-col gap-4">
@@ -43,22 +70,15 @@ export default function CourseSearchPage() {
       </div>
 
       {/* 검색 결과 정보 */}
-      {data && !isLoading && (
+      {!isLoading && allCourses.length > 0 && (
         <div className="flex items-center justify-between text-xs">
           <p className="text-gray-600">
-            총{" "}
-            <span className="font-semibold text-gray-900">
-              {data.totalCount}
-            </span>
-            개
+            <span className="font-semibold text-gray-900">{loadedCount}</span>개
             {keyword && (
               <span className="ml-1">
                 (<span className="font-semibold">"{keyword}"</span>)
               </span>
             )}
-          </p>
-          <p className="text-gray-500">
-            {data.currentPage} / {data.totalPages}
           </p>
         </div>
       )}
@@ -75,24 +95,22 @@ export default function CourseSearchPage() {
       {/* 과정 목록 */}
       <div className="flex-1 overflow-y-auto">
         <CourseList
-          courses={data?.courses || []}
+          courses={allCourses}
           onReserve={handleReserve}
           isLoading={isLoading}
-          isEmpty={!isLoading && data?.courses.length === 0}
+          isEmpty={!isLoading && allCourses.length === 0}
         />
-      </div>
 
-      {/* 더보기 버튼 */}
-      {data && data.currentPage < data.totalPages && !isLoading && (
-        <div className="w-full">
-          <button
-            onClick={handleLoadMore}
-            className="w-full py-3 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors text-sm font-medium"
-          >
-            더보기 ({data.currentPage} / {data.totalPages})
-          </button>
+        {/* 무한 스크롤 감지 영역 */}
+        <div
+          ref={observerTarget}
+          className="h-10 flex items-center justify-center"
+        >
+          {isFetchingNextPage && (
+            <div className="text-sm text-gray-500">로딩 중...</div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 }

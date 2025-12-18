@@ -4,13 +4,13 @@ import { API_BASE_URL } from "@/util/env";
 
 interface SearchParams {
   keyword?: string;
-  page?: number;
+  lastCourseId?: number; // 커서 기반: 마지막으로 조회한 courseId
   size?: number;
 }
 
 export const courseAPI = {
   /**
-   * 훈련 과정 검색
+   * 훈련 과정 검색 (커서 기반 무한 스크롤)
    */
   searchCourses: async (
     params: SearchParams = {}
@@ -20,8 +20,8 @@ export const courseAPI = {
     if (params.keyword) {
       queryParams.append("keyword", params.keyword);
     }
-    if (params.page) {
-      queryParams.append("page", params.page.toString());
+    if (params.lastCourseId) {
+      queryParams.append("lastCourseId", params.lastCourseId.toString());
     }
     if (params.size) {
       queryParams.append("size", params.size.toString());

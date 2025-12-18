@@ -17,14 +17,13 @@ export interface CourseItem {
 }
 
 /**
- * 검색 응답
+ * 훈련 과정 검색 응답 (커서 기반 무한 스크롤)
  */
 export interface CourseSearchResponse {
   courses: CourseItem[];
-  totalCount: number;
-  currentPage: number;
-  totalPages: number;
-  pageSize: number;
+  hasMore: boolean; // 다음 페이지 존재 여부
+  lastCourseId: number | null; // 마지막 courseId (다음 요청 시 사용)
+  size: number; // 현재 조회된 항목 수
 }
 
 /**
@@ -73,4 +72,4 @@ export interface ICourseType {
   items: string;
   dogSize: string;
   tags: string; // Comma-separated tags
-};
+}

@@ -102,8 +102,11 @@ export const CourseCard = ({ course, onReserve }: CourseCardProps) => {
           <div>
             <p className="text-[10px] text-gray-500 mb-0.5">참가비</p>
             <p className="text-lg font-bold text-gray-900">
+              <span className="text-sm text-gray-500 font-medium mr-1">
+                회당
+              </span>
               {course.price.toLocaleString()}
-              <span className="text-sm">원</span>
+              <span className="text-sm">원~</span>
             </p>
           </div>
           <button
