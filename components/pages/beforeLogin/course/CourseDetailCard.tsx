@@ -50,7 +50,12 @@ export default function CourseDetailCard({ courseId }: { courseId: string }) {
     useSessionList(courseId);
 
   if (courseIsPending || sessionIsPending || trainerIsPending) {
-    return <div className="p-6 text-center">로딩 중...</div>;
+    return (
+      <div className="flex flex-col items-center justify-center h-[70vh] gap-4 w-full text-align-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+        <div className="p-6 text-center">로딩 중...</div>
+      </div>
+    );
   }
 
   if (!courseDetail) {

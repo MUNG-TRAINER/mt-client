@@ -9,5 +9,6 @@ export interface ITrainerInfoType {
   description: string;
   style: string;
   tag: string;
+  registCode: string;
   certificationImageUrl: string | null;
 }
