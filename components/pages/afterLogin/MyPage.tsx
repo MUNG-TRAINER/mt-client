@@ -226,9 +226,12 @@ export default function MyPage() {
         >
           수정
         </Link>
-        <button className="flex-1 border border-(--mt-gray) text-(--mt-gray) py-3 rounded-md font-bold hover:bg-(--mt-gray-light) transition-colors">
+        <Link
+          href="/mypage/password"
+          className="flex-1 border border-(--mt-gray) text-(--mt-gray) py-3 rounded-md font-bold text-center hover:bg-(--mt-gray-light) transition-colors"
+        >
           비밀번호변경
-        </button>
+        </Link>
       </div>
     </div>
   );

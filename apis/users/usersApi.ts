@@ -1,5 +1,6 @@
 import { IMyPageTypes } from "@/types/mypage/myPageType";
 import { UpdateUserInfoType } from "@/schemas/mypageSchema";
+import { ChangePasswordType } from "@/schemas/passwordSchema";
 
 export const usersApi = {
   me: async () => {
@@ -31,6 +32,24 @@ export const usersApi = {
     }
 
     const result: IMyPageTypes = await response.json();
+    return result;
+  },
+
+  changePassword: async (data: ChangePasswordType) => {
+    const response = await fetch("/api/auth/password", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(data),
+    });
+
+    if (!response?.ok) {
+      throw new Error("비밀번호 변경에 실패했습니다.");
+    }
+
+    const result = await response.json();
     return result;
   },
 };
