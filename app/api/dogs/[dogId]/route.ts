@@ -17,7 +17,13 @@ export async function GET(
   });
 
   if (!res.ok) {
-    throw new Error("반려견 정보를 불러올 수 없습니다.");
+    const errorData = await res
+      .json()
+      .catch(() => ({ message: "반려견 정보를 불러올 수 없습니다." }));
+    return NextResponse.json(
+      { error: errorData.message || "반려견 정보를 불러올 수 없습니다." },
+      { status: res.status }
+    );
   }
 
   const data = await res.json();
@@ -42,7 +48,13 @@ export async function PATCH(
   });
 
   if (!res.ok) {
-    throw new Error("반려견 정보 수정에 실패했습니다.");
+    const errorData = await res
+      .json()
+      .catch(() => ({ message: "반려견 정보 수정에 실패했습니다." }));
+    return NextResponse.json(
+      { error: errorData.message || "반려견 정보 수정에 실패했습니다." },
+      { status: res.status }
+    );
   }
 
   return new NextResponse(null, { status: 204 });
@@ -63,7 +75,13 @@ export async function DELETE(
   });
 
   if (!res.ok) {
-    throw new Error("반려견 삭제에 실패했습니다.");
+    const errorData = await res
+      .json()
+      .catch(() => ({ message: "반려견 삭제에 실패했습니다." }));
+    return NextResponse.json(
+      { error: errorData.message || "반려견 삭제에 실패했습니다." },
+      { status: res.status }
+    );
   }
 
   return new NextResponse(null, { status: 204 });

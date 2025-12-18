@@ -17,12 +17,14 @@ interface CourseCardProps {
 }
 
 export const CourseCard = ({ course, onReserve }: CourseCardProps) => {
-  const handleReserve = (e: React.MouseEvent) => {
-    e.stopPropagation(); // 카드 클릭 이벤트 전파 방지
+  // 카드 전체 클릭 핸들러
+  const handleCardClick = () => {
     onReserve?.(course.courseId);
   };
 
-  const handleCardClick = () => {
+  // 버튼 클릭 핸들러 (이벤트 버블링 방지로 카드 클릭 중복 실행 차단)
+  const handleButtonClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
     onReserve?.(course.courseId);
   };
 
@@ -41,6 +43,43 @@ export const CourseCard = ({ course, onReserve }: CourseCardProps) => {
     ? course.tags.split(",").map((tag) => tag.trim())
     : [];
 
+  // 상태 배지 렌더링 함수
+  const renderStatusBadge = () => {
+    if (course.status === "CANCELLED") {
+      return (
+        <div className="absolute top-3 right-3 px-3 py-1.5 bg-red-500 text-white text-xs font-bold rounded-lg shadow-lg">
+          취소됨
+        </div>
+      );
+    }
+
+    if (course.status === "DONE") {
+      return (
+        <div className="absolute top-3 right-3 px-3 py-1.5 bg-green-500 text-white text-xs font-bold rounded-lg shadow-lg">
+          마감
+        </div>
+      );
+    }
+
+    if (!course.session) {
+      return (
+        <div className="absolute top-3 right-3 px-3 py-1.5 bg-red-500 text-white text-xs font-bold rounded-lg shadow-lg">
+          신청불가
+        </div>
+      );
+    }
+
+    if (course.status === "SCHEDULED" && course.session) {
+      return (
+        <div className="absolute top-3 right-3 px-3 py-1.5 bg-blue-500 text-white text-xs font-bold rounded-lg shadow-lg">
+          모집중
+        </div>
+      );
+    }
+
+    return null;
+  };
+
   return (
     <div
       onClick={handleCardClick}
@@ -54,7 +93,7 @@ export const CourseCard = ({ course, onReserve }: CourseCardProps) => {
             alt={course.title}
             fill
             className="object-cover"
-            sizes="100vw"
+            sizes="(max-width: 768px) 100vw, 400px"
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
@@ -73,28 +112,7 @@ export const CourseCard = ({ course, onReserve }: CourseCardProps) => {
         )}
 
         {/* 상태 배지 */}
-        {course.status === "CANCELLED" && (
-          <div className="absolute top-3 right-3 px-3 py-1.5 bg-red-500 text-white text-xs font-bold rounded-lg shadow-lg">
-            취소됨
-          </div>
-        )}
-        {course.status === "DONE" && (
-          <div className="absolute top-3 right-3 px-3 py-1.5 bg-green-500 text-white text-xs font-bold rounded-lg shadow-lg">
-            마감
-          </div>
-        )}
-        {!course.session &&
-          course.status !== "CANCELLED" &&
-          course.status !== "DONE" && (
-            <div className="absolute top-3 right-3 px-3 py-1.5 bg-red-500 text-white text-xs font-bold rounded-lg shadow-lg">
-              신청불가
-            </div>
-          )}
-        {course.status === "SCHEDULED" && course.session && (
-          <div className="absolute top-3 right-3 px-3 py-1.5 bg-blue-500 text-white text-xs font-bold rounded-lg shadow-lg">
-            모집중
-          </div>
-        )}
+        {renderStatusBadge()}
       </div>
 
       {/* 컨텐츠 섹션 */}
@@ -202,14 +220,14 @@ export const CourseCard = ({ course, onReserve }: CourseCardProps) => {
           course.status === "DONE" ||
           !course.session ? (
             <button
-              onClick={handleReserve}
+              onClick={handleButtonClick}
               className="px-6 py-2.5 text-sm font-bold rounded-xl bg-gray-300 text-gray-600 hover:bg-gray-400 transition-colors whitespace-nowrap"
             >
               상세보기
             </button>
           ) : (
             <button
-              onClick={handleReserve}
+              onClick={handleButtonClick}
               className="px-6 py-2.5 text-sm font-bold rounded-xl bg-blue-600 text-white hover:bg-blue-700 transition-colors whitespace-nowrap"
             >
               상세보기

@@ -42,6 +42,7 @@ export const SearchBar = ({
         <button
           type="submit"
           className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+          aria-label="검색"
         >
           <MagnifyingGlassIcon className="w-5 h-5" />
         </button>
@@ -52,6 +53,7 @@ export const SearchBar = ({
             type="button"
             onClick={handleClear}
             className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+            aria-label="검색어 지우기"
           >
             <XMarkIcon className="w-5 h-5" />
           </button>

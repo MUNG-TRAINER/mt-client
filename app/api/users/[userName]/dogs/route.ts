@@ -17,7 +17,13 @@ export async function GET(
   });
 
   if (!res.ok) {
-    throw new Error("반려견 목록을 불러올 수 없습니다.");
+    const errorData = await res
+      .json()
+      .catch(() => ({ message: "반려견 목록을 불러올 수 없습니다." }));
+    return NextResponse.json(
+      { error: errorData.message || "반려견 목록을 불러올 수 없습니다." },
+      { status: res.status }
+    );
   }
 
   const data = await res.json();

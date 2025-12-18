@@ -8,7 +8,7 @@ export interface SessionSummaryDto {
   locationDetail: string;
   maxStudents: number;
   price: number;
-  status: string; // 세션 상태
+  status: string; // 세션 상태 (예: "SCHEDULED" | "CANCELLED" | "DONE" 등)
 }
 
 /**

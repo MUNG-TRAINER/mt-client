@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { SearchBar } from "@/components/shared/search/SearchBar";
 import { CourseList } from "@/components/shared/course/CourseList";
 import { useCourseSearch } from "@/hooks/course/useCourseSearch";
+import { CourseSearchResponse } from "@/types/course/courseType";
 
 export default function CourseSearchPage() {
   const router = useRouter();
@@ -54,7 +55,8 @@ export default function CourseSearchPage() {
   };
 
   // 모든 페이지의 데이터를 하나로 합침
-  const allCourses = data?.pages.flatMap((page: any) => page.courses) || [];
+  const allCourses =
+    data?.pages.flatMap((page: CourseSearchResponse) => page.courses) || [];
   // 커서 기반에서는 totalCount가 없으므로 현재 로드된 개수만 표시
   const loadedCount = allCourses.length;
 
