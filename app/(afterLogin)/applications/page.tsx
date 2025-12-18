@@ -2,9 +2,10 @@
 
 import {useEffect, useState} from "react";
 import {ApplicationType} from "@/types/applications/applicationsType";
-import Applications from "@/components/pages/afterLogin/applications/Applications";
+import Applications from "@/components/pages/afterLogin/applications/Application";
 import LoadingSpinner from "@/components/shared/feedback/LoadingSpinner";
-const ApplicationsPage = () => {
+
+const ApplicationPage = () => {
   const [applications, setApplications] = useState<ApplicationType[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -28,7 +29,8 @@ const ApplicationsPage = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading) return <LoadingSpinner message="신청 내역을 불러오는 중..." size="md" />;
+  if (loading)
+    return <LoadingSpinner message="신청 내역을 불러오는 중..." size="md" />;
 
   if (!applications.length)
     return (
@@ -40,4 +42,4 @@ const ApplicationsPage = () => {
   return <Applications initialData={applications} />;
 };
 
-export default ApplicationsPage;
+export default ApplicationPage;

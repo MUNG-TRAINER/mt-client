@@ -14,4 +14,6 @@ export interface ApplicationType {
   dogName: string;
   rejectReason?: string;
   location: string;
+  lessonForm: string;
+  type: string;
 }

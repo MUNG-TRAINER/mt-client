@@ -2,7 +2,7 @@
 
 import React, {useState} from "react";
 import {ApplicationType} from "@/types/applications/applicationsType";
-import CardList from "../../../shared/cards/CardLst";
+import CardList from "../../../shared/cards/CourseCard";
 import Image from "next/image";
 
 interface Props {
@@ -30,7 +30,6 @@ const ApplicationCard: React.FC<Props> = ({app, onSelect, isSelected}) => {
     (app.mainImage.startsWith("http") || app.mainImage.startsWith("/"))
       ? app.mainImage
       : "/images/application/test.jpg"; // public/images/application/test.jpg 필요
-
   return (
     <li
       className="relative cursor-pointer flex flex-col rounded-2xl shadow-md bg-white p-4"
@@ -50,7 +49,6 @@ const ApplicationCard: React.FC<Props> = ({app, onSelect, isSelected}) => {
         />
       </div>
 
-      {/* 디자인 영역은 ApplicationInfo에 맡김 */}
       <CardList
         title={app.title}
         description={app.description}
@@ -59,18 +57,47 @@ const ApplicationCard: React.FC<Props> = ({app, onSelect, isSelected}) => {
         sessionSchedule={app.sessionSchedule}
         location={app.location}
       />
-      {/* 도그 네임 */}
-      {app.dogName && (
-        <div className=" flex items-center p-1 text-sm font-medium text-gray-700 mb-2 gap-1">
-          <Image
-            src="/images/application/dog.jpg"
-            alt="달력"
-            width={19}
-            height={19} // height도 width 비슷하게 맞춰주는게 좋음
-          />
-          신청 강아지 : {app.dogName}
+      {/* ===== Dog Name + Type + LessonForm ===== */}
+      <div className="flex justify-between">
+        {app.dogName && (
+          <div className="flex items-center text-xs font-medium text-gray-700 gap-1">
+            <Image
+              src="/images/application/dog.jpg"
+              alt="강아지"
+              width={19}
+              height={19}
+            />
+            {app.dogName}
+          </div>
+        )}
+        <div className="flex gap-1">
+          {app.type && (
+            <span className="flex gap-1 text-xs items-center leading-none px-1.5 py-0.5 rounded-full">
+              <Image
+                src="/images/application/repeat.jpg"
+                alt="타입"
+                width={13}
+                height={5}
+                className="w-[14px] h-[15px] items-center"
+              />
+              {app.type}
+            </span>
+          )}
+
+          {app.lessonForm && (
+            <span className="flex gap-1 text-xs items-center leading-none px-1 py-1 pl-2 pr-2 rounded-3xl">
+              <Image
+                src="/images/application/check.jpg"
+                alt="lessonform"
+                width={13}
+                height={5}
+                className="w-[14px] h-[15px] items-center"
+              />
+              {app.lessonForm}
+            </span>
+          )}
         </div>
-      )}
+      </div>
 
       {/* 버튼 영역 */}
       <div className="flex gap-2 mt-2">

@@ -18,7 +18,7 @@ const tagStyleMap = [
   {bg: "#E5DBFF", text: "#7950F2"},
 ];
 
-const ApplicationInfo: React.FC<ApplicationInfoProps> = ({
+const CourseCard: React.FC<ApplicationInfoProps> = ({
   title,
   description,
   tags = [],
@@ -103,4 +103,4 @@ const ApplicationInfo: React.FC<ApplicationInfoProps> = ({
   );
 };
 
-export default ApplicationInfo;
+export default CourseCard;
