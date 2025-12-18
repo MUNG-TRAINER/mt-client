@@ -7,13 +7,13 @@ import {
 import {API_BASE_URL} from "@/util/env";
 
 export async function POST(req: Request) {
-  const body = await req.json();
+  const requestBody = await req.json();
   const res = await fetch(`${API_BASE_URL}/auth/login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(body),
+    body: JSON.stringify(requestBody),
   });
 
   if (!res.ok) {
@@ -25,23 +25,23 @@ export async function POST(req: Request) {
   const {ACCESS_TOKEN, REFRESH_TOKEN, accessMaxAge, refreshMaxAge} =
     cookieExtractor(setCookies);
 
-  const response = NextResponse.json({success: true});
+  const data = await res.json();
+  const response = NextResponse.json(data);
 
   response.cookies.set(NAME_ACCESS_TOKEN, ACCESS_TOKEN, {
-    maxAge: Number(accessMaxAge),
-    path: "/",
     httpOnly: true,
-    sameSite: "lax",
+    path: "/",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    maxAge: Number(accessMaxAge),
     secure: process.env.NODE_ENV === "production",
   });
 
   response.cookies.set(NAME_REFRESH_TOKEN, REFRESH_TOKEN, {
-    maxAge: Number(refreshMaxAge),
-    path: "/",
     httpOnly: true,
-    sameSite: "lax",
+    path: "/",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    maxAge: Number(refreshMaxAge),
     secure: process.env.NODE_ENV === "production",
   });
-
   return response;
 }
