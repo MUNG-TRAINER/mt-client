@@ -1,25 +1,28 @@
-import { API_BASE_URL } from "@/util/env";
-import { fetchWithAuth } from "../common/fetchWithAuth";
 import { IMyPageTypes } from "@/types/mypage/myPageType";
 import { UpdateUserInfoType } from "@/schemas/mypageSchema";
 
 export const usersApi = {
   me: async () => {
-    const resposne = await fetchWithAuth(`${API_BASE_URL}/users/me`, {
+    const response = await fetch("/api/users/me", {
       method: "GET",
+      credentials: "include",
     });
 
-    if (!resposne?.ok) {
+    if (!response?.ok) {
       throw new Error("유저의 정보를 불러올 수 없습니다.");
     }
 
-    const data: IMyPageTypes = await resposne.json();
+    const data: IMyPageTypes = await response.json();
     return data;
   },
 
   updateUserInfo: async (data: UpdateUserInfoType) => {
-    const response = await fetchWithAuth(`${API_BASE_URL}/users/me`, {
+    const response = await fetch("/api/users/me", {
       method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
       body: JSON.stringify(data),
     });
 
