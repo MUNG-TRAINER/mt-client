@@ -1,19 +1,36 @@
 /**
- * 훈련 과정 아이템
+ * 세션 요약 정보
+ */
+export interface SessionSummaryDto {
+  sessionId: number;
+  startTime: string; // ISO 8601 형식
+  endTime: string; // ISO 8601 형식
+  locationDetail: string;
+  maxStudents: number;
+  price: number;
+  status: string; // 세션 상태
+}
+
+/**
+ * 훈련 과정 아이템 (검색 결과용)
  */
 export interface CourseItem {
   courseId: number;
   trainerId: number;
   trainerName: string;
   title: string;
-  description: string;
-  tags: string;
-  mainImage: string | null;
-  lessonForm: "WALK" | "GROUP" | "PRIVATE";
-  difficulty: "BEGINNER" | "INTERMEDIATE" | "ADVANCED";
-  location: string;
+  description: string; // 과정 설명
+  tags: string; // 태그 (쉼표로 구분)
+  mainImage: string;
   type: "ONCE" | "MULTI";
-  price: number;
+  lessonForm: "WALK" | "GROUP" | "PRIVATE";
+  difficulty: string; // "초급", "중급", "고급" 등
+  isFree: boolean; // 무료 여부
+  status: string; // 과정 상태: "SCHEDULED" | "CANCELLED" | "DONE"
+  location: string; // 시/도 단위
+  schedule: string; // 일정 정보
+  dogSize: string; // 대상 강아지 크기
+  session: SessionSummaryDto | null; // 최저가 세션 정보
 }
 
 /**
@@ -25,15 +42,6 @@ export interface CourseSearchResponse {
   lastCourseId: number | null; // 마지막 courseId (다음 요청 시 사용)
   size: number; // 현재 조회된 항목 수
 }
-
-/**
- * 난이도 한글 매핑
- */
-export const DIFFICULTY_LABEL: Record<CourseItem["difficulty"], string> = {
-  BEGINNER: "초급",
-  INTERMEDIATE: "중급",
-  ADVANCED: "고급",
-};
 
 /**
  * 수업 형태 한글 매핑
