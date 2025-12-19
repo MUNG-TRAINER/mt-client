@@ -11,6 +11,7 @@ interface IApplicationSetStateType {
 }
 
 type ApplicationStateType = IApplicationSetStateType & IApplicationStateType;
+
 export const useApplicationState = create<ApplicationStateType>((set) => ({
   activeTab: "pending",
   selectedIndex: [],
