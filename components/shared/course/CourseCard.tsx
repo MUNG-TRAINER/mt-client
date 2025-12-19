@@ -38,11 +38,6 @@ export const CourseCard = ({ course, onReserve }: CourseCardProps) => {
     });
   };
 
-  // 태그 파싱
-  const tags = course.tags
-    ? course.tags.split(",").map((tag) => tag.trim())
-    : [];
-
   // 상태 배지 렌더링 함수
   const renderStatusBadge = () => {
     if (course.status === "CANCELLED") {
@@ -137,20 +132,6 @@ export const CourseCard = ({ course, onReserve }: CourseCardProps) => {
             </span>
           )}
         </div>
-
-        {/* 태그 */}
-        {tags.length > 0 && (
-          <div className="flex gap-1.5 flex-wrap">
-            {tags.slice(0, 5).map((tag, index) => (
-              <span
-                key={index}
-                className="px-2 py-0.5 bg-gray-50 text-gray-600 text-xs rounded-md"
-              >
-                #{tag}
-              </span>
-            ))}
-          </div>
-        )}
 
         {/* 제목 */}
         <div className="flex items-center gap-2">
