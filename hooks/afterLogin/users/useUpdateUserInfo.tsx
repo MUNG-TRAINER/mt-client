@@ -7,7 +7,7 @@ export default function useUpdateUserInfo() {
   const queryClient = useQueryClient();
   const router = useRouter();
 
-  const { mutate, mutateAsync, isPending, isError, error } = useMutation({
+  const { mutate, isPending, isError, error } = useMutation({
     mutationFn: (data: UpdateUserInfoType) => usersApi.updateUserInfo(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["me"] });
@@ -15,5 +15,5 @@ export default function useUpdateUserInfo() {
     },
   });
 
-  return { mutate, mutateAsync, isPending, isError, error };
+  return { mutate, isPending, isError, error };
 }

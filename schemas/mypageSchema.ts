@@ -1,12 +1,12 @@
 import z from "zod";
 
 export const updateUserInfoSchema = z.object({
-  name: z.coerce.string().min(1, { error: "이름은 필수입니다." }),
+  name: z.coerce.string().min(1, { message: "이름은 필수입니다." }),
   phone: z.coerce
     .string()
-    .min(10, { error: "전화번호를 올바르게 작성해주세요" })
+    .min(10, { message: "전화번호를 올바르게 작성해주세요" })
     .transform((val) => val.replace(/-/g, "")),
-  birth: z.coerce.string().min(1, { error: "생일을 입력해주세요." }),
+  birth: z.coerce.string().min(1, { message: "생일을 입력해주세요." }),
   sido: z.coerce.string().optional(),
   sigungu: z.coerce.string().optional(),
   roadname: z.coerce.string().optional(),

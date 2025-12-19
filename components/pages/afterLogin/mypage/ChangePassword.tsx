@@ -1,7 +1,7 @@
 "use client";
 import { LockClosedIcon } from "@/components/icons/lock";
 import useChangePassword from "@/hooks/afterLogin/users/useChangePassword";
-import { ChangePasswordType } from "@/schemas/passwordSchema";
+import { changePasswordSchema } from "@/schemas/passwordSchema";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { EyeIcon, EyeSlashIcon } from "@/components/icons/eye";
@@ -28,50 +28,31 @@ export default function ChangePassword() {
     }
   }, [isError, error]);
 
-  const validateForm = (): boolean => {
-    const errors: typeof validationErrors = {};
-
-    // 기존 비밀번호 검증
-    if (!oldPassword) {
-      errors.oldPassword = "기존 비밀번호를 입력하세요.";
-    } else if (oldPassword.length < 8) {
-      errors.oldPassword = "비밀번호는 최소 8자 이상이어야 합니다.";
-    }
-
-    // 새 비밀번호 검증
-    if (!newPassword) {
-      errors.newPassword = "새 비밀번호를 입력하세요.";
-    } else if (newPassword.length < 8) {
-      errors.newPassword = "비밀번호는 최소 8자 이상이어야 합니다.";
-    } else if (oldPassword === newPassword) {
-      errors.newPassword = "새 비밀번호는 기존 비밀번호와 달라야 합니다.";
-    }
-
-    // 비밀번호 확인 검증
-    if (!confirmPassword) {
-      errors.confirmPassword = "비밀번호 확인을 입력하세요.";
-    } else if (newPassword !== confirmPassword) {
-      errors.confirmPassword = "비밀번호가 일치하지 않습니다.";
-    }
-
-    setValidationErrors(errors);
-    return Object.keys(errors).length === 0;
-  };
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!validateForm()) {
-      return;
-    }
-
-    const data: ChangePasswordType = {
+    const formData = {
       oldPassword,
       newPassword,
       confirmPassword,
     };
 
-    mutate(data);
+    const result = changePasswordSchema.safeParse(formData);
+
+    if (!result.success) {
+      const errors: typeof validationErrors = {};
+      result.error.issues.forEach((issue) => {
+        const field = issue.path[0] as keyof typeof validationErrors;
+        if (field) {
+          errors[field] = issue.message;
+        }
+      });
+      setValidationErrors(errors);
+      return;
+    }
+
+    setValidationErrors({});
+    mutate(result.data);
   };
 
   return (
@@ -108,6 +89,9 @@ export default function ChangePassword() {
               type="button"
               onClick={() => setShowOldPassword(!showOldPassword)}
               className="absolute right-3 flex items-center"
+              aria-label={
+                showOldPassword ? "기존 비밀번호 숨기기" : "기존 비밀번호 보기"
+              }
             >
               {showOldPassword ? (
                 <EyeSlashIcon className="size-5 text-(--mt-gray)" />
@@ -144,6 +128,9 @@ export default function ChangePassword() {
               type="button"
               onClick={() => setShowNewPassword(!showNewPassword)}
               className="absolute right-3 flex items-center"
+              aria-label={
+                showNewPassword ? "새 비밀번호 숨기기" : "새 비밀번호 보기"
+              }
             >
               {showNewPassword ? (
                 <EyeSlashIcon className="size-5 text-(--mt-gray)" />
@@ -181,6 +168,11 @@ export default function ChangePassword() {
               type="button"
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               className="absolute right-3 flex items-center"
+              aria-label={
+                showConfirmPassword
+                  ? "비밀번호 확인 숨기기"
+                  : "비밀번호 확인 보기"
+              }
             >
               {showConfirmPassword ? (
                 <EyeSlashIcon className="size-5 text-(--mt-gray)" />

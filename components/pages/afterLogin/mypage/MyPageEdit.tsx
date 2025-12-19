@@ -29,10 +29,12 @@ export default function MyPageEdit() {
   const [roadname, setRoadname] = useState("");
   const [postcode, setPostcode] = useState("");
   const [restAddress, setRestAddress] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     if (isError) {
       console.error("사용자 정보 수정 실패:", error);
+      setErrorMessage("사용자 정보 수정에 실패했습니다. 다시 시도해주세요.");
     }
   }, [isError, error]);
 
@@ -70,8 +72,33 @@ export default function MyPageEdit() {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      // 파일 크기 검증 (5MB)
+      const maxSize = 5 * 1024 * 1024;
+      if (file.size > maxSize) {
+        setErrorMessage("파일 크기는 5MB를 초과할 수 없습니다.");
+        e.target.value = "";
+        return;
+      }
+
+      // 파일 형식 검증
+      const allowedTypes = [
+        "image/jpeg",
+        "image/jpg",
+        "image/png",
+        "image/gif",
+        "image/webp",
+      ];
+      if (!allowedTypes.includes(file.type)) {
+        setErrorMessage(
+          "지원하지 않는 파일 형식입니다. (지원 형식: JPG, PNG, GIF, WebP)"
+        );
+        e.target.value = "";
+        return;
+      }
+
       setProfileFile(file);
       setIsImageDeleted(false);
+      setErrorMessage("");
       const reader = new FileReader();
       reader.onloadend = () => {
         setProfileImage(reader.result as string);
@@ -91,6 +118,7 @@ export default function MyPageEdit() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMessage("");
 
     try {
       let profileImageUrl: string | undefined;
@@ -111,7 +139,11 @@ export default function MyPageEdit() {
         });
 
         if (!presignedUrlResponse.ok) {
-          throw new Error("프로필 이미지 업로드 URL 발급에 실패했습니다.");
+          const errorData = await presignedUrlResponse.json().catch(() => ({}));
+          throw new Error(
+            errorData.message ||
+              `프로필 이미지 업로드 URL 발급에 실패했습니다. (상태 코드: ${presignedUrlResponse.status})`
+          );
         }
 
         const { presignedUrl } = await presignedUrlResponse.json();
@@ -125,7 +157,23 @@ export default function MyPageEdit() {
         });
 
         if (!uploadResponse.ok) {
-          throw new Error("프로필 이미지 업로드에 실패했습니다.");
+          let errorMessage = "프로필 이미지 업로드에 실패했습니다.";
+
+          if (uploadResponse.status === 403) {
+            errorMessage = "이미지 업로드 권한이 없습니다. 다시 시도해주세요.";
+          } else if (uploadResponse.status === 413) {
+            errorMessage =
+              "파일 크기가 너무 큽니다. 5MB 이하의 이미지를 선택해주세요.";
+          } else if (uploadResponse.status >= 500) {
+            errorMessage =
+              "서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.";
+          } else if (uploadResponse.status === 0) {
+            errorMessage = "네트워크 연결을 확인해주세요.";
+          } else {
+            errorMessage = `이미지 업로드에 실패했습니다. (상태 코드: ${uploadResponse.status})`;
+          }
+
+          throw new Error(errorMessage);
         }
 
         const url = new URL(presignedUrl);
@@ -151,7 +199,11 @@ export default function MyPageEdit() {
       mutate(updateData as UpdateUserInfoType);
     } catch (error) {
       console.error("수정 중 오류:", error);
-      alert("정보 수정 중 오류가 발생했습니다.");
+      const message =
+        error instanceof Error
+          ? error.message
+          : "정보 수정 중 오류가 발생했습니다.";
+      setErrorMessage(message);
     }
   };
 
@@ -243,6 +295,12 @@ export default function MyPageEdit() {
           setRestAddress={setRestAddress}
         />
       </div>
+
+      {errorMessage && (
+        <div className="bg-red-50 border border-red-200 rounded-md p-3">
+          <p className="text-sm text-red-600">{errorMessage}</p>
+        </div>
+      )}
 
       <div className="flex gap-2">
         <button
