@@ -102,11 +102,10 @@ export interface ICourseHeroProps {
   durationMinutes: number;
   maxStudents: number;
   lessonFormLabel: string;
-  difficultyBadge: IDifficultyBadge;
+  difficultyLabel: string;
 }
 export interface ICourseBasicsSectionProps {
   course: ICourseType;
-  dogSizeMap: Record<string, string>;
   totalSessions: number;
   schedule: string;
   firstSessionPrice?: number;
