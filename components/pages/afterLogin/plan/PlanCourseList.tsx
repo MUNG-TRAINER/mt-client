@@ -4,11 +4,13 @@ import React from "react";
 import CourseCard from "@/components/shared/cards/CourseCard";
 import {UserCourseType} from "@/types/course/userCourse";
 import Image from "next/image";
+import {useRouter} from "next/navigation";
 
 interface Props {
   courses: UserCourseType[];
 }
 export default function PlanCourseList({courses}: Props) {
+  const router = useRouter();
   const formatTime = (time: string) => time.slice(0, 5);
   if (!courses || courses.length === 0) {
     return (
@@ -17,12 +19,16 @@ export default function PlanCourseList({courses}: Props) {
       </div>
     );
   }
+  const handleClick = (courseId: number) => {
+    router.push(`/course/${courseId}`);
+  };
   return (
     <ul className="flex flex-col gap-4">
       {courses.map((course, courseIndex) =>
         course.sessions.map((session, sessionIndex) => (
           <li
             key={`${course.courseId}-${session.sessionId}-${courseIndex}-${sessionIndex}`} // course+session으로 고유 key
+            onClick={() => handleClick(course.courseId)}
             className="relative cursor-pointer flex flex-col rounded-2xl shadow-md bg-white p-4"
             style={{border: "1px solid #E9ECEF"}}
           >

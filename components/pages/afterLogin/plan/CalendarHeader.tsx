@@ -1,5 +1,6 @@
 import {ChevronLeftIcon, ChevronRightIcon} from "@/components/icons/chevron";
 import {Dispatch, SetStateAction} from "react";
+import {set} from "zod";
 interface ICalendarHeaderProps {
   year: number;
   month: number;
@@ -13,23 +14,25 @@ export default function CalendarHeader({
   setMonth,
 }: ICalendarHeaderProps) {
   const nextMonth = () => {
-    setMonth((prev) => {
-      if (prev === 11) {
-        setYear((y) => y + 1); // prev 기준으로 year 업데이트
-        return 0;
-      }
-      return prev + 1;
-    });
+    if (month === 11) {
+      setYear((y) => y + 1);
+      setMonth(0);
+      return;
+    } else {
+      setMonth((prev) => prev + 1);
+      return;
+    }
   };
 
   const prevMonth = () => {
-    setMonth((prev) => {
-      if (prev === 0) {
-        setYear((y) => y - 1);
-        return 11;
-      }
-      return prev - 1;
-    });
+    if (month === 0) {
+      setYear((y) => y - 1);
+      setMonth(11);
+      return;
+    } else {
+      setMonth((prev) => prev - 1);
+      return;
+    }
   };
   return (
     <div className="flex items-center justify-between">

@@ -1,6 +1,7 @@
 export interface ApplicationType {
   applicationId: number;
   sessionId: number;
+  courseId: number;
   dogId: number;
   applicationStatus: string;
   title: string;

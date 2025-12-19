@@ -5,6 +5,7 @@ import {ApplicationType} from "@/types/applications/applicationsType";
 import CardList from "../../../shared/cards/CourseCard";
 import Image from "next/image";
 import {useApplicationState} from "@/stores/applicationsState";
+import {useRouter} from "next/router";
 
 interface Props {
   app: ApplicationType;
@@ -17,6 +18,8 @@ const statusTextMap: Record<ApplicationType["applicationStatus"], string> = {
   ACCEPT: "승인 완료",
   REJECTED: "승인 거절",
   CANCELLED: "취소됨",
+  COUNSELING_REQUIRED: "상담 요청",
+  EXPIRED: "만료됨",
 };
 
 const ApplicationCard: React.FC<Props> = ({app, isSelected}) => {
@@ -31,11 +34,15 @@ const ApplicationCard: React.FC<Props> = ({app, isSelected}) => {
     (app.mainImage.startsWith("http") || app.mainImage.startsWith("/"))
       ? app.mainImage
       : "/images/application/test.jpg"; // public/images/application/test.jpg 필요
-
+  const router = useRouter();
+  const handleClick = (courseId: number) => {
+    router.push(`/course/${courseId}`);
+  };
   return (
     <li
       className="relative cursor-pointer flex flex-col rounded-2xl shadow-md bg-white p-4"
       style={{border: "1px solid #E9ECEF"}}
+      onClick={() => handleClick(app.courseId)}
     >
       {/* 체크박스 */}
       <div
@@ -144,9 +151,13 @@ const ApplicationCard: React.FC<Props> = ({app, isSelected}) => {
           </>
         )}
 
-        {["APPLIED", "CANCELLED", "WAITING"].includes(
-          app.applicationStatus
-        ) && (
+        {[
+          "APPLIED",
+          "CANCELLED",
+          "WAITING",
+          "COUNSELING_REQUIRED",
+          "EXPIRED",
+        ].includes(app.applicationStatus) && (
           <button
             className="flex-1 flex items-center justify-center gap-2 py-2 text-sm font-semibold rounded-lg"
             style={{border: "1px solid #C5C5C5", color: "#374151"}}

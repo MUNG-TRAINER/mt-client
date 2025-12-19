@@ -64,16 +64,28 @@ export default function Plan({
 
                   <div className="text-[15px]">{course.title}</div>
                 </div>
-                <div className="text-sm flex justify-end items-center w-full gap-1">
-                  <Image
-                    src="/images/application/calendar.jpg"
-                    alt="달력"
-                    width={13}
-                    height={5}
-                    className="w-2.5 h-3.75 items-center"
-                  />
-                  {formatTime(session.startTime)} ~{" "}
-                  {formatTime(session.endTime)}
+                <div className="flex w-full justify-end gap-3">
+                  <div className="text-sm flex items-center gap-1">
+                    <Image
+                      src="/images/application/dog.jpg"
+                      alt="강아지"
+                      width={13}
+                      height={13}
+                      className="w-4.75 h-4.75 items-center"
+                    />
+                    {course.sessions[sessionIndex].dogName}
+                  </div>
+                  <div className="text-sm flex items-center gap-1">
+                    <Image
+                      src="/images/application/calendar.jpg"
+                      alt="달력"
+                      width={13}
+                      height={5}
+                      className="w-3.5 h-3.75 items-center"
+                    />
+                    {formatTime(session.startTime)} ~{" "}
+                    {formatTime(session.endTime)}
+                  </div>
                 </div>
               </div>
             ))
