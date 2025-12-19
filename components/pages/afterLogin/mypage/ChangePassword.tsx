@@ -217,6 +217,11 @@ export default function ChangePassword() {
           {isPending ? "변경 중..." : "변경하기"}
         </button>
       </div>
+      {isError && (
+        <p className="text-sm text-(--mt-red) text-center mt-2">
+          비밀번호 변경에 실패했습니다. 기존 비밀번호를 확인해주세요.
+        </p>
+      )}
     </form>
   );
 }
