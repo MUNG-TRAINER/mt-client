@@ -132,7 +132,7 @@ export const CourseCard = ({ course, onReserve }: CourseCardProps) => {
           </span>
           {getDogSizeLabel(course.dogSize).map((sizeLabel, index) => (
             <span
-              key={index}
+              key={`${sizeLabel}_${index}`}
               className="px-2.5 py-1 bg-purple-50 text-purple-600 text-xs rounded-md font-semibold"
             >
               {sizeLabel}
