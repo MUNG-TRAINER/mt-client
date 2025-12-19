@@ -11,4 +11,7 @@ export interface ApplicationType {
   sessionSchedule: string;
   dogName: string;
   rejectReason?: string;
+  location: string;
+  lessonForm: string;
+  type: string;
 }
