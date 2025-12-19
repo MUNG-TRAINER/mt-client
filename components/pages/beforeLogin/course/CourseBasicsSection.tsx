@@ -6,16 +6,7 @@ import {
   LocationIcon,
   MoneyIcon,
 } from "@/components/icons/courseInfoIcons";
-import { ICourseType } from "@/types/course/courseType";
-
-interface CourseBasicsSectionProps {
-  course: ICourseType;
-  dogSizeMap: Record<string, string>;
-  totalSessions: number;
-  schedule: string;
-  firstSessionPrice?: number;
-  sessionCount: number;
-}
+import {ICourseBasicsSectionProps} from "@/types/course/courseType";
 
 export default function CourseBasicsSection({
   course,
@@ -24,7 +15,7 @@ export default function CourseBasicsSection({
   schedule,
   firstSessionPrice,
   sessionCount,
-}: CourseBasicsSectionProps) {
+}: ICourseBasicsSectionProps) {
   return (
     <div className="space-y-6">
       <InfoRow
@@ -32,8 +23,7 @@ export default function CourseBasicsSection({
         title="수강료"
         content={
           <p className="text-lg font-bold text-(--mt-blue-point)">
-            {((firstSessionPrice || 0) * sessionCount).toLocaleString()}
-            원
+            {((firstSessionPrice || 0) * sessionCount).toLocaleString()}원
           </p>
         }
       />
@@ -56,7 +46,7 @@ export default function CourseBasicsSection({
 
       <InfoRow
         icon={<CalendarIcon className="size-5 text-(--mt-gray) mt-0.5" />}
-        title="수강 정원"
+        title="수강 회차"
         content={
           <p className="text-sm text-(--mt-gray)">
             {totalSessions}회차 과정 ({schedule})

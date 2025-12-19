@@ -1,13 +1,33 @@
+"use client";
+
 import Image from "next/image";
 import { ITrainerInfoType } from "@/types/trainer/trainerType";
 import TagBadges from "@/components/shared/badges/TagBadges";
 import { CheckBadgeIcon } from "@/components/icons/badges";
+import { useState } from "react";
+import useCheckLoggedIn from "@/hooks/afterLogin/users/useCheckLoggedIn";
 
 export default function TrainerDetailCard({
   trainer,
 }: {
   trainer: ITrainerInfoType;
 }) {
+  const { checkIsOwner } = useCheckLoggedIn();
+  const [copied, setCopied] = useState(false);
+  const isOwner = checkIsOwner(trainer.trainerId);
+
+  const handleCopyCode = async () => {
+    if (!trainer.registCode) return;
+
+    try {
+      await navigator.clipboard.writeText(trainer.registCode);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error("클립보드 복사 실패:", err);
+    }
+  };
+
   return (
     <section className="space-y-4">
       {/* 경력 사항 */}
@@ -99,13 +119,19 @@ export default function TrainerDetailCard({
             <h3 className="font-bold text-(--mt-black)">훈련 스타일</h3>
           </div>
           <div className="flex flex-wrap gap-2">
-            {[trainer.style, trainer.tag].filter(Boolean).map((item, idx) => (
-              <TagBadges
-                key={idx}
-                classNames="bg-(--mt-orange-smoke) text-(--mt-orange-point) text-sm font-medium"
-                txt={item}
-              />
-            ))}
+            {[trainer.style, trainer.tag]
+              .filter(Boolean)
+              .map((item, idx) =>
+                item
+                  .split(",")
+                  .map((tagElement: string, tagIdx: number) => (
+                    <TagBadges
+                      key={`${idx}-${tagIdx}`}
+                      classNames="bg-(--mt-orange-smoke) text-(--mt-orange-point) text-sm font-medium"
+                      txt={tagElement.trim()}
+                    />
+                  ))
+              )}
           </div>
         </div>
       )}
@@ -127,6 +153,86 @@ export default function TrainerDetailCard({
               height={400}
               className="w-full h-auto object-contain"
             />
+          </div>
+        </div>
+      )}
+      {trainer.registCode && isOwner && (
+        <div className="bg-white rounded-lg border border-(--mt-gray-light) p-5">
+          <div className="flex items-center gap-2 mb-4">
+            <div className="p-2 bg-(--mt-blue-point) rounded-lg">
+              <svg
+                className="size-5 text-white"
+                fill="none"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M15.75 5.25a3 3 0 0 1 3 3m3 0a6 6 0 0 1-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1 1 21.75 8.25Z"
+                />
+              </svg>
+            </div>
+            <h3 className="font-bold text-(--mt-black)">가입 코드</h3>
+          </div>
+          <div>
+            <div className="flex flex-col items-start justify-between">
+              <div className="flex-1">
+                <p className="text-xs text-(--mt-gray) mb-1">
+                  회원님들의 가입 시 사용
+                </p>
+              </div>
+              <div className="flex justify-between w-full items-center gap-4 bg-(--mt-gray-light) rounded-lg px-4 py-3">
+                <p className="text-lg font-bold text-(--mt-blue-point) tracking-wider font-mono">
+                  {trainer.registCode}
+                </p>
+                <button
+                  onClick={handleCopyCode}
+                  className="flex items-center gap-2 px-4 py-2 bg-(--mt-blue-point) text-white rounded-lg hover:bg-(--mt-blue) transition-colors font-medium text-sm"
+                >
+                  {copied ? (
+                    <>
+                      <svg
+                        className="size-4"
+                        fill="none"
+                        strokeWidth={2}
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M4.5 12.75l6 6 9-13.5"
+                        />
+                      </svg>
+                      복사됨
+                    </>
+                  ) : (
+                    <>
+                      <svg
+                        className="size-4"
+                        fill="none"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M15.666 3.888A2.25 2.25 0 0 0 13.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 0 1-.75.75H9a.75.75 0 0 1-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 0 1-2.25 2.25H6.75A2.25 2.25 0 0 1 4.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 0 1 1.927-.184"
+                        />
+                      </svg>
+                      복사
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+            <p className="text-xs text-(--mt-gray) mt-3 leading-relaxed">
+              이 코드를 회원에게 공유하면 훈련사 정보와 연결된 계정으로 가입할
+              수 있습니다.
+            </p>
           </div>
         </div>
       )}

@@ -1,14 +1,8 @@
 import Image from "next/image";
-import { ICourseType } from "@/types/course/courseType";
-import { InfoIcon, WarningIcon } from "@/components/icons/courseInfoIcons";
+import {ICourseType} from "@/types/course/courseType";
+import {InfoIcon, WarningIcon} from "@/components/icons/courseInfoIcons";
 
-interface CourseIntroSectionProps {
-  course: ICourseType;
-}
-
-export default function CourseIntroSection({
-  course,
-}: CourseIntroSectionProps) {
+export default function CourseIntroSection({course}: {course: ICourseType}) {
   return (
     <div className="space-y-4">
       {course.description && (

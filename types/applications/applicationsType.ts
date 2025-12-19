@@ -2,9 +2,7 @@ export interface ApplicationType {
   applicationId: number;
   sessionId: number;
   dogId: number;
-
   applicationStatus: string;
-
   title: string;
   description: string;
   schedule: string;

@@ -1,16 +1,11 @@
 "use client";
 
 import Tabs from "@/components/shared/tabs/Tabs";
+import { useApplicationState } from "@/stores/applicationsState";
 
-interface ApplicationsTabsProps {
-  activeTab: "pending" | "completed";
-  setActiveTab: (tab: "pending" | "completed") => void;
-}
 
-const ApplicationsTabs: React.FC<ApplicationsTabsProps> = ({
-  activeTab,
-  setActiveTab,
-}) => {
+const ApplicationsTabs = () => {
+  const {activeTab,setActiveTab}=useApplicationState()
   const tabLabels = {
     pending: "승인 전",
     completed: "승인 결과",

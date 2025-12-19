@@ -1,12 +1,11 @@
-"use client";
-import Calendar from "./Calendar";
-import useCheckLoggedIn from "@/hooks/afterLogin/users/useCheckLoggedIn";
-import PlanFloatingBtn from "./PlanFloatingBtn";
 import PlanTabs from "./PlanTabs";
-import {UserCourseType} from "@/types/course/userCourse";
 import PlanCourseList from "./PlanCourseList";
 import {useState} from "react";
 import Image from "next/image";
+import PlanFloatingBtn from "./PlanFloatingBtn";
+import Calendar from "./Calendar";
+import {UserCourseType} from "@/types/course/userCourse";
+import useCheckLoggedIn from "@/hooks/afterLogin/users/useCheckLoggedIn";
 
 interface PlanProps {
   courses: UserCourseType[];
@@ -87,7 +86,7 @@ export default function Plan({
                     alt="달력"
                     width={13}
                     height={5}
-                    className="w-[14px] h-[15px] items-center"
+                    className="w-2.5 h-3.75 items-center"
                   />
                   {formatTime(session.startTime)} ~{" "}
                   {formatTime(session.endTime)}
@@ -102,7 +101,7 @@ export default function Plan({
       </div>
       <PlanTabs activeTab={activeTab} setActiveTab={setActiveTab} />
       <PlanCourseList courses={courses} />
-      <PlanFloatingBtn role={data?.role} />
+      <PlanFloatingBtn />
     </div>
   );
 }

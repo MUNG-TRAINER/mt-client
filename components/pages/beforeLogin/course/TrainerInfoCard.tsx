@@ -1,14 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import TagBadges from "@/components/shared/badges/TagBadges";
-import { UserIcon } from "@/components/icons/user";
-import { ITrainerInfoType } from "@/types/trainer/trainerType";
+import {UserIcon} from "@/components/icons/user";
+import {ITrainerInfoType} from "@/types/trainer/trainerType";
 
-interface TrainerInfoCardProps {
+export default function TrainerInfoCard({
+  trainer,
+}: {
   trainer?: ITrainerInfoType;
-}
-
-export default function TrainerInfoCard({ trainer }: TrainerInfoCardProps) {
+}) {
   return (
     <div className="rounded-lg bg-(--mt-blue-smoke) p-3">
       <Link

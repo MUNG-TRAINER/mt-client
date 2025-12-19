@@ -4,11 +4,11 @@ import React, {useState} from "react";
 import {ApplicationType} from "@/types/applications/applicationsType";
 import CardList from "../../../shared/cards/CourseCard";
 import Image from "next/image";
+import {useApplicationState} from "@/stores/applicationsState";
 
 interface Props {
   app: ApplicationType;
-  onSelect: (id: number, checked: boolean) => void;
-  isSelected: boolean;
+  isSelected: boolean; //  선택 여부
 }
 
 const statusTextMap: Record<ApplicationType["applicationStatus"], string> = {
@@ -19,7 +19,8 @@ const statusTextMap: Record<ApplicationType["applicationStatus"], string> = {
   CANCELLED: "취소됨",
 };
 
-const ApplicationCard: React.FC<Props> = ({app, onSelect, isSelected}) => {
+const ApplicationCard: React.FC<Props> = ({app, isSelected}) => {
+  const {setSelectedIndex} = useApplicationState();
   const statusText = statusTextMap[app.applicationStatus];
   const [isRejectModalOpen, setRejectModalOpen] = useState(false);
   const tags = app.tags?.split(",") ?? [];
@@ -30,6 +31,7 @@ const ApplicationCard: React.FC<Props> = ({app, onSelect, isSelected}) => {
     (app.mainImage.startsWith("http") || app.mainImage.startsWith("/"))
       ? app.mainImage
       : "/images/application/test.jpg"; // public/images/application/test.jpg 필요
+
   return (
     <li
       className="relative cursor-pointer flex flex-col rounded-2xl shadow-md bg-white p-4"
@@ -44,8 +46,10 @@ const ApplicationCard: React.FC<Props> = ({app, onSelect, isSelected}) => {
           type="checkbox"
           style={{accentColor: "var(--mt-blue-point)"}}
           className="w-6 h-6 cursor-pointer"
-          checked={isSelected}
-          onChange={(e) => onSelect(app.applicationId, e.target.checked)}
+          checked={isSelected} // 상위 상태 반영
+          onChange={(e) =>
+            setSelectedIndex(app.applicationId, e.target.checked)
+          } // 상위로 전달
         />
       </div>
 
@@ -78,7 +82,7 @@ const ApplicationCard: React.FC<Props> = ({app, onSelect, isSelected}) => {
                 alt="타입"
                 width={13}
                 height={5}
-                className="w-[14px] h-[15px] items-center"
+                className="w-3.5 h-3.75 items-center"
               />
               {app.type}
             </span>
@@ -91,7 +95,7 @@ const ApplicationCard: React.FC<Props> = ({app, onSelect, isSelected}) => {
                 alt="lessonform"
                 width={13}
                 height={5}
-                className="w-[14px] h-[15px] items-center"
+                className="w-3.5 h-3.75 items-center"
               />
               {app.lessonForm}
             </span>
