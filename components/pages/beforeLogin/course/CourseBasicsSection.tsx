@@ -6,16 +6,17 @@ import {
   LocationIcon,
   MoneyIcon,
 } from "@/components/icons/courseInfoIcons";
-import {ICourseBasicsSectionProps} from "@/types/course/courseType";
+import { ICourseBasicsSectionProps } from "@/types/course/courseType";
+import { getDogSizeLabel } from "@/util/course/courseMappings";
 
 export default function CourseBasicsSection({
   course,
-  dogSizeMap,
   totalSessions,
   schedule,
   firstSessionPrice,
   sessionCount,
 }: ICourseBasicsSectionProps) {
+  const dogSize = getDogSizeLabel(course.dogSize);
   return (
     <div className="space-y-6">
       <InfoRow
@@ -33,10 +34,10 @@ export default function CourseBasicsSection({
         title="적합 견종"
         content={
           <div className="flex flex-wrap gap-2">
-            {course.dogSize.split(",").map((size, idx) => (
+            {dogSize.map((size, idx) => (
               <TagBadges
                 key={idx}
-                txt={`${dogSizeMap[size.trim()] ?? size.trim()}`}
+                txt={size}
                 classNames="text-sm font-bold text-(--mt-green-point) bg-(--mt-green-smoke)"
               />
             ))}
