@@ -20,7 +20,7 @@ export default function Plan({
   allCourses,
   setActiveTab,
 }: PlanProps) {
-  const {data} = useCheckLoggedIn();
+  useCheckLoggedIn();
 
   // 선택한 날짜 상태 (캘린더용)
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
@@ -36,25 +36,9 @@ export default function Plan({
         }))
         .filter((course) => course.sessions.length > 0)
     : [];
-
-  const filteredCourses = selectedDate
-    ? courses.filter((course) =>
-        course.sessions.some((s) => s.sessionDate === selectedDate)
-      )
-    : courses;
-  const selectedCourses: UserCourseType[] = selectedDate
-    ? courses
-        .map((course) => ({
-          ...course,
-          sessions: course.sessions.filter(
-            (s) => s.sessionDate === selectedDate
-          ),
-        }))
-        .filter((course) => course.sessions.length > 0)
-    : [];
   const formatTime = (time: string) => time.slice(0, 5);
   return (
-    <div className="relative w-full h-full bg-(--mt-white) p-6 rounded-md flex flex-col gap-3 ">
+    <div className="relative w-full -h-screen bg-(--mt-white) p-6 rounded-md flex flex-col gap-3 ">
       <Calendar
         courses={allCourses}
         selectedDate={selectedDate as string | undefined}

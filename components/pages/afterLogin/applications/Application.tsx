@@ -8,7 +8,7 @@ import {useApplications} from "@/hooks/afterLogin/applications/useApplications";
 const Applications = () => {
   const {applicationsToShow, selectedIndex} = useApplications();
   return (
-    <div className="flex flex-col w-full h-full">
+    <div className="flex flex-col w-full h-full bg-white ">
       <ApplicationsTabs />
       {applicationsToShow.length < 1 ? (
         <div className=" w-full text-align-center flex flex-col items-center justify-center h-[70vh] gap-4">

@@ -18,7 +18,7 @@ export default function PlanCourseList({courses}: Props) {
     );
   }
   return (
-    <div className="flex flex-col gap-4">
+    <ul className="flex flex-col gap-4">
       {courses.map((course, courseIndex) =>
         course.sessions.map((session, sessionIndex) => (
           <li
@@ -80,6 +80,6 @@ export default function PlanCourseList({courses}: Props) {
           </li>
         ))
       )}
-    </div>
+    </ul>
   );
 }

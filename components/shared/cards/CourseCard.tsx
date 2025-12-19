@@ -65,7 +65,7 @@ const CourseCard: React.FC<ApplicationInfoProps> = ({
               const style = tagStyleMap[idx % tagStyleMap.length];
               return (
                 <span
-                  key={idx}
+                  key={`${tag}-${idx}`}
                   className="text-xs px-2 py-0.5 rounded-full"
                   style={{backgroundColor: style.bg, color: style.text}}
                 >
