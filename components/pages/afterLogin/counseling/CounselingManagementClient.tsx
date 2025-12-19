@@ -52,13 +52,8 @@ export default function CounselingManagementClient() {
       // 모달 닫기
       setIsModalOpen(false);
       setSelectedDog(null);
-
-      // TODO: 성공 토스트 메시지 표시
-      alert("상담 내용이 저장되었습니다.");
     } catch (error) {
       console.error("상담 내용 저장 실패:", error);
-      // TODO: 에러 토스트 메시지 표시
-      alert("상담 내용 저장에 실패했습니다.");
       throw error; // 모달에서 로딩 상태 해제를 위해
     }
   };
