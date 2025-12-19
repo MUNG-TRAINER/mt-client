@@ -1,5 +1,5 @@
 import Image from "next/image";
-import {ICourseHeroProps} from "@/types/course/courseType";
+import { ICourseHeroProps } from "@/types/course/courseType";
 import {
   BoltIcon,
   CheckBadgeIcon,
@@ -13,7 +13,7 @@ export default function CourseHero({
   durationMinutes,
   maxStudents,
   lessonFormLabel,
-  difficultyBadge,
+  difficultyLabel,
 }: ICourseHeroProps) {
   return (
     <>
@@ -59,8 +59,7 @@ export default function CourseHero({
               <InfoBadge
                 icon={<BoltIcon />}
                 label="난이도"
-                value={difficultyBadge.label}
-                badgeClassName={difficultyBadge.className}
+                value={difficultyLabel}
               />
             </div>
           </div>
