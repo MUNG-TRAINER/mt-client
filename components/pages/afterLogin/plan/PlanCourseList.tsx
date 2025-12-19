@@ -19,10 +19,10 @@ export default function PlanCourseList({courses}: Props) {
   }
   return (
     <div className="flex flex-col gap-4">
-      {courses.map((course) =>
-        course.sessions.map((session) => (
+      {courses.map((course, courseIndex) =>
+        course.sessions.map((session, sessionIndex) => (
           <li
-            key={`${course.courseId}-${session.sessionId}`} // course+session으로 고유 key
+            key={`${course.courseId}-${session.sessionId}-${courseIndex}-${sessionIndex}`} // course+session으로 고유 key
             className="relative cursor-pointer flex flex-col rounded-2xl shadow-md bg-white p-4"
             style={{border: "1px solid #E9ECEF"}}
           >

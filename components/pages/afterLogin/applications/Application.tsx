@@ -5,7 +5,6 @@ import ApplicationsTabs from "./ApplicationTabs";
 import ApplicationsActionButton from "./ActionButton";
 import {ApplicationType} from "@/types/applications/applicationsType";
 import {useApplications} from "@/hooks/afterLogin/applications/useApplications";
-import ApplicationInfo from "../../../shared/cards/CourseCard";
 
 interface ApplicationsProps {
   initialData: ApplicationType[];

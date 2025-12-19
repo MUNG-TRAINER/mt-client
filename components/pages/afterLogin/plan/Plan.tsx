@@ -63,10 +63,10 @@ export default function Plan({
       />
       {selectedDate && selectedSessions.length > 0 && (
         <div className="flex flex-col gap-1">
-          {selectedSessions.map((course) =>
-            course.sessions.map((session) => (
+          {selectedSessions.map((course, courseIndex) =>
+            course.sessions.map((session, sessionIndex) => (
               <div
-                key={session.sessionId}
+                key={`${course.courseId}-${session.sessionId}-${courseIndex}-${sessionIndex}`}
                 className="p-3 mt-4 rounded-md shadow-md bg-white"
                 style={{border: "1px solid #E8E8E8"}}
               >
