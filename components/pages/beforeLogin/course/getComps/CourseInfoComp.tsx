@@ -4,15 +4,15 @@ import CourseHero from "../CourseHero";
 import CourseIntroSection from "../CourseIntroSection";
 import SessionListSection from "../SessionListSection";
 import TrainerInfoCard from "../TrainerInfoCard";
-import {ICourseType, IDifficultyBadge} from "@/types/course/courseType";
-import {ITrainerInfoType} from "@/types/trainer/trainerType";
-import {ISessionType} from "@/types/course/sessionType";
+import { ICourseType } from "@/types/course/courseType";
+import { ITrainerInfoType } from "@/types/trainer/trainerType";
+import { ISessionType } from "@/types/course/sessionType";
 interface ICourseInfoCompPropsTypes {
   course: ICourseType;
   durationMinutes: number;
   maxStudents: number;
   lessonFormLabel: string;
-  difficultyBadge: IDifficultyBadge;
+  difficultyLabel: string;
   trainer: ITrainerInfoType | undefined;
   dogSizeMap: Record<string, string>;
   totalSessions: number;
@@ -28,7 +28,7 @@ export default function CourseInfoComp({
   durationMinutes,
   maxStudents = 0,
   lessonFormLabel,
-  difficultyBadge,
+  difficultyLabel,
   trainer,
   dogSizeMap,
   totalSessions,
@@ -46,7 +46,7 @@ export default function CourseInfoComp({
         durationMinutes={durationMinutes}
         maxStudents={maxStudents}
         lessonFormLabel={lessonFormLabel}
-        difficultyBadge={difficultyBadge}
+        difficultyLabel={difficultyLabel}
       />
 
       <div className="pt-5 space-y-6">

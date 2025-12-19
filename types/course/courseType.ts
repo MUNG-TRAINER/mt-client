@@ -1,4 +1,5 @@
 /**
+import { getDifficultyLabel } from './../../util/course/courseMappings';
  * 세션 요약 정보
  */
 export interface SessionSummaryDto {
@@ -102,7 +103,7 @@ export interface ICourseHeroProps {
   durationMinutes: number;
   maxStudents: number;
   lessonFormLabel: string;
-  difficultyBadge: IDifficultyBadge;
+  difficultyLabel: string;
 }
 export interface ICourseBasicsSectionProps {
   course: ICourseType;
