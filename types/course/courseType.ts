@@ -65,7 +65,7 @@ export interface ICourseType {
   trainerId: number;
   title: string;
   description: string;
-  type: string;
+  type: "ONCE" | "MULTI";
   lessonForm: "WALK" | "GROUP" | "PRIVATE" | string;
   status: string;
   isFree: boolean;
@@ -75,7 +75,7 @@ export interface ICourseType {
   refundPolicy: string;
   mainImage: string;
   mainImageKey: string;
-  detailImage: string;
+  detailImageUrls: string[];
   detailImageKey: string;
   items: string;
   dogSize: string;

@@ -3,9 +3,5 @@ import CourseDetailCard from "@/components/pages/beforeLogin/course/CourseDetail
 
 export default async function Page({params}: {params: Promise<{id: string}>}) {
   const param = await params;
-  return (
-    <div>
-      <CourseDetailCard courseId={param.id} />
-    </div>
-  );
+  return <CourseDetailCard courseId={param.id} />;
 }

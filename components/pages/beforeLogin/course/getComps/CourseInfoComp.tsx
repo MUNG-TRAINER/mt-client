@@ -49,24 +49,22 @@ export default function CourseInfoComp({
         difficultyBadge={difficultyBadge}
       />
 
-      <div className="pt-5 space-y-6">
-        <TrainerInfoCard trainer={trainer} />
+      <TrainerInfoCard trainer={trainer} />
 
-        <CourseBasicsSection
-          course={course}
-          dogSizeMap={dogSizeMap}
-          totalSessions={totalSessions}
-          schedule={schedule}
-          firstSessionPrice={firstSessionPrice}
-          sessionCount={sessionCount}
-        />
+      <CourseBasicsSection
+        course={course}
+        dogSizeMap={dogSizeMap}
+        totalSessions={totalSessions}
+        schedule={schedule}
+        firstSessionPrice={firstSessionPrice}
+        sessionCount={sessionCount}
+      />
 
-        <CourseIntroSection course={course} />
+      <CourseIntroSection course={course} />
 
-        <SessionListSection sessions={sessionList} />
-      </div>
+      <SessionListSection sessions={sessionList} />
 
-      <CourseActionButtons trainerId={trainerId} />
+      <CourseActionButtons trainerId={trainerId} courseId={courseId} />
     </>
   );
 }

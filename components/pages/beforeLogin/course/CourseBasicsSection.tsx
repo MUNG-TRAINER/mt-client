@@ -63,7 +63,7 @@ export default function CourseBasicsSection({
       {course.items && (
         <InfoRow
           icon={<DocumentIcon className="size-5 text-(--mt-gray) mt-0.5" />}
-          title="기타 문의"
+          title="기타 준비물 및 문의"
           content={
             <p className="text-sm text-(--mt-gray) whitespace-pre-line">
               {course.items}

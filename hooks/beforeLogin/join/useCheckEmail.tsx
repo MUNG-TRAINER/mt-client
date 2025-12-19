@@ -5,6 +5,7 @@ export default function useCheckEmail(email: string) {
   const {data, isSuccess, isError, isPending, refetch} = useQuery({
     queryKey: ["checkEmail", email],
     queryFn: () => joinApi.checkEmail(email),
+    enabled: false,
   });
   return {data, isSuccess, isError, isPending, refetch};
 }

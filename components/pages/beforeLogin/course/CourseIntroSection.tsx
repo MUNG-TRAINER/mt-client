@@ -1,10 +1,13 @@
+"use client";
 import Image from "next/image";
 import {ICourseType} from "@/types/course/courseType";
 import {InfoIcon, WarningIcon} from "@/components/icons/courseInfoIcons";
+import {useState} from "react";
 
 export default function CourseIntroSection({course}: {course: ICourseType}) {
+  const [move, setMove] = useState(false);
   return (
-    <div className="space-y-4">
+    <div className="flex flex-col gap-4 overflow-hidden">
       {course.description && (
         <div className="flex items-start gap-3">
           <div>
@@ -18,14 +21,20 @@ export default function CourseIntroSection({course}: {course: ICourseType}) {
         </div>
       )}
 
-      {course.detailImage && (
-        <div className="relative w-full h-48 rounded-xl overflow-hidden bg-(--mt-gray-light)">
-          <Image
-            src={course.detailImage}
-            alt={`${course.title} 상세 이미지`}
-            fill
-            className="object-cover"
-          />
+      {course.detailImageUrls && (
+        <div
+          className="flex items-center gap-2 w-xl min-w-full"
+          onClick={() => setMove((prev) => !prev)}
+        >
+          {course.detailImageUrls.length > 0 &&
+            course.detailImageUrls.map((val, index) => (
+              <div
+                key={index}
+                className={`relative w-48 h-48 rounded-xl overflow-hidden bg-(--mt-gray-light) transition-transform duration-200 ease-in-out ${move ? "-translate-x-full" : "translate-x-0"}`}
+              >
+                <Image src={val} alt={`${course.title} 상세 이미지`} fill />
+              </div>
+            ))}
         </div>
       )}
 

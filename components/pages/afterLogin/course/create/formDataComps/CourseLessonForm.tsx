@@ -2,9 +2,10 @@
 
 import {useRef, useState} from "react";
 import CourseTypeBtn from "./common/CourseTypeBtn";
-type TLessonForm = "WALK" | "GROUP" | "PRIVATE";
+import {CourseItem} from "@/types/course/courseType";
+
 export default function CourseLessonForm() {
-  const [state, setState] = useState<TLessonForm>("WALK");
+  const [state, setState] = useState<CourseItem["lessonForm"]>("WALK");
   const walkRef = useRef<HTMLInputElement | null>(null);
   const groupRef = useRef<HTMLInputElement | null>(null);
   const privateRef = useRef<HTMLInputElement | null>(null);

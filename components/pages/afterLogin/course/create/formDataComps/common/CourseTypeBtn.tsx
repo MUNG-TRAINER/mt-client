@@ -5,10 +5,10 @@ import {InputHTMLAttributes, RefObject, useId} from "react";
 interface ICourseTypeBtnProps extends InputHTMLAttributes<HTMLInputElement> {
   labelFor: string;
   labelTxt: string;
-  inputRef: RefObject<HTMLInputElement | null>;
+  inputRef?: RefObject<HTMLInputElement | null>;
   inputValue: string;
   isActive: boolean;
-  handleFn: () => void;
+  handleFn?: () => void;
 }
 
 export default function CourseTypeBtn({

@@ -16,7 +16,6 @@ interface ISessionAccordionProps {
 
 export default function SessionAccordion({session}: ISessionAccordionProps) {
   const [isOpen, setIsOpen] = useState(false);
-
   const formatDate = (dateStr: string) => {
     try {
       const date = new Date(dateStr);
@@ -29,7 +28,6 @@ export default function SessionAccordion({session}: ISessionAccordionProps) {
       return dateStr;
     }
   };
-
   const formatTime = (timeStr: string) => {
     if (!timeStr) {
       return timeStr;
