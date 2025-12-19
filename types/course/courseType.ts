@@ -1,5 +1,4 @@
 /**
-import { getDifficultyLabel } from './../../util/course/courseMappings';
  * 세션 요약 정보
  */
 export interface SessionSummaryDto {
