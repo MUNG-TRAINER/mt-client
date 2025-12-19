@@ -5,6 +5,7 @@ interface UseCourseSearchParams {
   keyword?: string;
   size?: number;
   enabled?: boolean;
+  lessonForm?: "WALK" | "GROUP" | "PRIVATE"; // 훈련 형태 필터
 }
 
 /**
@@ -14,14 +15,16 @@ export const useCourseSearch = ({
   keyword,
   size = 20,
   enabled = true,
+  lessonForm,
 }: UseCourseSearchParams = {}) => {
   return useInfiniteQuery({
-    queryKey: ["courses", "search", keyword, size],
+    queryKey: ["courses", "search", keyword, size, lessonForm],
     queryFn: ({ pageParam }: { pageParam: number | undefined }) =>
       courseAPI.searchCourses({
         keyword,
         lastCourseId: pageParam, // 커서로 사용
         size,
+        lessonForm,
       }),
     getNextPageParam: (lastPage) => {
       // hasMore가 true이고 lastCourseId가 있으면 반환
