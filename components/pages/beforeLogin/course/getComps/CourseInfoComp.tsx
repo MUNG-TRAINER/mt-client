@@ -14,7 +14,6 @@ interface ICourseInfoCompPropsTypes {
   lessonFormLabel: string;
   difficultyLabel: string;
   trainer: ITrainerInfoType | undefined;
-  dogSizeMap: Record<string, string>;
   totalSessions: number;
   schedule: string;
   firstSessionPrice: number | undefined;
@@ -30,7 +29,6 @@ export default function CourseInfoComp({
   lessonFormLabel,
   difficultyLabel,
   trainer,
-  dogSizeMap,
   totalSessions,
   schedule,
   firstSessionPrice,
@@ -54,7 +52,6 @@ export default function CourseInfoComp({
 
         <CourseBasicsSection
           course={course}
-          dogSizeMap={dogSizeMap}
           totalSessions={totalSessions}
           schedule={schedule}
           firstSessionPrice={firstSessionPrice}

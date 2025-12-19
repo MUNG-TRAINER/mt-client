@@ -81,7 +81,6 @@ export default function CourseDetailCard({ courseId }: { courseId: string }) {
             lessonFormLabel={lessonFormLabel}
             difficultyLabel={difficultyLabel}
             trainer={trainer || undefined}
-            dogSizeMap={dogSizeMap}
             totalSessions={totalSessions}
             schedule={courseDetail.schedule}
             firstSessionPrice={firstSession?.price}

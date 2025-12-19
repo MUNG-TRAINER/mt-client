@@ -107,7 +107,6 @@ export interface ICourseHeroProps {
 }
 export interface ICourseBasicsSectionProps {
   course: ICourseType;
-  dogSizeMap: Record<string, string>;
   totalSessions: number;
   schedule: string;
   firstSessionPrice?: number;

@@ -49,7 +49,11 @@ export const getDifficultyLabel = (difficulty?: string): string => {
 /**
  * 반려견 크기 레이블 가져오기
  */
-export const getDogSizeLabel = (dogSize?: string): string => {
-  if (!dogSize) return "";
-  return dogSizeMap[dogSize] ?? dogSize;
+export const getDogSizeLabel = (dogSize?: string): string[] => {
+  if (!dogSize) return [];
+  const result = [];
+  for (const size of dogSize?.split(",") || []) {
+    result.push(dogSizeMap[size.trim()] ?? size.trim());
+  }
+  return result;
 };
