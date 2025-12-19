@@ -52,4 +52,19 @@ export const usersApi = {
     const result = await response.json();
     return result;
   },
+
+  updatePublicStatus: async (isPublic: boolean) => {
+    const response = await fetch("/api/users/me/public-status", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({ isPublic }),
+    });
+
+    if (!response?.ok) {
+      throw new Error("프로필 공개 설정 변경에 실패했습니다.");
+    }
+  },
 };

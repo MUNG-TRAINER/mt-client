@@ -3,9 +3,9 @@ import { UserIcon } from "@/components/icons/user";
 import UserBadge from "@/components/shared/badges/UserBadge";
 import ToggleSlide from "@/components/shared/toggleSlide/ToggleSlide";
 import useMe from "@/hooks/afterLogin/users/useMe";
+import useUpdatePublicStatus from "@/hooks/afterLogin/users/useUpdatePublicStatus";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
 import { CakeIcon } from "@/components/icons/cake";
 import { PhoneIcon } from "@/components/icons/phone";
 import { EnvelopeIcon } from "@/components/icons/envelope";
@@ -14,8 +14,14 @@ import { BuildingOffice2Icon, HomeIcon } from "@/components/icons/home";
 import AuthInput from "@/components/shared/inputs/AuthInput";
 
 export default function MyPage() {
-  const { data, isPending, isError } = useMe();
-  const [showDogs, setShowDogs] = useState(false);
+  const { data, isPending } = useMe();
+  const { mutate: updatePublicStatus } = useUpdatePublicStatus();
+
+  const handleToggleChange = () => {
+    if (data?.isPublic !== undefined) {
+      updatePublicStatus(!data.isPublic);
+    }
+  };
 
   if (isPending) {
     return (
@@ -120,8 +126,8 @@ export default function MyPage() {
                 반려견 프로필 공개
               </span>
               <ToggleSlide
-                toggleState={showDogs}
-                toggleFn={setShowDogs}
+                toggleState={data?.isPublic ?? false}
+                toggleFn={handleToggleChange}
                 barWidth={60}
                 barHeight={30}
               />
