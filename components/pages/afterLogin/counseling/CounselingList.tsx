@@ -5,6 +5,7 @@ import { CounselingListItem } from "./CounselingListItem";
 
 interface CounselingListProps {
   dogs: CounselingDog[];
+  isCompleted: boolean;
   isLoading: boolean;
   isEmpty: boolean;
   onViewDetail: (counselingId: number) => void;
@@ -12,6 +13,7 @@ interface CounselingListProps {
 
 export const CounselingList = ({
   dogs,
+  isCompleted,
   isLoading,
   isEmpty,
   onViewDetail,
@@ -40,6 +42,7 @@ export const CounselingList = ({
         <CounselingListItem
           key={dog.counselingId}
           dog={dog}
+          isCompleted={isCompleted}
           onViewDetail={onViewDetail}
         />
       ))}

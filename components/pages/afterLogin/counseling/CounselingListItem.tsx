@@ -6,11 +6,13 @@ import { DogIcon } from "@/components/icons/dog";
 
 interface CounselingListItemProps {
   dog: CounselingDog;
+  isCompleted: boolean;
   onViewDetail: (counselingId: number) => void;
 }
 
 export const CounselingListItem = ({
   dog,
+  isCompleted,
   onViewDetail,
 }: CounselingListItemProps) => {
   return (
@@ -53,7 +55,7 @@ export const CounselingListItem = ({
         onClick={() => onViewDetail(dog.counselingId)}
         className="px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors whitespace-nowrap"
       >
-        상담 내용 작성
+        {isCompleted ? "상담 내용 수정" : "상담 내용 작성"}
       </button>
     </div>
   );

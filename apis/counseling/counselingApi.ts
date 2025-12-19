@@ -22,4 +22,29 @@ export const counselingApi = {
     const data: CounselingDogListResponse = await response.json();
     return data;
   },
+
+  /**
+   * 상담 내용 저장
+   * @param counselingId - 상담 ID
+   * @param content - 상담 내용
+   */
+  saveCounselingContent: async (
+    counselingId: number,
+    content: string
+  ): Promise<{ success: boolean; message: string }> => {
+    const response = await fetch(`/api/counseling/${counselingId}/content`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ content }),
+    });
+
+    if (!response?.ok) {
+      throw new Error("상담 내용 저장에 실패했습니다.");
+    }
+
+    const data = await response.json();
+    return data;
+  },
 };

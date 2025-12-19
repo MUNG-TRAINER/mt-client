@@ -7,9 +7,11 @@
  */
 export interface CounselingDog {
   counselingId: number;
+  dogId: number;
   dogName: string;
   ownerName: string;
   dogImage: string;
+  content?: string | null; // 상담 내용 (완료 시에만 존재)
 }
 
 /**
