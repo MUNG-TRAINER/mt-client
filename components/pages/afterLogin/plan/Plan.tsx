@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import DogImage from "@/public/images/application/dog.jpg";
 import CalendarImage from "@/public/images/application/calendar.jpg";
 import SessionNoImage from "@/public/images/application/star.jpg";
+import LocationImage from "@/public/images/application/location.jpg";
 
 interface PlanProps {
   courses: UserCourseType[] | TrainerCourseType[];
@@ -94,7 +95,7 @@ const planAllCourses = isTrainer
 
                   <div className="text-[15px]">{course.title}</div>
                 </div>
-                <div className="flex w-full justify-end gap-3 mt-4">
+                <div className="flex w-full gap-3 mt-4">
                 {!isTrainer && (
                   <div className="text-sm flex items-center gap-1">
                     <Image
@@ -120,16 +121,16 @@ const planAllCourses = isTrainer
                     {formatTime(session.startTime)} ~{" "}
                     {formatTime(session.endTime)}
                   </div>
-                        <span className="flex gap-1 text-sm items-center leading-none px-1.5 py-0.5">
+                        <span className="flex gap-1 text-sm items-center leading-none ">
                             <Image
-                              src={SessionNoImage}
+                              src={LocationImage}
                               placeholder="blur"
                               alt="회차 정보"
                               width={14}
                               height={5}
                               className="w-3.75 h-3.75 items-center"
                             />
-                            {session.sessionNo}회차
+                            {course.location}
                           </span>
                 </div>
               </div>
