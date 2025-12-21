@@ -68,7 +68,7 @@ export default function CounselingManagementClient() {
       />
 
       {/* 리스트 */}
-      <div className="flex-1 overflow-y-auto p-4">
+      <div className="flex-1 overflow-y-auto py-4">
         <CounselingList
           dogs={dogs || []}
           isCompleted={activeTab === "completed"}
