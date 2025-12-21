@@ -1,54 +1,28 @@
 "use client";
 
 import Plan from "@/components/pages/afterLogin/plan/Plan";
-import {useEffect, useMemo, useState} from "react";
-import {UserCourseType} from "@/types/course/userCourse";
 import LoadingSpinner from "@/components/shared/feedback/LoadingSpinner";
+import useCheckLoggedIn from "@/hooks/afterLogin/users/useCheckLoggedIn";
+import { useUserPlanCourses } from "@/hooks/afterLogin/users/useUserPlanCourse"; 
+import { useTrainerPlanCourses } from "@/hooks/afterLogin/trainer/useTrainerPlanCourse";
+import { UserRoleType } from "@/types/common/commonType";
+
 
 const PlanPage = () => {
-  const [allCourses, setAllCourses] = useState<UserCourseType[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<"scheduled" | "completed">(
-    "scheduled"
-  );
+  const { data} = useCheckLoggedIn();
 
-  useEffect(() => {
-    setLoading(true);
+  // 로그인 유저 정보
+  const user = data && "userId" in data ? data : null;
+  const role: UserRoleType = user?.role ?? "USER";
+  
+  const isTrainer = role === "TRAINER";
+  const trainerPlanData = useTrainerPlanCourses(isTrainer);
+  const userPlanData = useUserPlanCourses();
+  
+  const planData = role === "TRAINER" ? trainerPlanData : userPlanData;
 
-    const scheduledFetch = fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/users/course?status=SCHEDULED`,
-      {credentials: "include"}
-    );
-    const doneFetch = fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/users/course?status=DONE`,
-      {credentials: "include"}
-    );
+const { loading, allCourses, courses, activeTab, setActiveTab } = planData;
 
-    Promise.all([scheduledFetch, doneFetch])
-      .then(async ([scheduledRes, doneRes]) => {
-        if (!scheduledRes.ok || !doneRes.ok) {
-          throw new Error("Failed to fetch courses");
-        }
-
-        const scheduledData: UserCourseType[] = await scheduledRes.json();
-        const doneData: UserCourseType[] = await doneRes.json();
-
-        setAllCourses([...scheduledData, ...doneData]);
-      })
-      .catch((err) => {
-        console.error(err);
-        alert("훈련과정 내역을 불러오는 데 실패했습니다.");
-      })
-      .finally(() => setLoading(false));
-  }, []);
-
-  const courses = useMemo(() => {
-    const status = activeTab === "scheduled" ? "SCHEDULED" : "DONE";
-
-    return allCourses.filter((course) =>
-      course.sessions.some((s) => s.sessionStatus === status)
-    );
-  }, [allCourses, activeTab]);
 
   if (loading) {
     return <LoadingSpinner message="신청 내역을 불러오는 중..." size="md" />;
@@ -61,6 +35,7 @@ const PlanPage = () => {
         allCourses={allCourses}
         activeTab={activeTab}
         setActiveTab={setActiveTab}
+        isTrainer={role === "TRAINER"}
       />
     </div>
   );

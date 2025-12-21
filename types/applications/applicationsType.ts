@@ -10,6 +10,7 @@ export interface ApplicationType {
   mainImage?: string | null;
   tags: string;
   sessionSchedule: string;
+  sessionNumber: number;
   dogName: string;
   rejectReason?: string;
   location: string;

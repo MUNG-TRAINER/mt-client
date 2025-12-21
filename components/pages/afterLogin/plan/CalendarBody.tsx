@@ -1,13 +1,14 @@
 "use client";
 
 import {UserCourseType} from "@/types/course/userCourse";
+import {TrainerCourseType} from "@/types/trainer/trainerCourseType";
 
 interface CalendarBodyProps {
   today: Date;
   calendar: (number | null)[][];
   year: number;
   month: number;
-  courses?: UserCourseType[];
+  courses?: UserCourseType[] | TrainerCourseType[];
   onDateClick?: (date: string) => void;
   selectedDate?: string;
 }
