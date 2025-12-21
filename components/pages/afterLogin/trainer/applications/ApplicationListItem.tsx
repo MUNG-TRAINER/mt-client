@@ -6,6 +6,7 @@ import { CalendarIcon } from "@/components/icons/calendar";
 import { ChevronDownIcon } from "@/components/icons/chevron";
 import type { GroupedApplication } from "@/types/applications/applicationType";
 import { formatDateWithDay } from "@/util/time/formatDateWithDay";
+import { formatTime } from "@/util/time/formatTime";
 
 interface ApplicationListItemProps {
   application: GroupedApplication;
@@ -27,15 +28,17 @@ export const ApplicationListItem = ({
     dogName,
     ownerName,
     courseTitle,
-    courseType,
     totalSessions,
     sessions,
   } = application;
 
-  // 첫 번째 회차 정보 (대표로 표시)
-  const firstSession = sessions[0];
-  const formattedDate = formatDateWithDay(firstSession.sessionDate);
-  const formattedTime = firstSession.startTime.slice(0, 5);
+  // 첫 번째 회차 정보 (대표로 표시) - sessions가 비어 있을 수 있으므로 안전하게 접근
+  const firstSession = sessions?.[0];
+  const formattedDate = firstSession
+    ? formatDateWithDay(firstSession.sessionDate)
+    : "";
+  const formattedTime =
+    firstSession?.startTime != null ? firstSession.startTime.slice(0, 5) : "";
 
   return (
     <div className="bg-white rounded-lg overflow-hidden">
@@ -58,37 +61,34 @@ export const ApplicationListItem = ({
             <span>{formattedDate}</span>
             <span>{formattedTime}</span>
             {totalSessions > 1 && (
-              <span className="text-xs text-gray-400">
-                외 {totalSessions - 1}회차
-              </span>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsExpanded((prev) => !prev);
+                }}
+                className="ml-1 inline-flex items-center gap-1 text-xs text-gray-400 hover:text-gray-600 focus:outline-none"
+              >
+                <span>외 {totalSessions - 1}회차</span>
+                <ChevronDownIcon
+                  className={`w-4 h-4 transition-transform ${
+                    isExpanded ? "rotate-180" : ""
+                  }`}
+                />
+              </button>
             )}
           </div>
         </div>
-
         <div className="flex items-center gap-2">
-          {/* 회차 펼치기 버튼 */}
-          {totalSessions > 1 && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsExpanded(!isExpanded);
-              }}
-              className="p-1 hover:bg-gray-200 rounded transition-colors"
-            >
-              <ChevronDownIcon
-                className={`w-5 h-5 text-gray-600 transition-transform ${
-                  isExpanded ? "rotate-180" : ""
-                }`}
-              />
-            </button>
-          )}
-
           {/* 체크박스 */}
           <button
             onClick={(e) => {
               e.stopPropagation();
               onToggle(courseId, dogId);
             }}
+            role="checkbox"
+            aria-checked={isSelected}
+            aria-label={`${dogName} 신청 선택`}
             className={`w-6 h-6 rounded border-2 flex items-center justify-center transition-colors ${
               isSelected
                 ? "bg-blue-600 border-blue-600"
@@ -105,7 +105,7 @@ export const ApplicationListItem = ({
         <div className="border-t border-gray-200 bg-gray-50 p-3 space-y-2">
           {sessions.map((session) => {
             const sessionDate = formatDateWithDay(session.sessionDate);
-            const sessionTime = session.startTime.slice(0, 5);
+            const sessionTime = formatTime(session.startTime);
             return (
               <div
                 key={session.sessionId}

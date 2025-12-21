@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
 import useGroupedApplications from "@/hooks/afterLogin/applications/useGroupedApplications";
-import useBulkUpdateStatus from "@/hooks/afterLogin/applications/useBulkUpdateStatus";
+import { useApplicationSelection } from "@/hooks/afterLogin/applications/useApplicationSelection";
+import { useApplicationModals } from "@/hooks/afterLogin/applications/useApplicationModals";
+import { useApplicationBulkActions } from "@/hooks/afterLogin/applications/useApplicationBulkActions";
 import { ApplicationList } from "./ApplicationList";
 import { RejectModal } from "./RejectModal";
 import { ApprovalConfirmModal } from "./ApprovalConfirmModal";
@@ -11,93 +12,105 @@ import type { GroupedApplication } from "@/types/applications/applicationType";
 
 export const ApplicationManagementClient = () => {
   const { data: applications, isPending, isError } = useGroupedApplications();
-  const { mutate: bulkUpdateStatus } = useBulkUpdateStatus();
-
-  // selectedItems는 "courseId-dogId" 형태의 문자열을 저장
-  const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
-  const [rejectModalOpen, setRejectModalOpen] = useState(false);
-  const [approvalModalOpen, setApprovalModalOpen] = useState(false);
-  const [dogDetailModalOpen, setDogDetailModalOpen] = useState(false);
-  const [targetDogName, setTargetDogName] = useState("");
-  const [selectedApplication, setSelectedApplication] =
-    useState<GroupedApplication | null>(null);
-
-  // 개별 항목 선택/해제
-  const handleToggle = (courseId: number, dogId: number) => {
-    const key = `${courseId}-${dogId}`;
-    setSelectedItems((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(key)) {
-        newSet.delete(key);
-      } else {
-        newSet.add(key);
-      }
-      return newSet;
-    });
-  };
+  const { selectedItems, toggleSelection, clearSelection } =
+    useApplicationSelection();
+  const {
+    rejectModalOpen,
+    targetDogName,
+    openRejectModal,
+    closeRejectModal,
+    approvalModalOpen,
+    openApprovalModal,
+    closeApprovalModal,
+    dogDetailModalOpen,
+    selectedApplication,
+    openDogDetailModal,
+    closeDogDetailModal,
+  } = useApplicationModals();
+  const { handleBulkApprove, handleBulkReject } = useApplicationBulkActions();
 
   // 카드 클릭 시 반려견 정보 모달 열기
   const handleCardClick = (application: GroupedApplication) => {
-    setSelectedApplication(application);
-    setDogDetailModalOpen(true);
+    openDogDetailModal(application);
   };
 
   // 모달에서 선택 버튼 클릭
   const handleSelectFromModal = () => {
     if (!selectedApplication) return;
-    handleToggle(selectedApplication.courseId, selectedApplication.dogId);
-    setDogDetailModalOpen(false);
-    setSelectedApplication(null);
+    toggleSelection(selectedApplication.courseId, selectedApplication.dogId);
+    closeDogDetailModal();
   };
 
   // 거절 버튼 클릭
   const handleRejectClick = () => {
     if (selectedItems.size === 0) return;
 
-    // 첫 번째 선택된 항목의 강아지 이름 가져오기
     const firstKey = Array.from(selectedItems)[0];
     const [courseId, dogId] = firstKey.split("-").map(Number);
     const firstApplication = applications.find(
       (app) => app.courseId === courseId && app.dogId === dogId
     );
     if (firstApplication) {
-      setTargetDogName(firstApplication.dogName);
-      setRejectModalOpen(true);
+      openRejectModal(firstApplication.dogName);
     }
   };
 
   // 거절 확인
   const handleRejectConfirm = async (reason: string) => {
-    for (const key of selectedItems) {
+    const result = await handleBulkReject(selectedItems, reason);
+
+    // 성공한 항목만 선택 해제
+    result.succeeded.forEach((key) => {
       const [courseId, dogId] = key.split("-").map(Number);
-      bulkUpdateStatus({
-        courseId,
-        dogId,
-        data: { status: "REJECTED", rejectReason: reason },
-      });
+      toggleSelection(courseId, dogId);
+    });
+
+    closeRejectModal();
+
+    // 결과 피드백
+    if (result.failed.length === 0) {
+      alert(`${result.succeeded.length}건이 거절되었습니다.`);
+    } else if (result.succeeded.length === 0) {
+      alert(
+        `거절에 실패했습니다. (실패: ${result.failed.length}건)\n다시 시도해주세요.`
+      );
+    } else {
+      alert(
+        `일부 처리되었습니다.\n성공: ${result.succeeded.length}건\n실패: ${result.failed.length}건\n\n실패한 항목은 선택된 상태로 유지됩니다.`
+      );
     }
-    setRejectModalOpen(false);
-    setSelectedItems(new Set());
   };
 
   // 승인 버튼 클릭
   const handleApprovalClick = () => {
     if (selectedItems.size === 0) return;
-    setApprovalModalOpen(true);
+    openApprovalModal();
   };
 
   // 승인 확인
   const handleApprovalConfirm = async () => {
-    for (const key of selectedItems) {
+    const result = await handleBulkApprove(selectedItems);
+
+    // 성공한 항목만 선택 해제
+    result.succeeded.forEach((key) => {
       const [courseId, dogId] = key.split("-").map(Number);
-      bulkUpdateStatus({
-        courseId,
-        dogId,
-        data: { status: "ACCEPT" },
-      });
+      toggleSelection(courseId, dogId);
+    });
+
+    closeApprovalModal();
+
+    // 결과 피드백
+    if (result.failed.length === 0) {
+      alert(`${result.succeeded.length}건이 승인되었습니다.`);
+    } else if (result.succeeded.length === 0) {
+      alert(
+        `승인에 실패했습니다. (실패: ${result.failed.length}건)\n다시 시도해주세요.`
+      );
+    } else {
+      alert(
+        `일부 처리되었습니다.\n성공: ${result.succeeded.length}건\n실패: ${result.failed.length}건\n\n실패한 항목은 선택된 상태로 유지됩니다.`
+      );
     }
-    setApprovalModalOpen(false);
-    setSelectedItems(new Set());
   };
 
   if (isPending) {
@@ -137,7 +150,7 @@ export const ApplicationManagementClient = () => {
       <ApplicationList
         applications={applications}
         selectedItems={selectedItems}
-        onToggle={handleToggle}
+        onToggle={toggleSelection}
         onCardClick={handleCardClick}
       />
 
@@ -166,25 +179,24 @@ export const ApplicationManagementClient = () => {
       {/* 모달들 */}
       <DogDetailModal
         isOpen={dogDetailModalOpen}
-        applicationId={selectedApplication?.sessions[0]?.applicationId || null}
-        onClose={() => {
-          setDogDetailModalOpen(false);
-          setSelectedApplication(null);
-        }}
+        applicationId={
+          selectedApplication?.sessions?.[0]?.applicationId || null
+        }
+        onClose={closeDogDetailModal}
         onSelect={handleSelectFromModal}
       />
 
       <RejectModal
         isOpen={rejectModalOpen}
         dogName={targetDogName}
-        onClose={() => setRejectModalOpen(false)}
+        onClose={closeRejectModal}
         onConfirm={handleRejectConfirm}
       />
 
       <ApprovalConfirmModal
         isOpen={approvalModalOpen}
         count={selectedItems.size}
-        onClose={() => setApprovalModalOpen(false)}
+        onClose={closeApprovalModal}
         onConfirm={handleApprovalConfirm}
       />
     </div>

@@ -5,7 +5,8 @@
  * @example "2024-01-15" -> "2024.01.15(월)"
  */
 export function formatDateWithDay(dateString: string): string {
-  const date = new Date(dateString);
+  const [year, month, day] = dateString.split("-").map(Number);
+  const date = new Date(year, month - 1, day);
   const days = ["일", "월", "화", "수", "목", "금", "토"];
   const dayOfWeek = days[date.getDay()];
 

@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import Image from "next/image";
 import { XMarkIcon } from "@/components/icons/xMark";
 import useDogDetailByApplication from "@/hooks/afterLogin/applications/useDogDetailByApplication";
@@ -25,6 +26,19 @@ export const DogDetailModal = ({
     enabled: isOpen && !!applicationId,
   });
 
+  // 모달 열릴 때 배경 스크롤 방지
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   // 성별 표시
@@ -36,12 +50,23 @@ export const DogDetailModal = ({
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl w-full max-w-md max-h-[90vh] overflow-y-auto shadow-xl">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="dog-detail-modal-title"
+        className="bg-white rounded-2xl w-full max-w-md max-h-[90vh] overflow-y-auto shadow-xl"
+      >
         {/* 헤더 */}
         <div className="flex items-center justify-between p-4 border-b border-gray-200 sticky top-0 bg-white">
-          <h2 className="text-lg font-bold text-gray-900">반려견 정보</h2>
+          <h2
+            id="dog-detail-modal-title"
+            className="text-lg font-bold text-gray-900"
+          >
+            반려견 정보
+          </h2>
           <button
             onClick={onClose}
+            aria-label="모달 닫기"
             className="p-1 hover:bg-gray-100 rounded-full transition-colors"
           >
             <XMarkIcon className="w-6 h-6 text-gray-600" />
