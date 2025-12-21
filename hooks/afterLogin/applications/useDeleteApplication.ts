@@ -1,19 +1,20 @@
 "use client";
-import {useApplicationState} from "@/stores/applicationsState";
-import {useMutation} from "@tanstack/react-query";
+import { useApplicationState } from "@/stores/applicationsState";
+import { useMutation } from "@tanstack/react-query";
 import useCheckLoggedIn from "../users/useCheckLoggedIn";
-import {applicationAPI} from "@/apis/applications/applicationAPI";
-import {useApplications} from "./useApplications";
+import { applicationAPI } from "@/apis/applications/applicationAPI";
+import { useApplications } from "./useApplications";
 
 export default function useDeleteApplication() {
   let userId: number | undefined;
-  const {data} = useCheckLoggedIn();
+  const { data } = useCheckLoggedIn();
   if (data && "userId" in data) {
     userId = data.userId;
   }
-  const {activeTab, selectedIndex, resetSelectedIndex} = useApplicationState();
-  const {refreshApplicationListCache} = useApplications();
-  const {mutate, isPending, isError} = useMutation({
+  const { activeTab, selectedIndex, resetSelectedIndex } =
+    useApplicationState();
+  const { refreshApplicationListCache } = useApplications();
+  const { mutate, isPending, isError } = useMutation({
     mutationKey: ["deleteApplication", userId],
     mutationFn: async (data: number[]) => {
       if (activeTab !== "pending") {
@@ -32,5 +33,5 @@ export default function useDeleteApplication() {
     },
     retry: false,
   });
-  return {mutate, isPending, isError};
+  return { mutate, isPending, isError };
 }

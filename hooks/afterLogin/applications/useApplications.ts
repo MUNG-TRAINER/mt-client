@@ -17,7 +17,8 @@ export const useApplications = () => {
     data?.filter(
       (app) =>
         app.applicationStatus === "APPLIED" ||
-        app.applicationStatus === "WAITING",
+        app.applicationStatus === "WAITING" ||
+        app.applicationStatus === "COUNSELING_REQUIRED",
     ) || [];
 
   const completedApplications =
@@ -25,7 +26,8 @@ export const useApplications = () => {
       (app) =>
         app.applicationStatus === "ACCEPT" ||
         app.applicationStatus === "REJECTED" ||
-        app.applicationStatus === "CANCELLED",
+        app.applicationStatus === "CANCELLED" ||
+        app.applicationStatus === "EXPIRED",
     ) || [];
 
   const applicationsToShow =

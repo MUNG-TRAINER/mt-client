@@ -1,6 +1,7 @@
 export interface ApplicationType {
   applicationId: number;
   sessionId: number;
+  courseId: number;
   dogId: number;
   applicationStatus: string;
   title: string;
@@ -9,6 +10,7 @@ export interface ApplicationType {
   mainImage?: string | null;
   tags: string;
   sessionSchedule: string;
+  sessionNumber: number;
   dogName: string;
   rejectReason?: string;
   location: string;
