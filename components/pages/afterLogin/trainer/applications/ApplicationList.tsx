@@ -1,18 +1,18 @@
 "use client";
 
-import type { PendingApplication } from "@/types/applications/applicationType";
+import type { GroupedApplication } from "@/types/applications/applicationType";
 import { ApplicationListItem } from "./ApplicationListItem";
 
 interface ApplicationListProps {
-  applications: PendingApplication[];
-  selectedIds: number[];
-  onToggle: (applicationId: number) => void;
-  onCardClick: (application: PendingApplication) => void;
+  applications: GroupedApplication[];
+  selectedItems: Set<string>;
+  onToggle: (courseId: number, dogId: number) => void;
+  onCardClick: (application: GroupedApplication) => void;
 }
 
 export const ApplicationList = ({
   applications,
-  selectedIds,
+  selectedItems,
   onToggle,
   onCardClick,
 }: ApplicationListProps) => {
@@ -26,15 +26,18 @@ export const ApplicationList = ({
 
   return (
     <div className="space-y-3 h-full">
-      {applications.map((application) => (
-        <ApplicationListItem
-          key={application.applicationId}
-          application={application}
-          isSelected={selectedIds.includes(application.applicationId)}
-          onToggle={onToggle}
-          onCardClick={onCardClick}
-        />
-      ))}
+      {applications.map((application) => {
+        const key = `${application.courseId}-${application.dogId}`;
+        return (
+          <ApplicationListItem
+            key={key}
+            application={application}
+            isSelected={selectedItems.has(key)}
+            onToggle={onToggle}
+            onCardClick={onCardClick}
+          />
+        );
+      })}
     </div>
   );
 };

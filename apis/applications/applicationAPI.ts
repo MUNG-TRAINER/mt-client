@@ -4,6 +4,8 @@ import type {
   PendingApplication,
   ApplicationStatusUpdateRequest,
   DogDetailResponse,
+  GroupedApplication,
+  BulkStatusUpdateRequest,
 } from "@/types/applications/applicationType";
 
 export const applicationAPI = {
@@ -81,6 +83,43 @@ export const applicationAPI = {
 
     if (!response.ok) {
       throw new Error("신청 상태 변경에 실패했습니다.");
+    }
+
+    return response.text();
+  },
+  // 훈련사용: 코스별 그룹핑된 승인 대기 목록 조회 (신규)
+  getGroupedApplications: async (): Promise<GroupedApplication[]> => {
+    const response = await fetch("/api/trainer/applications/grouped", {
+      method: "GET",
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      throw new Error("승인 대기 목록을 불러오는데 실패했습니다.");
+    }
+
+    return response.json();
+  },
+  // 훈련사용: 코스별 일괄 승인/거절 처리 (신규)
+  bulkUpdateApplicationStatus: async (
+    courseId: number,
+    dogId: number,
+    data: BulkStatusUpdateRequest
+  ): Promise<string> => {
+    const response = await fetch(
+      `/api/trainer/applications/bulk/${courseId}/dog/${dogId}`,
+      {
+        method: "PATCH",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("일괄 상태 변경에 실패했습니다.");
     }
 
     return response.text();

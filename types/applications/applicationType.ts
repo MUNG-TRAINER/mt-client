@@ -34,3 +34,31 @@ export interface DogDetailResponse {
   ownerName: string;
   ownerPhone: string;
 }
+
+// 회차 정보 타입 (그룹핑된 API용)
+export interface SessionInfo {
+  applicationId: number;
+  sessionId: number;
+  sessionNo: number;
+  sessionDate: string; // YYYY-MM-DD
+  startTime: string; // HH:mm:ss
+  endTime: string; // HH:mm:ss
+}
+
+// 코스별 그룹핑된 신청 타입
+export interface GroupedApplication {
+  courseId: number;
+  courseTitle: string;
+  courseType: "SINGLE" | "MULTI" | "GROUP";
+  dogId: number;
+  dogName: string;
+  ownerName: string;
+  totalSessions: number;
+  sessions: SessionInfo[];
+}
+
+// 일괄 승인/거절 요청 타입
+export interface BulkStatusUpdateRequest {
+  status: ApplicationStatus;
+  rejectReason?: string;
+}
