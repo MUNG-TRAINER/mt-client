@@ -3,6 +3,7 @@ import { IResultResponseData } from "@/types/response/resultResponse";
 import type {
   PendingApplication,
   ApplicationStatusUpdateRequest,
+  DogDetailResponse,
 } from "@/types/applications/applicationType";
 
 export const applicationAPI = {
@@ -44,6 +45,22 @@ export const applicationAPI = {
 
     if (!response.ok) {
       throw new Error("승인 대기 목록을 불러오는데 실패했습니다.");
+    }
+
+    return response.json();
+  },
+  // 훈련사용: 신청 반려견 상세 정보 조회
+  getDogDetail: async (applicationId: number): Promise<DogDetailResponse> => {
+    const response = await fetch(
+      `/api/trainer/applications/${applicationId}/dog-detail`,
+      {
+        method: "GET",
+        credentials: "include",
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("반려견 정보를 불러오는데 실패했습니다.");
     }
 
     return response.json();

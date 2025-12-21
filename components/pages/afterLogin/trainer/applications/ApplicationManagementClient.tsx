@@ -142,9 +142,7 @@ export const ApplicationManagementClient = () => {
       {/* 모달들 */}
       <DogDetailModal
         isOpen={dogDetailModalOpen}
-        dogId={selectedApplication?.applicationId || 0}
-        dogName={selectedApplication?.dogName || ""}
-        ownerName={selectedApplication?.ownerName || ""}
+        applicationId={selectedApplication?.applicationId || null}
         onClose={() => {
           setDogDetailModalOpen(false);
           setSelectedApplication(null);

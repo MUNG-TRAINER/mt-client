@@ -22,3 +22,15 @@ export interface ApplicationStatusUpdateRequest {
 export interface ApplicationStatusUpdateResponse {
   message: string;
 }
+
+// 반려견 상세 정보 응답 타입
+export interface DogDetailResponse {
+  dogId: number;
+  name: string;
+  profileImageUrl: string;
+  age: number;
+  gender: "M" | "F";
+  breed: string;
+  ownerName: string;
+  ownerPhone: string;
+}

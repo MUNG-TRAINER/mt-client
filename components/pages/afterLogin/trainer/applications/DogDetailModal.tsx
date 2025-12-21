@@ -1,38 +1,41 @@
 "use client";
 
 import { XMarkIcon } from "@/components/icons/xMark";
-import useDogDetail from "@/hooks/afterLogin/dogs/useDogDetail";
+import useDogDetailByApplication from "@/hooks/afterLogin/applications/useDogDetailByApplication";
 
 interface DogDetailModalProps {
   isOpen: boolean;
-  dogId: number;
-  dogName: string;
-  ownerName: string;
+  applicationId: number | null;
   onClose: () => void;
 }
 
 export const DogDetailModal = ({
   isOpen,
-  dogId,
-  dogName,
-  ownerName,
+  applicationId,
   onClose,
 }: DogDetailModalProps) => {
   const {
     data: dogDetail,
     isPending,
     isError,
-  } = useDogDetail(dogId, {
-    enabled: isOpen && !!dogId,
+  } = useDogDetailByApplication(applicationId, {
+    enabled: isOpen && !!applicationId,
   });
 
   if (!isOpen) return null;
 
+  // 성별 표시
+  const getGenderText = (gender?: "M" | "F") => {
+    if (gender === "M") return "수컷";
+    if (gender === "F") return "암컷";
+    return "-";
+  };
+
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl w-full max-w-md shadow-xl">
+      <div className="bg-white rounded-2xl w-full max-w-md max-h-[90vh] overflow-y-auto shadow-xl">
         {/* 헤더 */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-200">
+        <div className="flex items-center justify-between p-4 border-b border-gray-200 sticky top-0 bg-white">
           <h2 className="text-lg font-bold text-gray-900">반려견 정보</h2>
           <button
             onClick={onClose}
@@ -58,106 +61,77 @@ export const DogDetailModal = ({
               </div>
             </div>
           ) : (
-            <div className="space-y-3">
-              <div className="flex justify-between">
-                <span className="text-sm text-gray-500">이름</span>
-                <span className="text-sm font-medium text-gray-900">
-                  {dogDetail.name || dogName}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-gray-500">성별</span>
-                <span className="text-sm font-medium text-gray-900">
-                  {dogDetail.gender === "M"
-                    ? "수컷"
-                    : dogDetail.gender === "F"
-                    ? "암컷"
-                    : "-"}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-gray-500">나이</span>
-                <span className="text-sm font-medium text-gray-900">
-                  {dogDetail.age ? `${dogDetail.age}세` : "-"}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-gray-500">견종</span>
-                <span className="text-sm font-medium text-gray-900">
-                  {dogDetail.breed || "-"}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-gray-500">중성화 여부</span>
-                <span className="text-sm font-medium text-gray-900">
-                  {dogDetail.isNeutered !== undefined
-                    ? dogDetail.isNeutered
-                      ? "O"
-                      : "X"
-                    : "-"}
-                </span>
-              </div>
-              {dogDetail.weight && (
-                <div className="flex justify-between">
-                  <span className="text-sm text-gray-500">몸무게</span>
-                  <span className="text-sm font-medium text-gray-900">
-                    {dogDetail.weight}kg
-                  </span>
+            <div className="space-y-4">
+              {/* 프로필 이미지 */}
+              {dogDetail.profileImageUrl && (
+                <div className="flex justify-center mb-4">
+                  <img
+                    src={dogDetail.profileImageUrl}
+                    alt={dogDetail.name}
+                    className="w-32 h-32 rounded-full object-cover border-2 border-gray-200"
+                  />
                 </div>
               )}
-              <div className="flex justify-between">
-                <span className="text-sm text-gray-500">사람 사회화</span>
-                <span className="text-sm font-medium text-gray-900">
-                  {dogDetail.humanSocialization === "HIGH"
-                    ? "높음"
-                    : dogDetail.humanSocialization === "MEDIUM"
-                    ? "보통"
-                    : dogDetail.humanSocialization === "LOW"
-                    ? "낮음"
-                    : "-"}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-gray-500">동물 사회화</span>
-                <span className="text-sm font-medium text-gray-900">
-                  {dogDetail.animalSocialization === "HIGH"
-                    ? "높음"
-                    : dogDetail.animalSocialization === "MEDIUM"
-                    ? "보통"
-                    : dogDetail.animalSocialization === "LOW"
-                    ? "낮음"
-                    : "-"}
-                </span>
-              </div>
-              {dogDetail.healthInfo && (
+
+              {/* 기본 정보 */}
+              <div className="space-y-3">
                 <div className="flex justify-between">
-                  <span className="text-sm text-gray-500">중요 건강 정보</span>
+                  <span className="text-sm text-gray-500">이름</span>
                   <span className="text-sm font-medium text-gray-900">
-                    {dogDetail.healthInfo}
+                    {dogDetail.name}
                   </span>
                 </div>
-              )}
-              <div className="flex justify-between">
-                <span className="text-sm text-gray-500">보호자</span>
-                <span className="text-sm font-medium text-gray-900">
-                  {ownerName}
-                </span>
+                <div className="flex justify-between">
+                  <span className="text-sm text-gray-500">성별</span>
+                  <span className="text-sm font-medium text-gray-900">
+                    {getGenderText(dogDetail.gender)}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm text-gray-500">나이</span>
+                  <span className="text-sm font-medium text-gray-900">
+                    {dogDetail.age}세
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm text-gray-500">견종</span>
+                  <span className="text-sm font-medium text-gray-900">
+                    {dogDetail.breed}
+                  </span>
+                </div>
+              </div>
+
+              {/* 보호자 정보 */}
+              <div className="space-y-2 pt-3 border-t border-gray-200">
+                <h3 className="font-semibold text-gray-900">보호자 정보</h3>
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-sm text-gray-500">이름</span>
+                    <span className="text-sm font-medium text-gray-900">
+                      {dogDetail.ownerName}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-gray-500">연락처</span>
+                    <span className="text-sm font-medium text-gray-900">
+                      {dogDetail.ownerPhone}
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
           )}
         </div>
 
         {/* 닫기 버튼 */}
-        {!isPending && !isError && dogDetail && (
-          <div className="p-4">
-            <button
-              onClick={onClose}
-              className="w-full py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              확인
-            </button>
-          </div>
-        )}
+        <div className="p-4 border-t border-gray-200">
+          <button
+            onClick={onClose}
+            className="w-full py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            확인
+          </button>
+        </div>
       </div>
     </div>
   );
