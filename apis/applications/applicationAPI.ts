@@ -1,5 +1,9 @@
-import {ApplicationType} from "@/types/applications/applicationsType";
-import {IResultResponseData} from "@/types/response/resultResponse";
+import { ApplicationType } from "@/types/applications/applicationsType";
+import { IResultResponseData } from "@/types/response/resultResponse";
+import type {
+  PendingApplication,
+  ApplicationStatusUpdateRequest,
+} from "@/types/applications/applicationType";
 
 export const applicationAPI = {
   getApplicationList: async () => {
@@ -30,5 +34,38 @@ export const applicationAPI = {
       success: boolean;
     }>;
     return result;
+  },
+  // 훈련사용: 승인 대기 중인 신청 목록 조회
+  getPendingApplications: async (): Promise<PendingApplication[]> => {
+    const response = await fetch("/api/trainer/applications", {
+      method: "GET",
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      throw new Error("승인 대기 목록을 불러오는데 실패했습니다.");
+    }
+
+    return response.json();
+  },
+  // 훈련사용: 신청 승인/거절 처리
+  updateApplicationStatus: async (
+    applicationId: number,
+    data: ApplicationStatusUpdateRequest
+  ): Promise<string> => {
+    const response = await fetch(`/api/trainer/applications/${applicationId}`, {
+      method: "PATCH",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      throw new Error("신청 상태 변경에 실패했습니다.");
+    }
+
+    return response.text();
   },
 };
