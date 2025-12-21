@@ -46,7 +46,7 @@ export default function CounselingManagementClient() {
 
       // React Query 캐시 무효화 - 리스트 자동 새로고침
       await queryClient.invalidateQueries({
-        queryKey: ["counselingList"],
+        queryKey: ["counseling", "list"],
       });
 
       // 모달 닫기

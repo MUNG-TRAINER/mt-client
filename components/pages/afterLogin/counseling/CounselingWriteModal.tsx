@@ -25,7 +25,13 @@ export const CounselingWriteModal = ({
 }: CounselingWriteModalProps) => {
   const [content, setContent] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { data: dogDetail, isPending } = useDogDetail(dogId);
+  const {
+    data: dogDetail,
+    isPending,
+    isError,
+  } = useDogDetail(dogId, {
+    enabled: isOpen && !!dogId,
+  });
 
   // 초기값 설정 (작성 또는 수정)
   useEffect(() => {
@@ -43,7 +49,6 @@ export const CounselingWriteModal = ({
       setIsSubmitting(true);
       try {
         await onSubmit(content);
-        setContent("");
       } catch (error) {
         // 에러는 부모 컴포넌트에서 처리
       } finally {
@@ -77,6 +82,15 @@ export const CounselingWriteModal = ({
             <div className="flex justify-center py-8">
               <div className="text-sm text-gray-500">로딩 중...</div>
             </div>
+          ) : isError || !dogDetail ? (
+            <div className="flex flex-col items-center justify-center py-8 space-y-2">
+              <div className="text-sm text-red-500">
+                반려견 정보를 불러올 수 없습니다.
+              </div>
+              <div className="text-xs text-gray-400">
+                잠시 후 다시 시도해주세요.
+              </div>
+            </div>
           ) : (
             <>
               {/* 반려견 정보 섹션 */}
@@ -84,34 +98,42 @@ export const CounselingWriteModal = ({
                 <div className="flex justify-between">
                   <span className="text-sm text-gray-500">이름</span>
                   <span className="text-sm font-medium text-gray-900">
-                    {dogDetail?.name || dogName}
+                    {dogDetail.name || dogName}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-sm text-gray-500">성별</span>
                   <span className="text-sm font-medium text-gray-900">
-                    {dogDetail?.gender === "M" ? "수컷" : "암컷"}
+                    {dogDetail.gender === "M"
+                      ? "수컷"
+                      : dogDetail.gender === "F"
+                      ? "암컷"
+                      : "-"}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-sm text-gray-500">나이</span>
                   <span className="text-sm font-medium text-gray-900">
-                    {dogDetail?.age}세
+                    {dogDetail.age ? `${dogDetail.age}세` : "-"}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-sm text-gray-500">견종</span>
                   <span className="text-sm font-medium text-gray-900">
-                    {dogDetail?.breed}
+                    {dogDetail.breed || "-"}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-sm text-gray-500">중성화 여부</span>
                   <span className="text-sm font-medium text-gray-900">
-                    {dogDetail?.isNeutered ? "O" : "X"}
+                    {dogDetail.isNeutered !== undefined
+                      ? dogDetail.isNeutered
+                        ? "O"
+                        : "X"
+                      : "-"}
                   </span>
                 </div>
-                {dogDetail?.weight && (
+                {dogDetail.weight && (
                   <div className="flex justify-between">
                     <span className="text-sm text-gray-500">몸무게</span>
                     <span className="text-sm font-medium text-gray-900">
@@ -122,24 +144,28 @@ export const CounselingWriteModal = ({
                 <div className="flex justify-between">
                   <span className="text-sm text-gray-500">사람 사회화</span>
                   <span className="text-sm font-medium text-gray-900">
-                    {dogDetail?.humanSocialization === "HIGH"
+                    {dogDetail.humanSocialization === "HIGH"
                       ? "높음"
-                      : dogDetail?.humanSocialization === "MEDIUM"
+                      : dogDetail.humanSocialization === "MEDIUM"
                       ? "보통"
-                      : "낮음"}
+                      : dogDetail.humanSocialization === "LOW"
+                      ? "낮음"
+                      : "-"}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-sm text-gray-500">동물 사회화</span>
                   <span className="text-sm font-medium text-gray-900">
-                    {dogDetail?.animalSocialization === "HIGH"
+                    {dogDetail.animalSocialization === "HIGH"
                       ? "높음"
-                      : dogDetail?.animalSocialization === "MEDIUM"
+                      : dogDetail.animalSocialization === "MEDIUM"
                       ? "보통"
-                      : "낮음"}
+                      : dogDetail.animalSocialization === "LOW"
+                      ? "낮음"
+                      : "-"}
                   </span>
                 </div>
-                {dogDetail?.healthInfo && (
+                {dogDetail.healthInfo && (
                   <div className="flex justify-between">
                     <span className="text-sm text-gray-500">
                       중요 건강 정보
@@ -174,7 +200,7 @@ export const CounselingWriteModal = ({
         </div>
 
         {/* 버튼 */}
-        {!isPending && (
+        {!isPending && !isError && dogDetail && (
           <div className="p-4">
             <button
               onClick={handleSubmit}

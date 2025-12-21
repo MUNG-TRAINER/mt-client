@@ -9,22 +9,31 @@ import { CourseSearchResponse } from "@/types/course/courseType";
 
 type LessonFormFilter = "ALL" | "WALK" | "GROUP" | "PRIVATE";
 
+// 유효한 LessonFormFilter 값인지 확인
+const getValidFilter = (value: string | null): LessonFormFilter => {
+  if (value === "WALK" || value === "GROUP" || value === "PRIVATE") {
+    return value;
+  }
+  return "ALL";
+};
+
 export default function CourseSearchClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [keyword, setKeyword] = useState("");
   const observerTarget = useRef<HTMLDivElement>(null);
 
-  // URL에서 lessonForm 파라미터 가져오기 (없으면 "ALL")
-  const urlLessonForm = searchParams.get("lessonForm") as
-    | "WALK"
-    | "GROUP"
-    | "PRIVATE"
-    | null;
+  // URL에서 lessonForm 파라미터 가져오기
+  const urlLessonForm = searchParams.get("lessonForm");
 
-  const [selectedFilter, setSelectedFilter] = useState<LessonFormFilter>(
-    () => urlLessonForm || "ALL"
+  const [selectedFilter, setSelectedFilter] = useState<LessonFormFilter>(() =>
+    getValidFilter(urlLessonForm)
   );
+
+  // URL의 lessonForm 파라미터가 변경될 때 selectedFilter를 동기화
+  useEffect(() => {
+    setSelectedFilter(getValidFilter(urlLessonForm));
+  }, [urlLessonForm]);
 
   const {
     data,
