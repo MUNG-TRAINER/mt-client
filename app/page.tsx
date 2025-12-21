@@ -15,7 +15,7 @@ export default async function Page() {
     <div className="flex flex-col gap-4 relative w-full h-full overflow-y-auto px-6">
       <section>
         <Link
-          href={"/"}
+          href="/course/search?lessonForm=WALK"
           className="relative w-full h-80 flex rounded-lg overflow-hidden group"
         >
           <div className="relative brightness-80 group-hover:brightness-100 transition-[filter] duration-200 ease-in-out w-full h-full">
@@ -35,7 +35,10 @@ export default async function Page() {
       <section className="flex flex-col gap-2">
         <h3 className="font-dohyeon">개인레슨과 그룹레슨은 댕스쿨</h3>
         <div className="flex justify-between gap-3 *:w-full *:h-52 *:bg-blue-200 *:overflow-hidden *:rounded-lg *:relative *:flex *:justify-center *:items-center **:transition-[filter] **:duration-200 **:ease-in-out">
-          <Link href={"/"} className="relative group">
+          <Link
+            href="/course/search?lessonForm=PRIVATE"
+            className="relative group"
+          >
             <Image
               src={solo_course}
               alt="개인 레슨 로고"
@@ -48,7 +51,10 @@ export default async function Page() {
               개인 레슨
             </h4>
           </Link>
-          <Link href={"/"} className="relative group">
+          <Link
+            href="/course/search?lessonForm=GROUP"
+            className="relative group"
+          >
             <Image
               src={group_course}
               alt="그룹 레슨 로고"
