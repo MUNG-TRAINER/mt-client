@@ -5,6 +5,11 @@ import {ApplicationType} from "@/types/applications/applicationsType";
 import CardList from "../../../shared/cards/CourseCard";
 import Image from "next/image";
 import {useApplicationState} from "@/stores/applicationsState";
+import { useRouter } from "next/navigation";
+import DogImage from "@/public/images/application/dog.jpg";
+import TypeImage from "@/public/images/application/repeat.jpg";
+import LessonformImage from "@/public/images/application/check.jpg";
+import SessionNoImage from "@/public/images/application/star.jpg";
 
 interface Props {
   app: ApplicationType;
@@ -17,6 +22,8 @@ const statusTextMap: Record<ApplicationType["applicationStatus"], string> = {
   ACCEPT: "승인 완료",
   REJECTED: "승인 거절",
   CANCELLED: "취소됨",
+  COUNSELING_REQUIRED: "상담 요청",
+  EXPIRED: "만료됨",
 };
 
 const ApplicationCard: React.FC<Props> = ({app, isSelected}) => {
@@ -25,17 +32,20 @@ const ApplicationCard: React.FC<Props> = ({app, isSelected}) => {
   const [isRejectModalOpen, setRejectModalOpen] = useState(false);
   const tags = app.tags?.split(",") ?? [];
 
-  // mainImage fallback 처리
   const imageSrc =
     app.mainImage &&
     (app.mainImage.startsWith("http") || app.mainImage.startsWith("/"))
       ? app.mainImage
-      : "/images/application/test.jpg"; // public/images/application/test.jpg 필요
-
+      : "/images/application/test.jpg"; 
+  const router = useRouter();
+  const handleClick = (courseId: number) => {
+    router.push(`/course/${courseId}`);
+  };
   return (
     <li
       className="relative cursor-pointer flex flex-col rounded-2xl shadow-md bg-white p-4"
       style={{border: "1px solid #E9ECEF"}}
+      onClick={() => handleClick(app.courseId)}
     >
       {/* 체크박스 */}
       <div
@@ -47,6 +57,7 @@ const ApplicationCard: React.FC<Props> = ({app, isSelected}) => {
           style={{accentColor: "var(--mt-blue-point)"}}
           className="w-6 h-6 cursor-pointer"
           checked={isSelected} // 상위 상태 반영
+          disabled={["CANCELLED", "EXPIRED", "REJECTED"].includes(app.applicationStatus)} 
           onChange={(e) =>
             setSelectedIndex(app.applicationId, e.target.checked)
           } // 상위로 전달
@@ -62,11 +73,12 @@ const ApplicationCard: React.FC<Props> = ({app, isSelected}) => {
         location={app.location}
       />
       {/* ===== Dog Name + Type + LessonForm ===== */}
-      <div className="flex justify-between">
+      <div className="flex justify-between pl-1 pr-1">
         {app.dogName && (
           <div className="flex items-center text-xs font-medium text-gray-700 gap-1">
             <Image
-              src="/images/application/dog.jpg"
+              src={DogImage}
+              placeholder="blur"
               alt="강아지"
               width={19}
               height={19}
@@ -76,9 +88,10 @@ const ApplicationCard: React.FC<Props> = ({app, isSelected}) => {
         )}
         <div className="flex gap-1">
           {app.type && (
-            <span className="flex gap-1 text-xs items-center leading-none px-1.5 py-0.5 rounded-full">
+            <span className="flex gap-1 text-xs items-center leading-none px-1.5 py-0.5">
               <Image
-                src="/images/application/repeat.jpg"
+                src={TypeImage}
+                placeholder="blur"
                 alt="타입"
                 width={13}
                 height={5}
@@ -89,15 +102,30 @@ const ApplicationCard: React.FC<Props> = ({app, isSelected}) => {
           )}
 
           {app.lessonForm && (
-            <span className="flex gap-1 text-xs items-center leading-none px-1 py-1 pl-2 pr-2 rounded-3xl">
+           <span className="flex gap-1 text-xs items-center leading-none px-1.5 py-0.5">
               <Image
-                src="/images/application/check.jpg"
+                src={LessonformImage}
+                placeholder="blur"
                 alt="lessonform"
                 width={13}
                 height={5}
                 className="w-3.5 h-3.75 items-center"
               />
               {app.lessonForm}
+            </span>
+          )}
+
+          {app.sessionNumber && (
+           <span className="flex gap-1 text-xs items-center leading-none px-1.5 py-0.5">
+              <Image
+                src={SessionNoImage}
+                placeholder="blur"
+                alt="회차 정보"
+                width={13}
+                height={5}
+                className="w-3.75 h-3.75 items-center"
+              />
+              {app.sessionNumber}회차
             </span>
           )}
         </div>
@@ -116,11 +144,10 @@ const ApplicationCard: React.FC<Props> = ({app, isSelected}) => {
             <button
               className="flex-1 flex items-center justify-center gap-2 py-2 text-sm font-semibold rounded-lg"
               style={{border: "1px solid #C5C5C5", color: "#EF4444"}}
-              onClick={() =>
-                app.rejectReason
-                  ? setRejectModalOpen(true)
-                  : alert("거절 사유가 없습니다.")
-              }
+              onClick={(e) => {
+                e.stopPropagation();
+                app.rejectReason ? setRejectModalOpen(true) : alert("거절 사유가 없습니다.");
+              }}
             >
               거절사유
             </button>
@@ -137,16 +164,23 @@ const ApplicationCard: React.FC<Props> = ({app, isSelected}) => {
             </button>
             <button
               className="flex-1 flex items-center justify-center gap-2 py-2 text-sm font-semibold rounded-lg bg-blue-100 text-(--mt-blue-point)"
-              onClick={() => console.log("결제하기 클릭")}
+              onClick={(e) => {
+                e.stopPropagation();
+                console.log("결제하기 클릭");
+              }}
             >
               결제하기
             </button>
           </>
         )}
 
-        {["APPLIED", "CANCELLED", "WAITING"].includes(
-          app.applicationStatus
-        ) && (
+        {[
+          "APPLIED",
+          "CANCELLED",
+          "WAITING",
+          "COUNSELING_REQUIRED",
+          "EXPIRED",
+        ].includes(app.applicationStatus) && (
           <button
             className="flex-1 flex items-center justify-center gap-2 py-2 text-sm font-semibold rounded-lg"
             style={{border: "1px solid #C5C5C5", color: "#374151"}}

@@ -3,6 +3,9 @@
 import React from "react";
 import Image from "next/image";
 
+import LocationImage from "@/public/images/application/location.jpg";
+import CalendarImage from "@/public/images/application/calendar.jpg";
+
 interface ApplicationInfoProps {
   title: string;
   description: string;
@@ -80,7 +83,7 @@ const CourseCard: React.FC<ApplicationInfoProps> = ({
         <div className="flex mb-2 text-xs gap-4">
           <div className="flex items-center justify-center gap-2 p-1 text-gray-400">
             <Image
-              src="/images/application/location.jpg"
+              src={LocationImage}
               alt="장소"
               width={18}
               height={18}
@@ -89,7 +92,7 @@ const CourseCard: React.FC<ApplicationInfoProps> = ({
           </div>
           <p className="text-xs text-gray-400 mb-1 flex gap-1 items-center">
             <Image
-              src="/images/application/calendar.jpg"
+              src={CalendarImage}
               alt="달력"
               width={13}
               height={5}

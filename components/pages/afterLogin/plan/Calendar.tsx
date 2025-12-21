@@ -2,11 +2,13 @@ import {UserCourseType} from "@/types/course/userCourse";
 import {useState} from "react";
 import CalendarHeader from "./CalendarHeader";
 import CalendarBody from "./CalendarBody";
+import { TrainerCourseType } from "@/types/trainer/trainerCourseType";
 
 interface CalendarProps {
-  courses?: UserCourseType[];
+  courses: UserCourseType[] | TrainerCourseType[];
   selectedDate?: string;
   onDateClick?: (date: string) => void;
+  isTrainer: boolean;
 }
 
 export default function Calendar({
