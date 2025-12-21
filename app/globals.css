@@ -1,26 +1,55 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --mt-white: #ffffff;
+  --mt-black: #212529;
+  --mt-background: #e4f3ff;
+  --mt-green-smoke: #dff6e3;
+  --mt-green-point: #22c55e;
+  --mt-green: #10b981;
+  --mt-orange-smoke: #ffe7d6;
+  --mt-orange-point: #f59e0b;
+  --mt-orange: #ff9f66;
+  --mt-blue-smoke: #eff6ff;
+  --mt-blue-light: #e8f4ff;
+  --mt-blue-point: #3b82f6;
+  --mt-blue: #328dee;
+  --mt-red: #be185d;
+  --mt-red-smoke: #fff1f2;
+  --mt-red-point: #ec4899;
+  --mt-gray-smoke: #f3f4f6;
+  --mt-gray-light: #e9ecef;
+  --mt-gray-point: #d1d5db;
+  --mt-gray: #7a7a7a;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
   }
+} */
+html,
+body {
+  width: 100%;
+  height: 100dvh;
+  overflow-x: hidden;
+}
+body {
+  background-color: var(--mt-background);
+  color: var(--mt-black);
+  font-family: var(--font-nanum-gothic), Arial, Helvetica, sans-serif;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.font-dohyeon {
+  font-family: var(--font-dohyeon);
+}
+
+button {
+  cursor: pointer;
+}
+legend {
+  width: 0;
+  height: 0;
+  opacity: 0;
 }
