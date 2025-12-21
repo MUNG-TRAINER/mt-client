@@ -5,6 +5,11 @@ import {UserCourseType} from "@/types/course/userCourse";
 import Image from "next/image";
 import {useRouter} from "next/navigation";
 import { TrainerCourseType } from "@/types/trainer/trainerCourseType";
+import DogImage from "@/public/images/application/dog.jpg";
+import TypeImage from "@/public/images/application/repeat.jpg";
+import LessonformImage from "@/public/images/application/check.jpg";
+import SessionNoImage from "@/public/images/application/star.jpg";
+import BellImage from "@/public/images/application/bell.jpg";
 
 interface Props {
   courses: UserCourseType[] | TrainerCourseType[];
@@ -52,7 +57,8 @@ export default function PlanCourseList({courses, isTrainer = false}: Props) {
               {!isTrainer && (
                   <div className="flex items-center text-xs font-medium text-gray-700 mb-2 gap-1">
                     <Image
-                      src="/images/application/dog.jpg"
+                      src={DogImage}
+                      placeholder="blur"
                       alt="강아지"
                       width={19}
                       height={19}
@@ -65,7 +71,8 @@ export default function PlanCourseList({courses, isTrainer = false}: Props) {
                   {/* 상태 표시 */}
                   <span className="flex gap-1 text-xs items-center leading-none px-1.5 py-0.5 rounded-full">
                     <Image
-                      src="/images/application/repeat.jpg"
+                      src={TypeImage}
+                      placeholder="blur"
                       alt="타입"
                       width={13}
                       height={5}
@@ -76,7 +83,8 @@ export default function PlanCourseList({courses, isTrainer = false}: Props) {
                   {course.lessonForm && (
                     <span className="flex gap-1 text-xs items-center leading-none px-1.5 py-0.5 rounded-full">
                       <Image
-                        src="/images/application/check.jpg"
+                        src={LessonformImage}
+                        placeholder="blur"
                         alt="lessonform"
                         width={13}
                         height={5}
@@ -88,7 +96,8 @@ export default function PlanCourseList({courses, isTrainer = false}: Props) {
                      {session.sessionNo && (
                         <span className="flex gap-1 text-xs items-center leading-none px-1.5 py-0.5">
                             <Image
-                              src="/images/application/star.jpg"
+                              src={SessionNoImage}
+                              placeholder="blur"
                               alt="회차 정보"
                               width={13}
                               height={5}
@@ -110,7 +119,8 @@ export default function PlanCourseList({courses, isTrainer = false}: Props) {
                   }}
                 >
                    <Image
-                        src="/images/application/bell.jpg"
+                        src={BellImage}
+                        placeholder="blur"
                         alt="출석부"
                         width={15}
                         height={5}

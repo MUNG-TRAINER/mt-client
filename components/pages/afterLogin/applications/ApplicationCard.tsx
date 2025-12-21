@@ -6,6 +6,10 @@ import CardList from "../../../shared/cards/CourseCard";
 import Image from "next/image";
 import {useApplicationState} from "@/stores/applicationsState";
 import { useRouter } from "next/navigation";
+import DogImage from "@/public/images/application/dog.jpg";
+import TypeImage from "@/public/images/application/repeat.jpg";
+import LessonformImage from "@/public/images/application/check.jpg";
+import SessionNoImage from "@/public/images/application/star.jpg";
 
 interface Props {
   app: ApplicationType;
@@ -69,11 +73,12 @@ const ApplicationCard: React.FC<Props> = ({app, isSelected}) => {
         location={app.location}
       />
       {/* ===== Dog Name + Type + LessonForm ===== */}
-      <div className="flex justify-between">
+      <div className="flex justify-between pl-1 pr-1">
         {app.dogName && (
           <div className="flex items-center text-xs font-medium text-gray-700 gap-1">
             <Image
-              src="/images/application/dog.jpg"
+              src={DogImage}
+              placeholder="blur"
               alt="강아지"
               width={19}
               height={19}
@@ -85,7 +90,8 @@ const ApplicationCard: React.FC<Props> = ({app, isSelected}) => {
           {app.type && (
             <span className="flex gap-1 text-xs items-center leading-none px-1.5 py-0.5">
               <Image
-                src="/images/application/repeat.jpg"
+                src={TypeImage}
+                placeholder="blur"
                 alt="타입"
                 width={13}
                 height={5}
@@ -98,7 +104,8 @@ const ApplicationCard: React.FC<Props> = ({app, isSelected}) => {
           {app.lessonForm && (
            <span className="flex gap-1 text-xs items-center leading-none px-1.5 py-0.5">
               <Image
-                src="/images/application/check.jpg"
+                src={LessonformImage}
+                placeholder="blur"
                 alt="lessonform"
                 width={13}
                 height={5}
@@ -111,7 +118,8 @@ const ApplicationCard: React.FC<Props> = ({app, isSelected}) => {
           {app.sessionNumber && (
            <span className="flex gap-1 text-xs items-center leading-none px-1.5 py-0.5">
               <Image
-                src="/images/application/star.jpg"
+                src={SessionNoImage}
+                placeholder="blur"
                 alt="회차 정보"
                 width={13}
                 height={5}

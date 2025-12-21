@@ -1,9 +1,8 @@
 import {cookies} from "next/headers";
-import {NextResponse} from "next/server";
+import {NextRequest, NextResponse} from "next/server";
 
-export async function GET(request : Request) {
-  const { searchParams } = new URL(request.url);
-  const status = searchParams.get("status");
+export async function GET(request: NextRequest) {
+  const status = request.nextUrl.searchParams.get("status");
   console.log("status:", status); 
 
   const cookieStore = cookies();

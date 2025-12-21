@@ -1,9 +1,8 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
-export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const status = searchParams.get("status");
+export async function GET(request: NextRequest) {
+  const status = request.nextUrl.searchParams.get("status");
 
   const cookieStore = cookies();
   // 모든 쿠키를 문자열로 연결

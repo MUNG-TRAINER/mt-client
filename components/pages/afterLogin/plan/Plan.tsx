@@ -8,6 +8,9 @@ import {UserCourseType} from "@/types/course/userCourse";
 import useCheckLoggedIn from "@/hooks/afterLogin/users/useCheckLoggedIn";
 import { TrainerCourseType } from "@/types/trainer/trainerCourseType";
 import { useRouter } from "next/navigation";
+import DogImage from "@/public/images/application/dog.jpg";
+import CalendarImage from "@/public/images/application/calendar.jpg";
+import SessionNoImage from "@/public/images/application/star.jpg";
 
 interface PlanProps {
   courses: UserCourseType[] | TrainerCourseType[];
@@ -95,7 +98,8 @@ const planAllCourses = isTrainer
                 {!isTrainer && (
                   <div className="text-sm flex items-center gap-1">
                     <Image
-                      src="/images/application/dog.jpg"
+                      src={DogImage}
+                      placeholder="blur"
                       alt="강아지"
                       width={13}
                       height={13}
@@ -106,7 +110,8 @@ const planAllCourses = isTrainer
                 )}
                   <div className="text-sm flex items-center gap-1">
                     <Image
-                      src="/images/application/calendar.jpg"
+                      src={CalendarImage}
+                      placeholder="blur"
                       alt="달력"
                       width={13}
                       height={5}
@@ -117,7 +122,8 @@ const planAllCourses = isTrainer
                   </div>
                         <span className="flex gap-1 text-sm items-center leading-none px-1.5 py-0.5">
                             <Image
-                              src="/images/application/star.jpg"
+                              src={SessionNoImage}
+                              placeholder="blur"
                               alt="회차 정보"
                               width={14}
                               height={5}
