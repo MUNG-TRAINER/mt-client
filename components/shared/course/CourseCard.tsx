@@ -10,6 +10,9 @@ import { CalendarIcon } from "@/components/icons/calendar";
 import { ClockIcon } from "@/components/icons/courseInfoIcons";
 import { MapPinIcon } from "@/components/icons/location";
 import { UserIcon } from "@/components/icons/user";
+import { CheckIcon } from "@/components/icons/check";
+import { XMarkIcon } from "@/components/icons/xMark";
+import { getDogSizeLabel } from "@/util/course/courseMappings";
 
 interface CourseCardProps {
   course: CourseItem;
@@ -38,16 +41,12 @@ export const CourseCard = ({ course, onReserve }: CourseCardProps) => {
     });
   };
 
-  // 태그 파싱
-  const tags = course.tags
-    ? course.tags.split(",").map((tag) => tag.trim())
-    : [];
-
   // 상태 배지 렌더링 함수
   const renderStatusBadge = () => {
     if (course.status === "CANCELLED") {
       return (
-        <div className="absolute top-3 right-3 px-3 py-1.5 bg-red-500 text-white text-xs font-bold rounded-lg shadow-lg">
+        <div className="absolute top-3 right-3 px-3 py-1.5 bg-red-500 text-white text-xs font-bold rounded-lg shadow-lg flex items-center gap-1">
+          <XMarkIcon className="size-3.5" />
           취소됨
         </div>
       );
@@ -55,7 +54,8 @@ export const CourseCard = ({ course, onReserve }: CourseCardProps) => {
 
     if (course.status === "DONE") {
       return (
-        <div className="absolute top-3 right-3 px-3 py-1.5 bg-green-500 text-white text-xs font-bold rounded-lg shadow-lg">
+        <div className="absolute top-3 right-3 px-3 py-1.5 bg-green-500 text-white text-xs font-bold rounded-lg shadow-lg flex items-center gap-1">
+          <CheckIcon className="size-3.5" />
           마감
         </div>
       );
@@ -63,7 +63,8 @@ export const CourseCard = ({ course, onReserve }: CourseCardProps) => {
 
     if (!course.session) {
       return (
-        <div className="absolute top-3 right-3 px-3 py-1.5 bg-red-500 text-white text-xs font-bold rounded-lg shadow-lg">
+        <div className="absolute top-3 right-3 px-3 py-1.5 bg-red-500 text-white text-xs font-bold rounded-lg shadow-lg flex items-center gap-1">
+          <XMarkIcon className="size-3.5" />
           신청불가
         </div>
       );
@@ -71,7 +72,8 @@ export const CourseCard = ({ course, onReserve }: CourseCardProps) => {
 
     if (course.status === "SCHEDULED" && course.session) {
       return (
-        <div className="absolute top-3 right-3 px-3 py-1.5 bg-blue-500 text-white text-xs font-bold rounded-lg shadow-lg">
+        <div className="absolute top-3 right-3 px-3 py-1.5 bg-blue-500 text-white text-xs font-bold rounded-lg shadow-lg flex items-center gap-1">
+          <UserIcon className="size-3.5" />
           모집중
         </div>
       );
@@ -119,38 +121,29 @@ export const CourseCard = ({ course, onReserve }: CourseCardProps) => {
       <div className="p-4 space-y-2.5">
         {/* 뱃지 */}
         <div className="flex gap-1.5 flex-wrap">
-          <span className="px-2 py-0.5 bg-indigo-50 text-indigo-600 text-xs rounded-md font-semibold">
+          <span className="px-2.5 py-1 bg-indigo-50 text-indigo-600 text-xs rounded-md font-semibold">
             {TYPE_LABEL[course.type]}
           </span>
-          <span className="px-2 py-0.5 bg-blue-50 text-blue-600 text-xs rounded-md">
+          <span className="px-2.5 py-1 bg-blue-50 text-blue-600 text-xs rounded-md font-semibold">
             {LESSON_FORM_LABEL[course.lessonForm]}
           </span>
-          <span className="px-2 py-0.5 bg-green-50 text-green-600 text-xs rounded-md">
+          <span className="px-2.5 py-1 bg-green-50 text-green-600 text-xs rounded-md font-semibold">
             {course.difficulty}
           </span>
-          <span className="px-2 py-0.5 bg-purple-50 text-purple-600 text-xs rounded-md">
-            {course.dogSize}
-          </span>
+          {getDogSizeLabel(course.dogSize).map((sizeLabel, index) => (
+            <span
+              key={`${sizeLabel}_${index}`}
+              className="px-2.5 py-1 bg-purple-50 text-purple-600 text-xs rounded-md font-semibold"
+            >
+              {sizeLabel}
+            </span>
+          ))}
           {course.isFree && (
-            <span className="px-2 py-0.5 bg-yellow-50 text-yellow-600 text-xs rounded-md font-semibold">
+            <span className="px-2.5 py-1 bg-yellow-50 text-yellow-600 text-xs rounded-md font-semibold">
               무료
             </span>
           )}
         </div>
-
-        {/* 태그 */}
-        {tags.length > 0 && (
-          <div className="flex gap-1.5 flex-wrap">
-            {tags.slice(0, 5).map((tag, index) => (
-              <span
-                key={index}
-                className="px-2 py-0.5 bg-gray-50 text-gray-600 text-xs rounded-md"
-              >
-                #{tag}
-              </span>
-            ))}
-          </div>
-        )}
 
         {/* 제목 */}
         <div className="flex items-center gap-2">

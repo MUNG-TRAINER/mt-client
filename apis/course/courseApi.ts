@@ -6,6 +6,7 @@ interface SearchParams {
   keyword?: string;
   lastCourseId?: number; // 커서 기반: 마지막으로 조회한 courseId
   size?: number;
+  lessonForm?: "WALK" | "GROUP" | "PRIVATE"; // 훈련 형태 필터
 }
 
 export const courseAPI = {
@@ -25,6 +26,9 @@ export const courseAPI = {
     }
     if (params.size) {
       queryParams.append("size", params.size.toString());
+    }
+    if (params.lessonForm) {
+      queryParams.append("lessonForm", params.lessonForm);
     }
 
     const queryString = queryParams.toString();
