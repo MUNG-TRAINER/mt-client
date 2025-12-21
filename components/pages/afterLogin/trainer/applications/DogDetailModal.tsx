@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { XMarkIcon } from "@/components/icons/xMark";
 import useDogDetailByApplication from "@/hooks/afterLogin/applications/useDogDetailByApplication";
 
@@ -7,12 +8,14 @@ interface DogDetailModalProps {
   isOpen: boolean;
   applicationId: number | null;
   onClose: () => void;
+  onSelect?: () => void;
 }
 
 export const DogDetailModal = ({
   isOpen,
   applicationId,
   onClose,
+  onSelect,
 }: DogDetailModalProps) => {
   const {
     data: dogDetail,
@@ -65,9 +68,11 @@ export const DogDetailModal = ({
               {/* 프로필 이미지 */}
               {dogDetail.profileImageUrl && (
                 <div className="flex justify-center mb-4">
-                  <img
+                  <Image
                     src={dogDetail.profileImageUrl}
                     alt={dogDetail.name}
+                    width={128}
+                    height={128}
                     className="w-32 h-32 rounded-full object-cover border-2 border-gray-200"
                   />
                 </div>
@@ -123,14 +128,23 @@ export const DogDetailModal = ({
           )}
         </div>
 
-        {/* 닫기 버튼 */}
+        {/* 하단 버튼 */}
         <div className="p-4 border-t border-gray-200">
-          <button
-            onClick={onClose}
-            className="w-full py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            확인
-          </button>
+          {onSelect ? (
+            <button
+              onClick={onSelect}
+              className="w-full py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              선택
+            </button>
+          ) : (
+            <button
+              onClick={onClose}
+              className="w-full py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              확인
+            </button>
+          )}
         </div>
       </div>
     </div>

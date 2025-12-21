@@ -36,6 +36,14 @@ export const ApplicationManagementClient = () => {
     setDogDetailModalOpen(true);
   };
 
+  // 모달에서 선택 버튼 클릭
+  const handleSelectFromModal = () => {
+    if (!selectedApplication) return;
+    handleToggle(selectedApplication.applicationId);
+    setDogDetailModalOpen(false);
+    setSelectedApplication(null);
+  };
+
   // 거절 버튼 클릭
   const handleRejectClick = () => {
     if (selectedIds.length === 0) return;
@@ -147,6 +155,7 @@ export const ApplicationManagementClient = () => {
           setDogDetailModalOpen(false);
           setSelectedApplication(null);
         }}
+        onSelect={handleSelectFromModal}
       />
 
       <RejectModal
