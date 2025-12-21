@@ -102,8 +102,6 @@ export default function PlanCourseList({courses, isTrainer = false}: Props) {
             </div>
             {isTrainer && (
             <div className="mt-2">
-            {session.sessionStatus && (
-              <>
                 <button
                   className="flex items-center justify-center gap-1 py-2 text-sm font-semibold rounded-lg w-full"
                   style={{border: "1px solid #C5C5C5", color: "#444"}}
@@ -120,8 +118,6 @@ export default function PlanCourseList({courses, isTrainer = false}: Props) {
                       />
                   출석부
                 </button>
-              </>
-            )}
             </div>
             )}
           </li>

@@ -1,25 +1,10 @@
-import {API_BASE_URL} from "@/util/env";
 import {cookies} from "next/headers";
 import {NextResponse} from "next/server";
 
 export async function GET(request : Request) {
-  // const cookie = await cookies();
-  // const {searchParams} = new URL(requst.url);
-  // const status = searchParams.get("status");
-
-  // const url = new URL(`${API_BASE_URL}/trainer/course`);
-  // if(status){
-  //   url.searchParams.append("status", status);
-  // }
-  // const res = await fetch(url.toString(),{
-  //   method: "GET",
-  //   headers: {
-  //       Cookie: cookie.toString(),
-  //       "Content-Type": "application/json",
-  //   },
-  // });
   const { searchParams } = new URL(request.url);
   const status = searchParams.get("status");
+  console.log("status:", status); 
 
   const cookieStore = cookies();
   // 모든 쿠키를 문자열로 연결

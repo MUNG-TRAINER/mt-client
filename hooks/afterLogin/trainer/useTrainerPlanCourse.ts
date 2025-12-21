@@ -14,15 +14,12 @@ export const useTrainerPlanCourses = (enabled: boolean) => {
         return;
       }
       setLoading(true);
-    
       Promise.all([
         trainerCourseAPI.getTrainerCoursesByStatus("SCHEDULED"),
         trainerCourseAPI.getTrainerCoursesByStatus("DONE"),
       ])
         .then(([scheduled, done]) => {
-
           const merged = [...scheduled, ...done];
-    
           const grouped: TrainerCourseType[] = Object.values(
             merged.reduce((acc, cur) => {
               if (!acc[cur.courseId]) {
@@ -39,7 +36,6 @@ export const useTrainerPlanCourses = (enabled: boolean) => {
                   sessions: [],
                 };
               }
-    
               acc[cur.courseId].sessions.push({
                 sessionId: cur.sessionId,
                 sessionNo: cur.sessionNo,
@@ -52,7 +48,6 @@ export const useTrainerPlanCourses = (enabled: boolean) => {
               return acc;
             }, {} as Record<number, TrainerCourseType>)
           );
-    
           setAllCourses(grouped);
         })
         .catch(() => {

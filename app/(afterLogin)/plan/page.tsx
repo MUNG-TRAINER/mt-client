@@ -25,7 +25,7 @@ const { loading, allCourses, courses, activeTab, setActiveTab } = planData;
 
 
   if (loading) {
-    return <LoadingSpinner message="신청 내역을 불러오는 중..." size="md" />;
+    return <LoadingSpinner message="훈련과정 내역을 불러오는 중..." size="md" />;
   }
 
   return (
