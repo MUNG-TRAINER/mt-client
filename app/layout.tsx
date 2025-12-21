@@ -39,12 +39,12 @@ export default function RootLayout({
         <OSProvider />
         <QueryProvider>
           <Wallpapaer>
-            <section className="flex flex-col justify-between max-w-[500px] min-h-full mx-auto md:mr-32">
+            <section className="relative flex flex-col justify-between max-w-[500px] h-full mx-auto md:mr-32 bg-(--mt-blue-smoke)">
               <HeaderBar className="bg-(--mt-blue)">
                 <HeaderNav />
               </HeaderBar>
               <main
-                className={`flex items-center h-dvh [body[data-os=android]_&]:h-[750px] [body[data-os=ios]_&]:h-[750px] p-6 overflow-y-auto`}
+                className={`flex items-center h-full [body[data-os=android]_&]:h-[750px] [body[data-os=ios]_&]:h-[750px] p-6 overflow-y-auto`}
               >
                 {children}
               </main>

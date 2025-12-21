@@ -31,8 +31,7 @@ type IJoinRequiredInputFnProps = {
   setToggleCheckPwd: Dispatch<SetStateAction<boolean>>;
 };
 interface IJoinRequiredInputProps
-  extends IJoinRequiredInputStateProps,
-    IJoinRequiredInputFnProps {}
+  extends IJoinRequiredInputStateProps, IJoinRequiredInputFnProps {}
 
 export default function JoinRequiredInputs({
   state,
@@ -48,6 +47,7 @@ export default function JoinRequiredInputs({
   setTogglePwd,
   setToggleCheckPwd,
 }: IJoinRequiredInputProps) {
+  const now = new Date();
   return (
     <>
       <div className="flex  items-center gap-2">
@@ -174,6 +174,7 @@ export default function JoinRequiredInputs({
         placeholder="생년월일을 입력하세요."
         headIcon={<CalendarIcon />}
         classNames="pr-2"
+        max={`${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`}
         errMsg={
           (state.errMsg?.properties && state.errMsg.properties.birth?.errors) ??
           []

@@ -37,7 +37,7 @@ export default function CourseInfoEditForm({
     }
   }, [data, router, courseId]);
   return (
-    <div className="bg-(--mt-white) h-full p-6 rounded-md overflow-y-scroll">
+    <div className="bg-(--mt-white) w-full h-full p-6 rounded-md overflow-y-scroll">
       <form action="">
         <fieldset className="flex flex-col gap-3">
           <legend>훈련수정</legend>

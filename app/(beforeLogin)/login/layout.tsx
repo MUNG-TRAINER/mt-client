@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 export default function layout({children}: {children: ReactNode}) {
   return (
-    <div className="flex flex-col gap-3 items-center p-6">
+    <div className="flex flex-col gap-3 justify-center items-center p-6 my-auto">
       <div className="bg-(--mt-blue) p-5 rounded-full size-20">
         <Image src={logo_slogun_white} alt="로고이미지" />
       </div>

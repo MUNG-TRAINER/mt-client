@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 };
 export default function layout({children}: {children: ReactNode}) {
   return (
-    <div className="flex flex-col p-6 gap-2 h-[800px] overflow-y-auto overflow-x-hidden">
+    <div className="flex flex-col p-6 gap-2 h-full overflow-y-auto overflow-x-hidden">
       <h2 className="text-center text-2xl font-dohyeon">회원가입</h2>
       <p className="text-center text-sm text-(--mt-gray)">
         계정을 생성하여 서비스를 이용하세요

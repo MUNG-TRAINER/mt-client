@@ -5,6 +5,7 @@ import Link from "next/link";
 import {ICourseType} from "@/types/course/courseType";
 import {ISessionType} from "@/types/course/sessionType";
 import {checkIsClose} from "@/util/course/checkIsClose";
+import {useSessionState} from "@/stores/session/sessionState";
 
 export default function CourseActionButtons({
   trainerId,
@@ -18,13 +19,16 @@ export default function CourseActionButtons({
   trainerId: number;
 }) {
   /* State */
+  const {editMode} = useSessionState();
   const {data, checkIsOwner} = useCheckLoggedIn();
-  const isOwner = checkIsOwner(trainerId);
   /* fn */
+  const isOwner = checkIsOwner(trainerId);
   const isClose = checkIsClose(sessionList, courseInfo);
   if (data && "code" in data) return null;
   return (
-    <div className="sticky mt-5 bottom-10 z-50 flex flex-col gap-3 w-full">
+    <div
+      className={`sticky mt-5 bottom-10 z-50 flex flex-col gap-3 w-full transition-transform duration-200 ease-in-out ${editMode ? "translate-y-[200%]" : "translate-y-0"}`}
+    >
       {isOwner && (
         <div className="flex justify-center gap-3 *:w-full *:flex *:items-center *:justify-center *:bg-white *:gap-2 *:px-6 *:py-3 *:border-2 *:border-(--mt-gray-light) *:text-(--mt-gray) *:rounded-lg *:font-bold">
           {isClose && (

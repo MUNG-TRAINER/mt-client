@@ -38,6 +38,7 @@ export default function SessionEditForm({
       endTime: formData.get("endTime") + "",
       locationDetail: formData.get("locationDetail") + "",
       maxStudents: Number(formData.get("maxStudents")),
+      content: session.content,
     });
     mutate({
       courseId: courseId + "",

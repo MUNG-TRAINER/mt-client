@@ -34,8 +34,11 @@ export default function PlanFloatingBtn() {
             )}
           </>
         )}
-        <li className="mt-auto">
-          <button onClick={togglePlanPage} className="flex items-center gap-2 ">
+        <li className="mt-auto cursor-pointer">
+          <button
+            onClick={togglePlanPage}
+            className="flex items-center gap-2 w-full"
+          >
             <ChevronDownIcon className="size-5" />
             <span className="text-sm">닫기</span>
           </button>
