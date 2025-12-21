@@ -4,7 +4,7 @@ import MaxStudents from "@/components/pages/afterLogin/course/create/formDataCom
 import SessionDate from "@/components/pages/afterLogin/course/create/formDataComps/session/SessionDate";
 import SessionPrice from "@/components/pages/afterLogin/course/create/formDataComps/session/SessionPrice";
 import SessionSchedule from "@/components/pages/afterLogin/course/create/formDataComps/session/SessionSchedule";
-import {useSessionState} from "@/stores/sessionState";
+import {useSessionState} from "@/stores/session/sessionState";
 import {IUploadCourseTypes} from "@/types/course/courseType";
 import React from "react";
 

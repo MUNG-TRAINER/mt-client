@@ -5,9 +5,9 @@ import Image from "next/image";
 import {useRef, useState} from "react";
 
 interface IEditCourseDetailImg {
-  detailImg1: string;
-  detailImg2: string;
-  detailImg3: string;
+  detailImg1: string | undefined;
+  detailImg2: string | undefined;
+  detailImg3: string | undefined;
 }
 export default function EditCourseDetailImg({
   detailImg1,
@@ -23,9 +23,9 @@ export default function EditCourseDetailImg({
   return (
     <CourseLabelBox classNames="my-3">
       <label htmlFor="">세부이미지</label>
-      <ul className="flex justify-between">
+      <ul className="flex justify-between gap-3">
         <li>
-          {detailImg1 ? (
+          {detailImg1 !== "" ? (
             <div
               className="relative size-32"
               onClick={() => detailImageOne.current?.click()}
@@ -50,7 +50,7 @@ export default function EditCourseDetailImg({
           />
         </li>
         <li>
-          {detailImg2 ? (
+          {detailImg2 !== "" ? (
             <div
               className="relative size-32"
               onClick={() => detailImageTwo.current?.click()}
@@ -76,7 +76,7 @@ export default function EditCourseDetailImg({
           />
         </li>
         <li>
-          {detailImg3 ? (
+          {detailImg3 !== "" ? (
             <div
               className="relative size-32"
               onClick={() => detailImageThree.current?.click()}

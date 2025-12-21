@@ -4,9 +4,7 @@ import CourseTextAtrea from "@/components/pages/afterLogin/course/create/formDat
 import CourseDifficulty from "@/components/pages/afterLogin/course/create/formDataComps/CourseDifficulty";
 import CourseDogSize from "@/components/pages/afterLogin/course/create/formDataComps/CourseDogSize";
 import CourseSchedule from "@/components/pages/afterLogin/course/create/formDataComps/CourseSchedule";
-import {useCourseState} from "@/stores/courseState";
 import {ICourseType} from "@/types/course/courseType";
-import {useQueryClient} from "@tanstack/react-query";
 import EditCourseTitle from "./form/items/EditCourseTitle";
 import EditCourseLocation from "./form/items/EditCourseLocation";
 import EditCourseMainImg from "./form/items/EditCourseMainImg";
@@ -14,18 +12,32 @@ import EditCourseDetailImg from "./form/items/EditCourseDetailImg";
 import EditCourseIsFree from "./form/items/EditCourseIsFree";
 import EditCourseLessonForm from "./form/items/EditCourseLessonForm";
 import CourseItems from "@/components/pages/afterLogin/course/create/formDataComps/CourseItems";
+import Link from "next/link";
+import {useEffect} from "react";
+import useCheckLoggedIn from "@/hooks/afterLogin/users/useCheckLoggedIn";
+import {useRouter} from "next/navigation";
 
-export default function CourseInfoEditForm({courseId}: {courseId: string}) {
-  const {setEditModeOff} = useCourseState();
-  const queryClient = useQueryClient();
-  const courseInfo: ICourseType | undefined = queryClient.getQueryData([
-    "courseDetail",
-    courseId,
-  ]);
-
+export default function CourseInfoEditForm({
+  courseInfo,
+  courseId,
+}: {
+  courseInfo: ICourseType;
+  courseId: string;
+}) {
+  const router = useRouter();
   const items = courseInfo?.items.trim().split(", ");
+  const {data} = useCheckLoggedIn();
+
+  useEffect(() => {
+    if (data && "code" in data) {
+      router.push(`/coures/${courseId}}`);
+    }
+    if (data && "role" in data && data.role !== "TRAINER") {
+      router.push(`/coures/${courseId}}`);
+    }
+  }, [data, router, courseId]);
   return (
-    <div>
+    <div className="bg-(--mt-white) h-full p-6 rounded-md overflow-y-scroll">
       <form action="">
         <fieldset className="flex flex-col gap-3">
           <legend>훈련수정</legend>
@@ -62,27 +74,28 @@ export default function CourseInfoEditForm({courseId}: {courseId: string}) {
               placeholder="대략적인 해당 훈련내용을 작성해주세요."
             />
             {/* 세부이미지 */}
-            <EditCourseDetailImg
-              detailImg1={courseInfo?.detailImageUrls[0] + ""}
-              detailImg2={courseInfo?.detailImageUrls[1] + ""}
-              detailImg3={courseInfo?.detailImageUrls[2] + ""}
-            />
+            {courseInfo?.detailImageUrls &&
+              courseInfo.detailImageUrls.length > 0 && (
+                <EditCourseDetailImg
+                  detailImg1={courseInfo?.detailImageUrls[0] + ""}
+                  detailImg2={courseInfo?.detailImageUrls[1] + ""}
+                  detailImg3={courseInfo?.detailImageUrls[2] + ""}
+                />
+              )}
           </div>
           <div className="flex gap-2">
             <button
-              onClick={setEditModeOff}
               type="button"
               className="w-full py-2 bg-(--mt-blue) rounded-md font-bold text-(--mt-white)"
             >
               수정하기
             </button>
-            <button
-              onClick={setEditModeOff}
-              type="button"
-              className="w-full py-2 bg-(--mt-gray-point) rounded-md font-bold text-(--mt-white)"
+            <Link
+              href={`/course/${courseId}`}
+              className="w-full py-2 bg-(--mt-gray-point) rounded-md font-bold text-(--mt-white) text-center"
             >
               취소
-            </button>
+            </Link>
           </div>
         </fieldset>
       </form>

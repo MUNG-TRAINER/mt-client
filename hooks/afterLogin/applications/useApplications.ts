@@ -17,7 +17,7 @@ export const useApplications = () => {
     data?.filter(
       (app) =>
         app.applicationStatus === "APPLIED" ||
-        app.applicationStatus === "WAITING"
+        app.applicationStatus === "WAITING",
     ) || [];
 
   const completedApplications =
@@ -25,7 +25,7 @@ export const useApplications = () => {
       (app) =>
         app.applicationStatus === "ACCEPT" ||
         app.applicationStatus === "REJECTED" ||
-        app.applicationStatus === "CANCELLED"
+        app.applicationStatus === "CANCELLED",
     ) || [];
 
   const applicationsToShow =
@@ -35,11 +35,24 @@ export const useApplications = () => {
     queryClient.invalidateQueries({queryKey: ["applicationList"]});
   };
 
+  const thisWeekSchedule = data?.filter((app) => {
+    const now = new Date();
+    const startDay = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+    ).getTime();
+    const dayAfterWeek = startDay + 7 * 24 * 60 * 60 * 100;
+    const scheduleTime = new Date(app.schedule).getTime();
+    return scheduleTime >= startDay && scheduleTime <= dayAfterWeek;
+  });
+
   return {
     applicationsToShow,
     isPending,
     isError,
     selectedIndex,
     refreshApplicationListCache,
+    thisWeekSchedule,
   };
 };

@@ -6,17 +6,17 @@ import {
   LocationIcon,
   MoneyIcon,
 } from "@/components/icons/courseInfoIcons";
-import { ICourseBasicsSectionProps } from "@/types/course/courseType";
-import { getDogSizeLabel } from "@/util/course/courseMappings";
+import {ICourseBasicsSectionProps} from "@/types/course/courseType";
+import {getDogSizeLabel} from "@/util/course/courseMappings";
 
 export default function CourseBasicsSection({
-  course,
+  courseInfo,
   totalSessions,
   schedule,
   firstSessionPrice,
   sessionCount,
 }: ICourseBasicsSectionProps) {
-  const dogSize = getDogSizeLabel(course.dogSize);
+  const dogSize = getDogSizeLabel(courseInfo.dogSize);
   return (
     <div className="space-y-6">
       <InfoRow
@@ -58,16 +58,18 @@ export default function CourseBasicsSection({
       <InfoRow
         icon={<LocationIcon className="size-5 text-(--mt-gray) mt-0.5" />}
         title="강의 장소"
-        content={<p className="text-sm text-(--mt-gray)">{course.location}</p>}
+        content={
+          <p className="text-sm text-(--mt-gray)">{courseInfo.location}</p>
+        }
       />
 
-      {course.items && (
+      {courseInfo.items && (
         <InfoRow
           icon={<DocumentIcon className="size-5 text-(--mt-gray) mt-0.5" />}
           title="기타 준비물 및 문의"
           content={
             <p className="text-sm text-(--mt-gray) whitespace-pre-line">
-              {course.items}
+              {courseInfo.items}
             </p>
           }
           hasDivider={false}

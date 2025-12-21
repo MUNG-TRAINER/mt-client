@@ -98,14 +98,14 @@ export interface IDifficultyBadge {
 }
 
 export interface ICourseHeroProps {
-  course: ICourseType;
+  courseInfo: ICourseType;
   durationMinutes: number;
   maxStudents: number;
   lessonFormLabel: string;
   difficultyLabel: string;
 }
 export interface ICourseBasicsSectionProps {
-  course: ICourseType;
+  courseInfo: ICourseType;
   totalSessions: number;
   schedule: string;
   firstSessionPrice?: number;

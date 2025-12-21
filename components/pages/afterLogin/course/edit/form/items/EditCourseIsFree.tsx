@@ -1,6 +1,6 @@
 "use client";
 import CourseTypeBtn from "@/components/pages/afterLogin/course/create/formDataComps/common/CourseTypeBtn";
-import {useSessionState} from "@/stores/sessionState";
+import {useSessionState} from "@/stores/session/sessionState";
 
 export default function EditCourseIsFree({isFree}: {isFree: boolean}) {
   const {free} = useSessionState();
