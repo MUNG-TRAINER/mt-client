@@ -13,6 +13,9 @@ import JoinPrivacyPolicy from "./policy/JoinPrivacyPolicy";
 import JoinUserTerm from "./policy/JoinUserTerm";
 import JoinRequiredInputs from "./JoinRequiredInputs";
 import getOS from "@/util/getOS";
+import {joinTrainerSchema, joinUserSchema} from "@/schemas/joinSchema";
+import {IFormResultType} from "@/types/formResultType";
+import {useRouter} from "next/navigation";
 
 const initailState = {
   errMsg: undefined,
@@ -28,9 +31,26 @@ export default function JoinForm() {
   const [userNameInput, setUserNameInput] = useState("");
   const [emailInput, setEmailInput] = useState("");
   const {isTrainer} = useJoinState();
+  const router = useRouter();
   // form action
   const [state, action] = useActionState(
-    isTrainer ? joinTrainerAction : joinUserAction,
+    async (
+      state: IFormResultType<typeof joinTrainerSchema | typeof joinUserSchema>,
+      formData: FormData,
+    ) => {
+      let result: IFormResultType<
+        typeof joinTrainerSchema | typeof joinUserSchema
+      >;
+      if (isTrainer) {
+        result = await joinTrainerAction(state, formData);
+      } else {
+        result = await joinUserAction(state, formData);
+      }
+      if (!result.errMsg && !result.resMsg) {
+        router.replace("/");
+      }
+      return result;
+    },
     initailState,
   );
   // Custom Hook
