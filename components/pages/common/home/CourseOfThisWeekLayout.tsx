@@ -1,12 +1,12 @@
 "use client";
-import {ApplicationType} from "@/types/applications/applicationsType";
-import {ICourseType} from "@/types/course/courseType";
+import { ApplicationType } from "@/types/applications/applicationsType";
+import { ICourseType } from "@/types/course/courseType";
 import Image from "next/image";
 import Link from "next/link";
 
 type TWeekType =
-  | {type: "course"; data: ICourseType[]}
-  | {type: "application"; data: ApplicationType[]};
+  | { type: "course"; data: ICourseType[] }
+  | { type: "application"; data: ApplicationType[] };
 interface ICourseOfThisWeekLayoutProps {
   title: string;
   data: TWeekType;
