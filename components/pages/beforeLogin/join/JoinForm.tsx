@@ -39,7 +39,7 @@ export default function JoinForm() {
   const {
     checkUserName,
     checkEmail,
-    ableStatus,
+    unableStates,
     handleCheckUserName,
     handleCheckEmail,
     handleResetState,
@@ -104,12 +104,12 @@ export default function JoinForm() {
             formAction={action}
             type="submit"
             className={`${
-              ableStatus.userName || ableStatus.email
+              unableStates.userName || unableStates.email
                 ? "bg-(--mt-gray) cursor-default!"
                 : "bg-(--mt-blue) hover:bg-(--mt-blue-point)"
             } text-(--mt-white) py-2 rounded-lg shadow-md font-bold transition-colors duration-200 ease-in-out
         `}
-            disabled={ableStatus.userName || ableStatus.email}
+            disabled={unableStates.userName || unableStates.email}
           >
             회원가입
           </button>

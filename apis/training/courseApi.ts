@@ -128,10 +128,10 @@ export const courseApi = {
       },
       body: JSON.stringify(data),
     });
-    const resultData = await res.json();
     if (!res.ok) {
       throw new Error("훈련과정 업로드에 실패했습니다.");
     }
+    const resultData = await res.json();
 
     return resultData.result as IResultResponse;
   },
@@ -142,10 +142,10 @@ export const courseApi = {
         "Content-Type": "application/json",
       },
     });
-    const resultData = await res.json();
     if (!res.ok) {
       throw new Error("훈련과정 불러오기에 실패했습니다.");
     }
+    const resultData = await res.json();
     return resultData;
   },
 };

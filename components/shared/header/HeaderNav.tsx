@@ -7,9 +7,9 @@ import {usePathname, useRouter} from "next/navigation";
 import {ChevronLeftIcon} from "@/components/icons/chevron";
 
 const notAllowBackBtn: {[key: string]: boolean} = {
-  "/": false,
-  "/login": false,
-  "/join": false,
+  "/": true,
+  "/login": true,
+  "/join": true,
 };
 
 export default function HeaderNav() {
@@ -18,7 +18,7 @@ export default function HeaderNav() {
   const router = useRouter();
   return (
     <>
-      {notAllowBackBtn[path.toString()] && (
+      {!notAllowBackBtn[path] && (
         <li className="flex justify-center items-center">
           <button onClick={() => router.back()}>
             <ChevronLeftIcon className="size-6 text-(--mt-white)" />

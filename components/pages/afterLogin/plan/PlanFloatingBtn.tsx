@@ -16,12 +16,23 @@ export default function PlanFloatingBtn() {
           ${planPage ? "h-72 p-3" : "h-0"} font-bold
           *:px-3 *:py-1 *:hover:bg-(--mt-gray) *:hover:text-(--mt-white) *:rounded-md *:hover:shadow`}
       >
+        {data && "code" in data && data.code == "ANONYMOUS" && (
+          <>
+            <li>
+              <Link href={"/login"} className="w-full block">
+                로그인
+              </Link>
+            </li>
+          </>
+        )}
         {data && "role" in data && (
           <>
             {data.role === "TRAINER" && (
               <>
                 <li>
-                  <Link href={"/course/create-course"}>수업생성하기</Link>
+                  <Link href={"/course/create-course"} className="w-full block">
+                    수업생성하기
+                  </Link>
                 </li>
               </>
             )}
