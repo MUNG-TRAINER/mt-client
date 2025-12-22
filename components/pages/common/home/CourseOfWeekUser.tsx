@@ -1,7 +1,6 @@
 "use client";
 import {useApplications} from "@/hooks/afterLogin/applications/useApplications";
 import CourseOfThisWeekLayout from "./CourseOfThisWeekLayout";
-import {ApplicationType} from "@/types/applications/applicationsType";
 
 export default function CourseOfWeekUser() {
   const {thisWeekSchedule, isPending, isError} = useApplications();

@@ -1,22 +1,20 @@
-import { NextRequest, NextResponse } from "next/server";
-import { cookies } from "next/headers";
+import {NextRequest, NextResponse} from "next/server";
+import {cookies} from "next/headers";
+import {API_BASE_URL} from "@/util/env";
 
 export async function GET(request: NextRequest) {
   const status = request.nextUrl.searchParams.get("status");
 
-  const cookieStore = cookies();
-  // 모든 쿠키를 문자열로 연결
-  const cookieHeader = (await cookieStore).getAll().map(c => `${c.name}=${c.value}`).join("; ");
-
+  const cookieStore = await cookies();
 
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/users/course${status ? `?status=${status}` : ""}`,
+    `${API_BASE_URL}/users/course${status ? `?status=${status}` : ""}`,
     {
-        headers: {
-            Cookie: cookieHeader,
-            "Content-Type": "application/json",
-          },
-    }
+      headers: {
+        Cookie: cookieStore.toString(),
+        "Content-Type": "application/json",
+      },
+    },
   );
 
   if (!res.ok) {

@@ -4,9 +4,15 @@ import ApplicationCard from "./ApplicationCard";
 import ApplicationsTabs from "./ApplicationTabs";
 import ApplicationsActionButton from "./ActionButton";
 import {useApplications} from "@/hooks/afterLogin/applications/useApplications";
+import LoadingSpinner from "@/components/shared/feedback/LoadingSpinner";
 
 const Applications = () => {
-  const {applicationsToShow, selectedIndex} = useApplications();
+  const {applicationsToShow, selectedIndex, isPending} = useApplications();
+
+  if (isPending) {
+    return <LoadingSpinner message="신청 내역을 불러오는 중..." size="md" />;
+  }
+
   return (
     <div className="flex flex-col w-full h-full bg-white ">
       <ApplicationsTabs />

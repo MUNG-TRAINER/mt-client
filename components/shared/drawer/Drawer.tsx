@@ -4,22 +4,37 @@ import DrawerHeader from "../header/DrawerHeader";
 import HeaderBar from "../header/HeaderBar";
 import Link from "next/link";
 import useCheckLoggedIn from "@/hooks/afterLogin/users/useCheckLoggedIn";
+import {useEffect} from "react";
+import {usePathname} from "next/navigation";
 
 export default function Drawer() {
   const {toggle, offToggle} = useDrawer();
   const {data} = useCheckLoggedIn();
+  const path = usePathname();
+  // console.log(path);
   const userLink =
     data && "role" in data
-      ? data.role === "USER" && {href: "/mytrain", label: "나의훈련보기"}
+      ? data.role === "USER" && [
+          {href: "/applications", label: "나의 신청내역 보기"},
+        ]
       : null;
+
   const link = [
     {href: "/", label: "홈"},
     {href: "/mypage", label: "마이페이지"},
-    ...(userLink ? [userLink] : []),
-    {href: "/", label: "s"},
+    ...(userLink ? [...userLink] : []),
+    // {href: "/", label: "s"},
     {href: "/wishlist", label: "찜리스트"},
     {href: "/introduce", label: "멍선생소개"},
   ];
+
+  // useEffect(() => {
+  //   if (data && "role" in data && data.role === "USER") {
+  //   }
+  //   if (data && "role" in data && data.role === "TRAINER") {
+  //   }
+  // }, [data]);
+
   return (
     <>
       {toggle && (
