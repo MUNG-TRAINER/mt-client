@@ -13,13 +13,14 @@ export default function useCheckValidation({
   const queryClient = useQueryClient();
   const [checkUserName, setCheckUserName] = useState(false);
   const [checkEmail, setCheckEmail] = useState(false);
-  const [ableStatus, setAbleStatus] = useState({userName: true, email: true});
+  const [unableStates, setAbleStatus] = useState({userName: true, email: true});
   // Custom Hook
   const {refetch: checkUserNameRefetch} = useCheckUserName(userNameInput);
   const {refetch: checkEmailRefetch} = useCheckEmail(emailInput);
   /* functions */
   // 유저이름 확인
   const handleCheckUserName = async () => {
+    queryClient.removeQueries({queryKey: ["checkUserName", userNameInput]});
     if (!userNameInput.trim()) {
       setCheckUserName(false);
       setAbleStatus((prev) => ({
@@ -29,16 +30,16 @@ export default function useCheckValidation({
       return;
     }
     const {data} = await checkUserNameRefetch();
-    const isValid = data?.valid ?? true;
-    setCheckUserName(true);
+    const isValid = data?.valid === true;
+    setCheckUserName(isValid);
     setAbleStatus((prev) => ({
       ...prev,
-      userName: !isValid,
+      userName: isValid,
     }));
-    console.log("username ::" + ableStatus);
   };
   // 유저 이메일 확인
   const handleCheckEmail = async () => {
+    queryClient.removeQueries({queryKey: ["checkEmail"]});
     if (!emailInput.trim()) {
       setCheckEmail(false);
       setAbleStatus((prev) => ({
@@ -48,13 +49,12 @@ export default function useCheckValidation({
       return;
     }
     const {data} = await checkEmailRefetch();
-    const isValid = data?.valid ?? true;
-    setCheckEmail(true);
+    const isValid = data?.valid === true;
+    setCheckEmail(isValid);
     setAbleStatus((prev) => ({
       ...prev,
-      email: !isValid,
+      email: isValid,
     }));
-    console.log("email ::" + ableStatus);
   };
   // Reset State
   const handleResetState = useCallback(() => {
@@ -68,7 +68,7 @@ export default function useCheckValidation({
   return {
     checkUserName,
     checkEmail,
-    ableStatus,
+    unableStates,
     handleCheckUserName,
     handleCheckEmail,
     handleResetState,

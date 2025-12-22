@@ -1,10 +1,14 @@
 import {HeartIcon} from "@/components/icons/courseInfoIcons";
 import useCheckLoggedIn from "@/hooks/afterLogin/users/useCheckLoggedIn";
 import Link from "next/link";
-import {useCourseState} from "@/stores/courseState";
+import { useCourseState } from '@/stores/courseState';
 
-export default function CourseActionButtons({trainerId, isClose,
-}: {trainerId: number;  isClose: boolean;
+export default function CourseActionButtons({
+  trainerId,
+  isClose,
+}: {
+  trainerId: number;
+  isClose: boolean;
 }) {
   const {checkIsOwner} = useCheckLoggedIn();
   const isOwner = checkIsOwner(trainerId);

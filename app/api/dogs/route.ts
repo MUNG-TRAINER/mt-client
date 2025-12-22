@@ -1,6 +1,6 @@
-import { API_BASE_URL } from "@/util/env";
-import { cookies } from "next/headers";
-import { NextRequest, NextResponse } from "next/server";
+import {API_BASE_URL} from "@/util/env";
+import {cookies} from "next/headers";
+import {NextRequest, NextResponse} from "next/server";
 
 // GET /api/dogs - 내 반려견 목록 조회
 export async function GET() {
@@ -9,16 +9,17 @@ export async function GET() {
     method: "GET",
     headers: {
       Cookie: cookie.toString(),
+      "Content-Type": "application/json",
     },
   });
 
   if (!res.ok) {
     const errorData = await res
       .json()
-      .catch(() => ({ message: "반려견 목록을 불러올 수 없습니다." }));
+      .catch(() => ({message: "반려견 목록을 불러올 수 없습니다."}));
     return NextResponse.json(
-      { error: errorData.message || "반려견 목록을 불러올 수 없습니다." },
-      { status: res.status }
+      {error: errorData.message || "반려견 목록을 불러올 수 없습니다."},
+      {status: res.status},
     );
   }
 
@@ -42,10 +43,10 @@ export async function POST(req: NextRequest) {
   if (!res.ok) {
     const errorData = await res
       .json()
-      .catch(() => ({ message: "반려견 등록에 실패했습니다." }));
+      .catch(() => ({message: "반려견 등록에 실패했습니다."}));
     return NextResponse.json(
-      { error: errorData.message || "반려견 등록에 실패했습니다." },
-      { status: res.status }
+      {error: errorData.message || "반려견 등록에 실패했습니다."},
+      {status: res.status},
     );
   }
 

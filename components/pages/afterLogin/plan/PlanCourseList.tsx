@@ -5,12 +5,14 @@ import {UserCourseType} from "@/types/course/userCourse";
 import Image from "next/image";
 import {useRouter} from "next/navigation";
 import {TrainerCourseType} from "@/types/trainer/trainerCourseType";
+
 import DogImage from "@/public/images/application/dog.jpg";
 import TypeImage from "@/public/images/application/repeat.jpg";
 import LessonformImage from "@/public/images/application/check.jpg";
 import SessionNoImage from "@/public/images/application/star.jpg";
 import BellImage from "@/public/images/application/bell.jpg";
 import {useState} from "react";
+import AttendanceModal from "../trainer/attendance/AttendanceModal";
 
 interface Props {
   courses: UserCourseType[] | TrainerCourseType[];
@@ -44,7 +46,6 @@ export default function PlanCourseList({courses, isTrainer = false}: Props) {
               key={`${course.courseId}-${session.sessionId}-${courseIndex}-${sessionIndex}`} // course+session으로 고유 key
               onClick={() => handleClick(course.courseId)}
               className="relative cursor-pointer flex flex-col rounded-2xl shadow-md bg-white p-4"
-              style={{border: "1px solid #E9ECEF"}}
             >
               {/* ===== Course Card ===== */}
               <CourseCard
@@ -150,6 +151,17 @@ export default function PlanCourseList({courses, isTrainer = false}: Props) {
           ))
         )}
       </ul>
+      {/* 출석 모달 - 예정된 훈련은 편집 가능, 완료된 훈련은 읽기 전용 */}
+      {selectedSession && (
+        <AttendanceModal
+          isOpen={!!selectedSession}
+          courseId={selectedSession.courseId}
+          sessionId={selectedSession.sessionId}
+          sessionNo={selectedSession.sessionNo}
+          onClose={() => setSelectedSession(null)}
+          isEditable={selectedSession.isScheduled}
+        />
+      )}
     </>
   );
 }

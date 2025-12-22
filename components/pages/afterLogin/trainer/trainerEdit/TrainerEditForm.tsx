@@ -1,14 +1,14 @@
 "use client";
 
-import { ITrainerInfoType } from "@/types/trainer/trainerType";
-import { UserIcon } from "@/components/icons/user";
-import { EnvelopeIcon } from "@/components/icons/envelope";
-import { PhoneIcon } from "@/components/icons/phone";
-import { CheckBadgeIcon } from "@/components/icons/badges";
+import {ITrainerInfoType} from "@/types/trainer/trainerType";
+import {UserIcon} from "@/components/icons/user";
+import {EnvelopeIcon} from "@/components/icons/envelope";
+import {PhoneIcon} from "@/components/icons/phone";
+import {CheckBadgeIcon} from "@/components/icons/badges";
 import Image from "next/image";
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { trainerApi } from "@/apis/trainer/trainerApi";
+import {useState, useEffect} from "react";
+import {useRouter} from "next/navigation";
+import {trainerApi} from "@/apis/trainer/trainerApi";
 
 interface ITrainerEditFormProps {
   trainer: ITrainerInfoType;
@@ -34,10 +34,10 @@ export default function TrainerEditForm({
 
   // 미리보기용
   const [profilePreview, setProfilePreview] = useState<string | null>(
-    trainer.profileImage || null
+    trainer.profileImage || null,
   );
   const [certPreview, setCertPreview] = useState<string | null>(
-    trainer.certificationImageUrl || null
+    trainer.certificationImageUrl || null,
   );
 
   // 실제 선택된 파일
@@ -46,20 +46,20 @@ export default function TrainerEditForm({
 
   const pickValue = (current: string, initial: string) => {
     const trimmed = current.trim();
-    return trimmed ? trimmed : initial ?? "";
+    return trimmed ? trimmed : (initial ?? "");
   };
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const {name, value} = e.target;
+    setFormData((prev) => ({...prev, [name]: value}));
   };
 
   // ✅ Object URL 생성 + 이전 blob revoke
   const handleImageUpload = (
     e: React.ChangeEvent<HTMLInputElement>,
-    type: "profile" | "cert"
+    type: "profile" | "cert",
   ) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -111,25 +111,25 @@ export default function TrainerEditForm({
         const res = await trainerApi.getPresignedUrl(
           "user-profile",
           profileFile.name,
-          profileFile.type
+          profileFile.type,
         );
         console.log("presignedUrl response:", res);
-        const { uploadUrl, fileKey } = res;
+        const {uploadUrl, fileKey} = res;
         await trainerApi.fileUpload(uploadUrl, profileFile);
         nextProfileImageKey = fileKey;
       }
 
       if (certFile) {
-        const { uploadUrl, fileKey } = await trainerApi.getPresignedUrl(
+        const {uploadUrl, fileKey} = await trainerApi.getPresignedUrl(
           "trainer-certification",
           certFile.name,
-          certFile.type
+          certFile.type,
         );
         await trainerApi.fileUpload(uploadUrl, certFile);
         nextCertImageKey = fileKey;
       }
 
-      const payload: ITrainerInfoType = {
+      const payload: Partial<ITrainerInfoType> = {
         trainerId: trainer.trainerId,
         name: pickValue(formData.name, trainer.name),
         phone: pickValue(formData.phone, trainer.phone),

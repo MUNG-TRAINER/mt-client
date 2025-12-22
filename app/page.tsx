@@ -3,6 +3,12 @@ import Link from "next/link";
 import walk_course from "@/public/images/home/walk_course.jpg";
 import solo_course from "@/public/images/home/solo_course.jpg";
 import group_course from "@/public/images/home/group_course.jpg";
+import {Metadata} from "next";
+import CourseOfThisWeek from "@/components/pages/common/home/CoureOfThisWeek";
+
+export const metadata: Metadata = {
+  title: "홈 | 댕스쿨",
+};
 
 export default async function Page() {
   return (
@@ -63,20 +69,7 @@ export default async function Page() {
           </Link>
         </div>
       </section>
-      <section className="flex flex-col gap-2">
-        <div className="w-60 h-7 bg-blue-200 rounded-md" />
-        <ul className="flex flex-col *:w-full gap-3 *:bg-blue-200 *:rounded-lg *:px-5 *:py-3">
-          {Array.from({ length: 10 }, (_, i) => (
-            <li key={i} className="flex justify-between items-center">
-              <div className="flex flex-col gap-2 *:w-32 *:h-6 *:bg-blue-100 *:rounded-md *:animate-pulse">
-                <div />
-                <div />
-              </div>
-              <div className="w-32 h-7 rounded-lg bg-blue-100 animate-pulse" />
-            </li>
-          ))}
-        </ul>
-      </section>
+      <CourseOfThisWeek />
     </div>
   );
 }

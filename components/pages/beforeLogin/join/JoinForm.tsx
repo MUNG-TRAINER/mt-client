@@ -13,6 +13,9 @@ import JoinPrivacyPolicy from "./policy/JoinPrivacyPolicy";
 import JoinUserTerm from "./policy/JoinUserTerm";
 import JoinRequiredInputs from "./JoinRequiredInputs";
 import getOS from "@/util/getOS";
+import {joinTrainerSchema, joinUserSchema} from "@/schemas/joinSchema";
+import {IFormResultType} from "@/types/formResultType";
+import {useRouter} from "next/navigation";
 
 const initailState = {
   errMsg: undefined,
@@ -28,10 +31,27 @@ export default function JoinForm() {
   const [userNameInput, setUserNameInput] = useState("");
   const [emailInput, setEmailInput] = useState("");
   const {isTrainer} = useJoinState();
+  const router = useRouter();
   // form action
   const [state, action] = useActionState(
-    isTrainer ? joinTrainerAction : joinUserAction,
-    initailState
+    async (
+      state: IFormResultType<typeof joinTrainerSchema | typeof joinUserSchema>,
+      formData: FormData,
+    ) => {
+      let result: IFormResultType<
+        typeof joinTrainerSchema | typeof joinUserSchema
+      >;
+      if (isTrainer) {
+        result = await joinTrainerAction(state, formData);
+      } else {
+        result = await joinUserAction(state, formData);
+      }
+      if (!result.errMsg && !result.resMsg) {
+        router.replace("/");
+      }
+      return result;
+    },
+    initailState,
   );
   // Custom Hook
   const {offset, setZeroOffset, setResetPolicy} = usePolicyState();
@@ -39,7 +59,7 @@ export default function JoinForm() {
   const {
     checkUserName,
     checkEmail,
-    ableStatus,
+    unableStates,
     handleCheckUserName,
     handleCheckEmail,
     handleResetState,
@@ -57,7 +77,7 @@ export default function JoinForm() {
     const kakaoScript = document.createElement("script");
     kakaoScript.setAttribute(
       "src",
-      "//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"
+      "//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js",
     );
     document.body.appendChild(kakaoScript);
     return () => {
@@ -70,13 +90,7 @@ export default function JoinForm() {
     setZeroOffset();
     setResetPolicy();
     resetToggleIsAgree();
-  }, [
-    state,
-    handleResetState,
-    setZeroOffset,
-    setResetPolicy,
-    resetToggleIsAgree,
-  ]);
+  }, [handleResetState, setZeroOffset, setResetPolicy, resetToggleIsAgree]);
 
   return (
     <form action={action} className="flex overflow-x-hidden py-2">
@@ -110,12 +124,12 @@ export default function JoinForm() {
             formAction={action}
             type="submit"
             className={`${
-              ableStatus.userName || ableStatus.email
+              unableStates.userName || unableStates.email
                 ? "bg-(--mt-gray) cursor-default!"
                 : "bg-(--mt-blue) hover:bg-(--mt-blue-point)"
             } text-(--mt-white) py-2 rounded-lg shadow-md font-bold transition-colors duration-200 ease-in-out
         `}
-            disabled={ableStatus.userName || ableStatus.email}
+            disabled={unableStates.userName || unableStates.email}
           >
             회원가입
           </button>

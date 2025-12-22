@@ -1,17 +1,10 @@
-"use client";
-
-import LoadingSpinner from "@/components/shared/feedback/LoadingSpinner";
 import Application from "@/components/pages/afterLogin/applications/Application";
-import {useApplications} from "@/hooks/afterLogin/applications/useApplications";
+import {Metadata} from "next";
 
-const ApplicationsPage = () => {
-  const {isPending} = useApplications();
-
-  if (isPending) {
-    return <LoadingSpinner message="신청 내역을 불러오는 중..." size="md" />;
-  }
-
-  return <Application />;
+export const metadata: Metadata = {
+  title: "나의 신청내역",
 };
 
-export default ApplicationsPage;
+export default async function ApplicationsPage() {
+  return <Application />;
+}

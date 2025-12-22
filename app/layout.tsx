@@ -1,5 +1,5 @@
-import type { Metadata } from "next";
-import { Do_Hyeon, Nanum_Gothic } from "next/font/google";
+import type {Metadata} from "next";
+import {Do_Hyeon, Nanum_Gothic} from "next/font/google";
 import "./globals.css";
 import GlobalNav from "@/components/shared/globalNav/GlobalNav";
 import HeaderBar from "@/components/shared/header/HeaderBar";
@@ -28,8 +28,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
+  modal,
 }: Readonly<{
   children: React.ReactNode;
+  modal: React.ReactNode;
 }>) {
   return (
     <html lang="ko">
@@ -39,15 +41,16 @@ export default function RootLayout({
         <OSProvider />
         <QueryProvider>
           <Wallpapaer>
-            <section className="flex flex-col justify-between max-w-[500px] min-h-full mx-auto md:mr-32">
+            <section className="relative flex flex-col justify-between max-w-[500px] h-full mx-auto md:mr-32 bg-(--mt-blue-smoke)">
               <HeaderBar className="bg-(--mt-blue)">
                 <HeaderNav />
               </HeaderBar>
               <main
-                className={`flex items-center h-[1100px] [body[data-os=android]_&]:h-[750px] [body[data-os=ios]_&]:h-[750px] p-6 overflow-y-auto`}
+                className={`flex items-center h-full [body[data-os=android]_&]:h-[750px] [body[data-os=ios]_&]:h-[750px] p-6 overflow-y-auto`}
               >
                 {children}
               </main>
+              {modal}
               <GlobalNav />
             </section>
           </Wallpapaer>

@@ -1,15 +1,15 @@
 "use server";
 
-import {joinApi} from "@/apis/join/joinApi";
 import {joinUserSchema, joinTrainerSchema} from "@/schemas/joinSchema";
 import {IFormResultType} from "@/types/formResultType";
 import {IErrorResponse} from "@/types/response/errorResponse";
-import {redirect} from "next/navigation";
+import {API_BASE_URL} from "@/util/env";
+import {cookies} from "next/headers";
 import {treeifyError} from "zod";
 
 export async function joinUserAction(
   state: IFormResultType<typeof joinUserSchema>,
-  formData: FormData
+  formData: FormData,
 ): Promise<IFormResultType<typeof joinUserSchema>> {
   const data = {
     isAgree: formData.get("isAgree") === "1",
@@ -35,20 +35,31 @@ export async function joinUserAction(
       resMsg: undefined,
     };
   }
-  const response = await joinApi.joinUser(result.data);
-  if (!response.ok) {
-    const responseResult: IErrorResponse = await response.json();
+  const cookie = await cookies();
+  const res = await fetch(`${API_BASE_URL}/auth/join/user`, {
+    method: "POST",
+    headers: {
+      Cookie: cookie.toString(),
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(result.data),
+  });
+  if (!res.ok) {
+    const responseResult: IErrorResponse = await res.json();
     return {
       errMsg: undefined,
       resMsg: responseResult.message,
     };
   }
-  redirect("/login");
+  return {
+    errMsg: undefined,
+    resMsg: undefined,
+  };
 }
 
 export async function joinTrainerAction(
   state: IFormResultType<typeof joinTrainerSchema>,
-  formData: FormData
+  formData: FormData,
 ): Promise<IFormResultType<typeof joinTrainerSchema>> {
   const data = {
     isAgree: formData.get("isAgree") === "1",
@@ -72,13 +83,24 @@ export async function joinTrainerAction(
       resMsg: undefined,
     };
   }
-  const response = await joinApi.joinTrainer(result.data);
-  if (!response.ok) {
-    const responseResult: IErrorResponse = await response.json();
+  const cookie = await cookies();
+  const res = await fetch(`${API_BASE_URL}/auth/join/trainer`, {
+    method: "POST",
+    headers: {
+      Cookie: cookie.toString(),
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(result.data),
+  });
+  if (!res.ok) {
+    const responseResult: IErrorResponse = await res.json();
     return {
       errMsg: undefined,
       resMsg: responseResult.message,
     };
   }
-  redirect("/login");
+  return {
+    errMsg: undefined,
+    resMsg: undefined,
+  };
 }
