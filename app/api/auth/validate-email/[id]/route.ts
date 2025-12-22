@@ -14,9 +14,12 @@ export async function GET(
     },
   });
   if (!response.ok) {
+    //배포시삭제
+    const text = await response.text();
     return NextResponse.json({
       valid: false,
       message: "서버에 오류가 발생했습니다.",
+      text,
     });
   }
   const result: ICheckIdType = await response.json();

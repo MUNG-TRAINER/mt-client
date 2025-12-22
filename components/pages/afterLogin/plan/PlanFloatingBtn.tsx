@@ -4,10 +4,14 @@ import FloatingAddBtn from "@/components/shared/buttons/FloatingAddBtn";
 import {useFloatingBtnState} from "@/stores/floatingBtnState";
 import useCheckLoggedIn from "@/hooks/afterLogin/users/useCheckLoggedIn";
 import Link from "next/link";
+import {useEffect} from "react";
 
 export default function PlanFloatingBtn() {
   const {data} = useCheckLoggedIn();
   const {planPage, togglePlanPage} = useFloatingBtnState();
+  useEffect(() => {
+    return () => togglePlanPage();
+  }, [togglePlanPage]);
   return (
     <>
       <FloatingAddBtn btnState={planPage} clickFn={togglePlanPage} />
