@@ -16,7 +16,6 @@ export default function CourseOfThisWeekLayout({
   title,
   data,
 }: ICourseOfThisWeekLayoutProps) {
-  console.log(data);
   return (
     <section className="flex flex-col gap-2">
       <div>
@@ -45,7 +44,7 @@ export default function CourseOfThisWeekLayout({
                     />
                   </div>
                   <div>
-                    <h3 className="font-bold">{v.title}</h3>
+                    <h3>{v.title}</h3>
                   </div>
                 </Link>
               </li>
@@ -57,15 +56,23 @@ export default function CourseOfThisWeekLayout({
               </span>
             )
           : data.data.map((v, i) => (
-              <li
-                key={i}
-                className="flex justify-between items-center bg-blue-200"
-              >
-                <div className="flex flex-col gap-2 *:w-32 *:h-6 *:bg-blue-100 *:rounded-md *:animate-pulse">
-                  <div />
-                  <div />
-                </div>
-                <div className="w-32 h-7 rounded-lg bg-blue-100 animate-pulse" />
+              <li key={i} className="bg-blue-200">
+                <Link
+                  href={`/course/${v.courseId}`}
+                  className="flex justify-between items-center"
+                >
+                  <div className="relative size-14 rounded-full overflow-hidden">
+                    <Image
+                      src={v.mainImage + ""}
+                      alt="메인이미지"
+                      fill
+                      sizes="100"
+                    />
+                  </div>
+                  <div>
+                    <h3>{v.title}</h3>
+                  </div>
+                </Link>
               </li>
             ))}
       </ul>
