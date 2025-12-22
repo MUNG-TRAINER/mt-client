@@ -1,6 +1,6 @@
-import { fetchWithAuth } from "../common/fetchWithAuth";
-import { API_BASE_URL } from "@/util/env";
-import { ITrainerInfoType } from "@/types/trainer/trainerType";
+import {fetchWithAuth} from "../common/fetchWithAuth";
+import {API_BASE_URL} from "@/util/env";
+import {ITrainerInfoType} from "@/types/trainer/trainerType";
 
 export const trainerApi = {
   getProfile: async (trainerId: string) => {
@@ -8,14 +8,14 @@ export const trainerApi = {
       `${API_BASE_URL}/users/trainer/${trainerId}`,
       {
         method: "GET",
-      }
+      },
     );
     if (!res?.ok) {
       throw new Error("트레이너 정보를 불러오는데 실패하였습니다.");
     }
     return await res.json();
   },
-  uploadProfile: async (data: ITrainerInfoType) => {
+  uploadProfile: async (data: Partial<ITrainerInfoType>) => {
     const res = await fetchWithAuth(`${API_BASE_URL}/trainer/me`, {
       method: "PATCH",
       body: JSON.stringify(data),
@@ -28,7 +28,7 @@ export const trainerApi = {
   getPresignedUrl: async (
     category: string,
     fileName: string,
-    contentType: string
+    contentType: string,
   ) => {
     const res = await fetchWithAuth(`${API_BASE_URL}/presigned-url`, {
       method: "POST",
