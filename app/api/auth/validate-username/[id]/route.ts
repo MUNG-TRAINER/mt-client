@@ -23,6 +23,7 @@ export async function GET(
       valid: false,
       message: "서버에 오류가 발생했습니다.",
       text,
+      url: API_BASE_URL,
     });
   }
   const result: ICheckIdType = await response.json();
