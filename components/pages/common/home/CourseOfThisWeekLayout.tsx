@@ -52,7 +52,7 @@ export default function CourseOfThisWeekLayout({
         {data.type === "application"
           ? data.data.length < 1 && (
               <span className="text-sm text-(--mt-gray) text-center">
-                이번 주 훈련은 없습니다.
+                이번 주 교육은 없습니다.
               </span>
             )
           : data.data.map((v, i) => (

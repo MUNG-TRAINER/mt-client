@@ -17,7 +17,6 @@ export const dogsApi = {
     }
 
     const data: IDogListType = await response.json();
-    console.log(data);
     return data;
   },
 

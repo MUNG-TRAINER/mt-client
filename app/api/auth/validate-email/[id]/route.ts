@@ -13,12 +13,12 @@ export async function GET(
       "Content-Type": "application/json",
     },
   });
-  const result: ICheckIdType = await response.json();
   if (!response.ok) {
     return NextResponse.json({
       valid: false,
-      message: result.message || "서버에 오류가 발생했습니다.",
+      message: "서버에 오류가 발생했습니다.",
     });
   }
+  const result: ICheckIdType = await response.json();
   return NextResponse.json({...result});
 }

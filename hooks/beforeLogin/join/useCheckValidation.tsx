@@ -13,7 +13,7 @@ export default function useCheckValidation({
   const queryClient = useQueryClient();
   const [checkUserName, setCheckUserName] = useState(false);
   const [checkEmail, setCheckEmail] = useState(false);
-  const [ableStatus, setAbleStatus] = useState({userName: true, email: true});
+  const [unableStates, setAbleStatus] = useState({userName: true, email: true});
   // Custom Hook
   const {refetch: checkUserNameRefetch} = useCheckUserName(userNameInput);
   const {refetch: checkEmailRefetch} = useCheckEmail(emailInput);
@@ -30,11 +30,11 @@ export default function useCheckValidation({
       return;
     }
     const {data} = await checkUserNameRefetch();
-    const isValid = data?.valid ?? true;
+    const isValid = data?.valid === true;
     setCheckUserName(isValid);
     setAbleStatus((prev) => ({
       ...prev,
-      userName: !isValid,
+      userName: isValid,
     }));
   };
   // 유저 이메일 확인
@@ -49,11 +49,11 @@ export default function useCheckValidation({
       return;
     }
     const {data} = await checkEmailRefetch();
-    const isValid = data?.valid ?? true;
+    const isValid = data?.valid === true;
     setCheckEmail(isValid);
     setAbleStatus((prev) => ({
       ...prev,
-      email: !isValid,
+      email: isValid,
     }));
   };
   // Reset State
@@ -68,7 +68,7 @@ export default function useCheckValidation({
   return {
     checkUserName,
     checkEmail,
-    ableStatus,
+    unableStates,
     handleCheckUserName,
     handleCheckEmail,
     handleResetState,
