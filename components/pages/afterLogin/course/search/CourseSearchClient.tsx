@@ -1,49 +1,38 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { SearchBar } from "@/components/shared/search/SearchBar";
-import { CourseList } from "@/components/shared/course/CourseList";
-import { CourseCalendar } from "@/components/shared/calendar/CourseCalendar";
 import { useCourseSearch } from "@/hooks/course/useCourseSearch";
 import { useCoursesByDate } from "@/hooks/course/useCoursesByDate";
+import { useCourseSearchFilters } from "@/hooks/course/useCourseSearchFilters";
 import { CourseSearchResponse } from "@/types/course/courseType";
-
-type LessonFormFilter = "ALL" | "WALK" | "GROUP" | "PRIVATE";
-type ViewMode = "list" | "calendar";
-
-// 유효한 LessonFormFilter 값인지 확인
-const getValidFilter = (value: string | null): LessonFormFilter => {
-  if (value === "WALK" || value === "GROUP" || value === "PRIVATE") {
-    return value;
-  }
-  return "ALL";
-};
+import { CourseFilterBar } from "./CourseFilterBar";
+import { MonthNavigator } from "./MonthNavigator";
+import { SearchResultInfo } from "./SearchResultInfo";
+import { CalendarView } from "./CalendarView";
+import { ListView } from "./ListView";
 
 export default function CourseSearchClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [keyword, setKeyword] = useState("");
   const observerTarget = useRef<HTMLDivElement>(null);
 
-  // 뷰 모드 상태
-  const [viewMode, setViewMode] = useState<ViewMode>("list");
-
-  // 달력 관련 상태
-  const [currentMonth, setCurrentMonth] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
-
-  // URL에서 lessonForm 파라미터 가져오기
-  const urlLessonForm = searchParams.get("lessonForm");
-
-  const [selectedFilter, setSelectedFilter] = useState<LessonFormFilter>(() =>
-    getValidFilter(urlLessonForm)
-  );
-
-  // URL의 lessonForm 파라미터가 변경될 때 selectedFilter를 동기화
-  useEffect(() => {
-    setSelectedFilter(getValidFilter(urlLessonForm));
-  }, [urlLessonForm]);
+  // 필터 및 검색 상태 관리
+  const {
+    keyword,
+    viewMode,
+    currentMonth,
+    selectedDate,
+    selectedFilter,
+    handleSearch,
+    handleDateClick,
+    handleMonthChange,
+    handleFilterChange,
+    handleViewModeChange,
+  } = useCourseSearchFilters({
+    urlLessonForm: searchParams.get("lessonForm"),
+  });
 
   const {
     data,
@@ -92,48 +81,8 @@ export default function CourseSearchClient() {
     };
   }, [hasNextPage, isFetchingNextPage, fetchNextPage, viewMode]);
 
-  const handleSearch = (searchKeyword: string) => {
-    setKeyword(searchKeyword);
-  };
-
   const handleReserve = (courseId: number) => {
     router.push(`/course/${courseId}`);
-  };
-
-  // 달력 날짜 클릭 핸들러
-  const handleDateClick = (date: string) => {
-    setSelectedDate(date);
-  };
-
-  // 월 변경 핸들러
-  const handleMonthChange = (direction: "prev" | "next") => {
-    setCurrentMonth((prev) => {
-      const newMonth = new Date(prev);
-      if (direction === "prev") {
-        newMonth.setMonth(newMonth.getMonth() - 1);
-      } else {
-        newMonth.setMonth(newMonth.getMonth() + 1);
-      }
-      return newMonth;
-    });
-    setSelectedDate(null); // 월 변경 시 선택된 날짜 초기화
-  };
-
-  // 필터 변경 핸들러
-  const handleFilterChange = (filter: LessonFormFilter) => {
-    setSelectedFilter(filter);
-
-    // URL 업데이트
-    const params = new URLSearchParams();
-    if (filter !== "ALL") {
-      params.set("lessonForm", filter);
-    }
-
-    const newUrl = params.toString()
-      ? `/course/search?${params.toString()}`
-      : "/course/search";
-
-    router.push(newUrl);
   };
 
   // 모든 페이지의 데이터를 하나로 합침 (리스트 뷰)
@@ -166,138 +115,29 @@ export default function CourseSearchClient() {
       </div>
 
       {/* 훈련형태 필터 + 뷰 모드 토글 버튼 */}
-      <div className="flex gap-2 items-center">
-        {/* 훈련형태 필터 */}
-        {[
-          { value: "ALL" as const, label: "전체" },
-          { value: "WALK" as const, label: "산책모임" },
-          { value: "PRIVATE" as const, label: "개인레슨" },
-          { value: "GROUP" as const, label: "그룹레슨" },
-        ].map((filter) => (
-          <button
-            key={filter.value}
-            onClick={() => handleFilterChange(filter.value)}
-            className={`px-3 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition-colors flex-shrink-0 ${
-              selectedFilter === filter.value
-                ? "bg-blue-600 text-white"
-                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-            }`}
-          >
-            {filter.label}
-          </button>
-        ))}
-
-        {/* 뷰 모드 토글 버튼 */}
-        <button
-          onClick={() => {
-            const newMode = viewMode === "list" ? "calendar" : "list";
-            setViewMode(newMode);
-            if (newMode === "list") {
-              setSelectedDate(null);
-            }
-          }}
-          className="ml-auto px-3 py-2 rounded-full transition-colors bg-gray-100 text-gray-700 hover:bg-gray-200 flex items-center gap-1.5 flex-shrink-0 text-sm font-semibold whitespace-nowrap"
-        >
-          {viewMode === "list" ? (
-            <>
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                />
-              </svg>
-              <span>달력</span>
-            </>
-          ) : (
-            <>
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 10h16M4 14h16M4 18h16"
-                />
-              </svg>
-              <span>목록</span>
-            </>
-          )}
-        </button>
-      </div>
+      <CourseFilterBar
+        selectedFilter={selectedFilter}
+        onFilterChange={handleFilterChange}
+        viewMode={viewMode}
+        onViewModeChange={handleViewModeChange}
+      />
 
       {/* 달력 뷰일 때 월 네비게이션 */}
       {viewMode === "calendar" && (
-        <div className="flex items-center justify-between px-4 py-2 bg-white rounded-lg shadow-sm">
-          <button
-            onClick={() => handleMonthChange("prev")}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-          >
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M15 19l-7-7 7-7"
-              />
-            </svg>
-          </button>
-          <span className="text-lg font-semibold">
-            {currentMonth.getFullYear()}년 {currentMonth.getMonth() + 1}월
-          </span>
-          <button
-            onClick={() => handleMonthChange("next")}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-          >
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 5l7 7-7 7"
-              />
-            </svg>
-          </button>
-        </div>
+        <MonthNavigator
+          currentMonth={currentMonth}
+          onMonthChange={handleMonthChange}
+        />
       )}
 
       {/* 검색 결과 정보 */}
       {!isLoading && !isDateCoursesLoading && displayCourses.length > 0 && (
-        <div className="flex items-center justify-between text-xs">
-          <p className="text-gray-600">
-            {viewMode === "calendar" && selectedDate && (
-              <span className="mr-2 font-semibold text-blue-600">
-                {selectedDate}
-              </span>
-            )}
-            <span className="font-semibold text-gray-900">{loadedCount}</span>개
-            {keyword && (
-              <span className="ml-1">
-                (<span className="font-semibold">&quot;{keyword}&quot;</span>)
-              </span>
-            )}
-          </p>
-        </div>
+        <SearchResultInfo
+          count={loadedCount}
+          keyword={keyword}
+          selectedDate={selectedDate}
+          viewMode={viewMode}
+        />
       )}
 
       {/* 에러 처리 */}
@@ -311,54 +151,27 @@ export default function CourseSearchClient() {
 
       {/* 달력 뷰 */}
       {viewMode === "calendar" && (
-        <div className="flex-1 overflow-y-auto">
-          <div className="mb-4">
-            <CourseCalendar
-              currentMonth={currentMonth}
-              keyword={keyword || undefined}
-              lessonForm={selectedFilter === "ALL" ? undefined : selectedFilter}
-              onDateClick={handleDateClick}
-              selectedDate={selectedDate}
-            />
-          </div>
-
-          {/* 선택된 날짜의 코스 목록 */}
-          {selectedDate && (
-            <div className="mt-4">
-              <h3 className="text-lg font-semibold mb-3">
-                {selectedDate} 훈련 과정
-              </h3>
-              <CourseList
-                courses={dateCourses}
-                onReserve={handleReserve}
-                isLoading={isDateCoursesLoading}
-                isEmpty={!isDateCoursesLoading && dateCourses.length === 0}
-              />
-            </div>
-          )}
-        </div>
+        <CalendarView
+          currentMonth={currentMonth}
+          keyword={keyword}
+          selectedFilter={selectedFilter}
+          selectedDate={selectedDate}
+          dateCourses={dateCourses}
+          isLoading={isDateCoursesLoading}
+          onDateClick={handleDateClick}
+          onReserve={handleReserve}
+        />
       )}
 
       {/* 리스트 뷰 */}
       {viewMode === "list" && (
-        <div className="flex-1 overflow-y-auto">
-          <CourseList
-            courses={allCourses}
-            onReserve={handleReserve}
-            isLoading={isLoading}
-            isEmpty={!isLoading && allCourses.length === 0}
-          />
-
-          {/* 무한 스크롤 감지 영역 */}
-          <div
-            ref={observerTarget}
-            className="h-10 flex items-center justify-center"
-          >
-            {isFetchingNextPage && (
-              <div className="text-sm text-gray-500">로딩 중...</div>
-            )}
-          </div>
-        </div>
+        <ListView
+          courses={allCourses}
+          isLoading={isLoading}
+          isFetchingNextPage={isFetchingNextPage}
+          observerTarget={observerTarget}
+          onReserve={handleReserve}
+        />
       )}
     </div>
   );
