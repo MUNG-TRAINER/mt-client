@@ -15,6 +15,7 @@ export interface AttendanceType {
   attendanceId: number;
   userName: string;
   dogName: string;
+  dogProfileImage: string | null;
   status: AttendanceStatus;
   checkinTime: string | null;
   checkoutTime: string | null;

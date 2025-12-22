@@ -7,6 +7,8 @@ import {
   ATTENDANCE_STATUS_COLOR,
 } from "@/types/trainer/attendanceType";
 import ToggleSlide from "@/components/shared/toggleSlide/ToggleSlide";
+import Image from "next/image";
+import { DogIcon } from "@/components/icons/dog";
 
 interface AttendanceModalProps {
   isOpen: boolean;
@@ -175,18 +177,28 @@ function AttendanceItem({
     <div className="bg-white rounded-lg p-4 border border-gray-200">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
-            <svg
-              className="w-6 h-6 text-gray-400"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path
-                fillRule="evenodd"
-                d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                clipRule="evenodd"
+          {/* 반려견 프로필 이미지 */}
+          <div className="size-12 rounded-full overflow-hidden flex items-center justify-center shrink-0">
+            {attendance.dogProfileImage ? (
+              <Image
+                src={attendance.dogProfileImage}
+                alt={attendance.dogName}
+                width={48}
+                height={48}
+                className="w-full h-full object-cover"
               />
-            </svg>
+            ) : (
+              <div
+                className="flex items-center justify-center size-12 rounded-full"
+                style={{
+                  backgroundColor: `hsl(${
+                    (attendance.attendanceId * 137.5) % 360
+                  }, 70%, 80%)`,
+                }}
+              >
+                <DogIcon className="size-6 text-white" />
+              </div>
+            )}
           </div>
           <div>
             <div className="font-semibold text-(--mt-black)">
