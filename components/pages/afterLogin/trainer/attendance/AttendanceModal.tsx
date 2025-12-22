@@ -1,14 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { attendanceAPI } from "@/apis/trainer/attendanceApi";
-import {
-  AttendanceType,
-  ATTENDANCE_STATUS_COLOR,
-} from "@/types/trainer/attendanceType";
-import ToggleSlide from "@/components/shared/toggleSlide/ToggleSlide";
-import Image from "next/image";
-import { DogIcon } from "@/components/icons/dog";
+import { useEffect, useRef } from "react";
+import { useAttendanceModal } from "@/hooks/afterLogin/trainer/useAttendanceModal";
+import { useFocusTrap } from "@/hooks/afterLogin/trainer/useFocusTrap";
+import AttendanceItem from "./AttendanceItem";
 
 interface AttendanceModalProps {
   isOpen: boolean;
@@ -27,69 +22,64 @@ export default function AttendanceModal({
   onClose,
   isEditable = true,
 }: AttendanceModalProps) {
-  const [attendanceList, setAttendanceList] = useState<AttendanceType[]>([]);
-  const [loading, setLoading] = useState(false);
+  const modalRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
 
-  // 출석 목록 로드
+  // 출석 데이터 관리
+  const { attendanceList, loading, handleToggleAttendance, stats } =
+    useAttendanceModal({
+      isOpen,
+      courseId,
+      sessionId,
+      isEditable,
+    });
+
+  // 포커스 트랩
+  useFocusTrap({ isOpen, modalRef, closeButtonRef });
+
+  // Escape 키로 모달 닫기 (키보드 접근성)
   useEffect(() => {
-    const loadAttendanceList = async () => {
-      if (!isOpen) return;
-      setLoading(true);
-      try {
-        const data = await attendanceAPI.getAttendanceList(courseId, sessionId);
-        setAttendanceList(data);
-      } catch {
-        alert("출석 목록을 불러오는데 실패했습니다.");
-      } finally {
-        setLoading(false);
+    if (!isOpen) return;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape" || event.key === "Esc") {
+        event.preventDefault();
+        onClose();
       }
     };
-
-    loadAttendanceList();
-  }, [isOpen, courseId, sessionId]);
-
-  // 출석 토글 핸들러
-  const handleToggleAttendance = async (
-    userName: string,
-    currentStatus: string
-  ) => {
-    if (!isEditable) return;
-
-    const newStatus = currentStatus === "ATTENDED" ? "ABSENT" : "ATTENDED";
-    try {
-      await attendanceAPI.updateAttendanceStatus(
-        courseId,
-        sessionId,
-        userName,
-        { status: newStatus }
-      );
-      // 목록 새로고침
-      const data = await attendanceAPI.getAttendanceList(courseId, sessionId);
-      setAttendanceList(data);
-    } catch {
-      alert("출석 상태 변경에 실패했습니다.");
-    }
-  };
-
-  // 통계 계산
-  const stats = {
-    total: attendanceList.length,
-    attended: attendanceList.filter((a) => a.status === "ATTENDED").length,
-  };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50">
-      <div className="bg-white rounded-2xl w-full max-w-md mx-4 shadow-xl max-h-[80vh] flex flex-col">
+    <div
+      className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50"
+      onClick={onClose}
+    >
+      <div
+        ref={modalRef}
+        className="bg-white rounded-2xl w-full max-w-md mx-4 shadow-xl max-h-[80vh] flex flex-col"
+        onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="attendance-modal-title"
+      >
         {/* Header */}
         <div className="flex items-center justify-between p-5 border-b border-gray-200">
-          <h2 className="text-lg font-bold text-(--mt-black)">
+          <h2
+            id="attendance-modal-title"
+            className="text-lg font-bold text-(--mt-black)"
+          >
             {sessionNo}회차 {isEditable ? "출석체크" : "출석현황"}
           </h2>
           <button
+            ref={closeButtonRef}
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600"
+            aria-label="닫기"
           >
             <svg
               className="w-6 h-6"
@@ -151,80 +141,6 @@ export default function AttendanceModal({
             확인
           </button>
         </div>
-      </div>
-    </div>
-  );
-}
-
-// 출석 아이템 컴포넌트
-interface AttendanceItemProps {
-  attendance: AttendanceType;
-  onToggle: (userName: string, currentStatus: string) => void;
-  isEditable: boolean;
-}
-
-function AttendanceItem({
-  attendance,
-  onToggle,
-  isEditable,
-}: AttendanceItemProps) {
-  const isAttended = attendance.status === "ATTENDED";
-  const statusColor = isAttended
-    ? ATTENDANCE_STATUS_COLOR.ATTENDED
-    : ATTENDANCE_STATUS_COLOR.ABSENT;
-
-  return (
-    <div className="bg-white rounded-lg p-4 border border-gray-200">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          {/* 반려견 프로필 이미지 */}
-          <div className="size-12 rounded-full overflow-hidden flex items-center justify-center shrink-0">
-            {attendance.dogProfileImage ? (
-              <Image
-                src={attendance.dogProfileImage}
-                alt={attendance.dogName}
-                width={48}
-                height={48}
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <div
-                className="flex items-center justify-center size-12 rounded-full"
-                style={{
-                  backgroundColor: `hsl(${
-                    (attendance.attendanceId * 137.5) % 360
-                  }, 70%, 80%)`,
-                }}
-              >
-                <DogIcon className="size-6 text-white" />
-              </div>
-            )}
-          </div>
-          <div>
-            <div className="font-semibold text-(--mt-black)">
-              {attendance.dogName}
-            </div>
-            <div className="text-sm text-gray-500">
-              보호자: {attendance.userName}
-            </div>
-          </div>
-        </div>
-
-        {isEditable ? (
-          <ToggleSlide
-            toggleState={isAttended}
-            toggleFn={() => onToggle(attendance.userName, attendance.status)}
-            barWidth={48}
-            barHeight={24}
-          />
-        ) : (
-          <span
-            className="px-3 py-1 rounded-full text-white text-sm font-medium"
-            style={{ backgroundColor: statusColor }}
-          >
-            {isAttended ? "출석" : "결석"}
-          </span>
-        )}
       </div>
     </div>
   );

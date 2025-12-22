@@ -12,28 +12,37 @@ export async function PATCH(
 ) {
   const { courseId, sessionId, userName } = await params;
   const cookieStore = await cookies();
-  const body = await request.json();
 
-  const res = await fetch(
-    `${API_BASE_URL}/trainer/course/${courseId}/session/${sessionId}/attendance/${encodeURIComponent(
-      userName
-    )}`,
-    {
-      method: "PATCH",
-      headers: {
-        Cookie: cookieStore.toString(),
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
+  try {
+    const body = await request.json();
+
+    const res = await fetch(
+      `${API_BASE_URL}/trainer/course/${courseId}/session/${sessionId}/attendance/${encodeURIComponent(
+        userName
+      )}`,
+      {
+        method: "PATCH",
+        headers: {
+          Cookie: cookieStore.toString(),
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      }
+    );
+
+    if (!res.ok) {
+      return NextResponse.json(
+        { error: "출석 상태 변경에 실패했습니다." },
+        { status: res.status }
+      );
     }
-  );
 
-  if (!res.ok) {
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("출석 상태 변경 에러:", error);
     return NextResponse.json(
-      { error: "출석 상태 변경에 실패했습니다." },
-      { status: res.status }
+      { error: "서버 오류가 발생했습니다." },
+      { status: 500 }
     );
   }
-
-  return NextResponse.json({ success: true });
 }
