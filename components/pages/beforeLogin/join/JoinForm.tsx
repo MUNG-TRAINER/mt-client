@@ -32,6 +32,18 @@ export default function JoinForm() {
   const [emailInput, setEmailInput] = useState("");
   const {isTrainer} = useJoinState();
   const router = useRouter();
+  // Custom Hook
+  const {offset, setZeroOffset, setResetPolicy} = usePolicyState();
+  const {resetToggleIsAgree} = useJoinState();
+  const {
+    checkUserName,
+    checkEmail,
+    unableStates,
+    handleCheckUserName,
+    handleCheckEmail,
+    handleResetState,
+  } = useCheckValidation({userNameInput, emailInput});
+
   // form action
   const [state, action] = useActionState(
     async (
@@ -53,17 +65,6 @@ export default function JoinForm() {
     },
     initailState,
   );
-  // Custom Hook
-  const {offset, setZeroOffset, setResetPolicy} = usePolicyState();
-  const {resetToggleIsAgree} = useJoinState();
-  const {
-    checkUserName,
-    checkEmail,
-    unableStates,
-    handleCheckUserName,
-    handleCheckEmail,
-    handleResetState,
-  } = useCheckValidation({userNameInput, emailInput});
 
   //fn
   const handleTranlateX = (offset: number) => {

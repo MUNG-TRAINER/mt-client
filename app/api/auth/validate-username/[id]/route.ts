@@ -6,26 +6,34 @@ export async function GET(
   _req: NextRequest,
   ctx: RouteContext<"/api/auth/validate-username/[id]">,
 ) {
-  const {id} = await ctx.params;
-  const response = await fetch(
-    `${API_BASE_URL}/auth/check-username?username=${id}`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
+  try {
+    const {id} = await ctx.params;
+    const res = await fetch(
+      `${API_BASE_URL}/auth/check-username?username=${id}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
       },
-    },
-  );
-  if (!response.ok) {
-    //배포시삭제
-    const text = await response.text();
+    );
+    if (!res.ok) {
+      //배포시삭제
+      const text = await res.text();
+      return NextResponse.json({
+        valid: false,
+        message: "서버에 오류가 발생했습니다.",
+        text,
+      });
+    }
+    const result: ICheckIdType = await res.json();
+    return NextResponse.json({...result});
+  } catch (error) {
+    const err = error as Error;
+    console.error(err);
     return NextResponse.json({
-      valid: false,
       message: "서버에 오류가 발생했습니다.",
-      text,
-      url: API_BASE_URL,
+      errMsg: err.message,
     });
   }
-  const result: ICheckIdType = await response.json();
-  return NextResponse.json({...result});
 }
