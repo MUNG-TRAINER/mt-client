@@ -62,7 +62,7 @@ export default function CourseActionButtons({
             찜하기
           </Link>
           <Link
-            href={isClose ? "#" : "/"}
+            href={isClose ? "#" : `/course/${courseId}/regist`}
             aria-disabled={isClose}
             tabIndex={isClose ? -1 : 0}
             onClick={(e) => {
