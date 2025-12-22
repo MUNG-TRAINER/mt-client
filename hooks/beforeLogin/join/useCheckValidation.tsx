@@ -20,6 +20,7 @@ export default function useCheckValidation({
   /* functions */
   // 유저이름 확인
   const handleCheckUserName = async () => {
+    queryClient.removeQueries({queryKey: ["checkUserName", userNameInput]});
     if (!userNameInput.trim()) {
       setCheckUserName(false);
       setAbleStatus((prev) => ({
@@ -30,15 +31,15 @@ export default function useCheckValidation({
     }
     const {data} = await checkUserNameRefetch();
     const isValid = data?.valid ?? true;
-    setCheckUserName(true);
+    setCheckUserName(isValid);
     setAbleStatus((prev) => ({
       ...prev,
       userName: !isValid,
     }));
-    console.log("username ::" + ableStatus);
   };
   // 유저 이메일 확인
   const handleCheckEmail = async () => {
+    queryClient.removeQueries({queryKey: ["checkEmail"]});
     if (!emailInput.trim()) {
       setCheckEmail(false);
       setAbleStatus((prev) => ({
@@ -49,12 +50,11 @@ export default function useCheckValidation({
     }
     const {data} = await checkEmailRefetch();
     const isValid = data?.valid ?? true;
-    setCheckEmail(true);
+    setCheckEmail(isValid);
     setAbleStatus((prev) => ({
       ...prev,
       email: !isValid,
     }));
-    console.log("email ::" + ableStatus);
   };
   // Reset State
   const handleResetState = useCallback(() => {

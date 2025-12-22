@@ -17,6 +17,7 @@ export const dogsApi = {
     }
 
     const data: IDogListType = await response.json();
+    console.log(data);
     return data;
   },
 
@@ -69,7 +70,7 @@ export const dogsApi = {
   // PATCH /dogs/{dog_id} - 반려견 프로필 수정
   updateDog: async (
     dogId: number,
-    dogData: IDogUpdateRequestType
+    dogData: IDogUpdateRequestType,
   ): Promise<void> => {
     const response = await fetch(`/api/dogs/${dogId}`, {
       method: "PATCH",

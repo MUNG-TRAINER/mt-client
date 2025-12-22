@@ -1,8 +1,8 @@
 "use client";
 
-import { CounselingDog } from "@/types/counseling/counselingType";
+import {CounselingDog} from "@/types/counseling/counselingType";
 import Image from "next/image";
-import { DogIcon } from "@/components/icons/dog";
+import {DogIcon} from "@/components/icons/dog";
 
 interface CounselingListItemProps {
   dog: CounselingDog;
@@ -20,7 +20,7 @@ export const CounselingListItem = ({
       {/* 왼쪽: 프로필 이미지 + 정보 */}
       <div className="flex items-center gap-3">
         {/* 강아지 프로필 이미지 */}
-        <div className="relative w-14 h-14 rounded-full overflow-hidden flex-shrink-0">
+        <div className="relative w-14 h-14 rounded-full overflow-hidden shrink-0">
           {dog.dogImage && dog.dogImage.trim() ? (
             <Image
               src={dog.dogImage}

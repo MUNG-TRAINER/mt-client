@@ -13,6 +13,7 @@ export default function SessionSchedule({
   ...props
 }: ISessionSchedule) {
   const id = useId();
+  const now = new Date();
   return (
     <CourseLabelBox>
       <label htmlFor={`${id}_${index}_${labelId}`}>세부일자</label>
@@ -21,6 +22,7 @@ export default function SessionSchedule({
         name={inputName}
         type="date"
         {...props}
+        max={`${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`}
       />
     </CourseLabelBox>
   );
