@@ -5,7 +5,6 @@ import {IFormResultType} from "@/types/formResultType";
 import {IErrorResponse} from "@/types/response/errorResponse";
 import {API_BASE_URL} from "@/util/env";
 import {cookies} from "next/headers";
-import {redirect} from "next/navigation";
 import {treeifyError} from "zod";
 
 export async function joinUserAction(
@@ -52,7 +51,10 @@ export async function joinUserAction(
       resMsg: responseResult.message,
     };
   }
-  redirect("/login");
+  return {
+    errMsg: undefined,
+    resMsg: undefined,
+  };
 }
 
 export async function joinTrainerAction(
@@ -97,5 +99,8 @@ export async function joinTrainerAction(
       resMsg: responseResult.message,
     };
   }
-  redirect("/login");
+  return {
+    errMsg: undefined,
+    resMsg: undefined,
+  };
 }
