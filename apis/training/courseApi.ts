@@ -76,7 +76,7 @@ export const courseApi = {
       const presignedURL = await response.json();
       const mainImgUrl = await presignedUrlApi.uploadToS3(
         presignedURL.presignedUrl,
-        mainImgFile
+        mainImgFile,
       );
       formData.set("mainImgUrl", mainImgUrl);
     }
@@ -97,7 +97,7 @@ export const courseApi = {
       const presignedURL = await response.json();
       const s3Key = await presignedUrlApi.uploadToS3(
         presignedURL.presignedUrl,
-        file
+        file,
       );
       detailImageUrl.push(s3Key);
     }
@@ -134,5 +134,18 @@ export const courseApi = {
     }
 
     return resultData.result as IResultResponse;
+  },
+  getCourse: async () => {
+    const res = await fetch("/api/training/course", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const resultData = await res.json();
+    if (!res.ok) {
+      throw new Error("훈련과정 불러오기에 실패했습니다.");
+    }
+    return resultData;
   },
 };

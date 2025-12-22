@@ -1,12 +1,21 @@
+"use client";
 import SessionAccordion from "./SessionAccordion";
 import {ClipboardListIcon} from "@/components/icons/courseInfoIcons";
+import {useSessionEditState} from "@/stores/session/sessionEditState";
 import {ISessionType} from "@/types/course/sessionType";
+import {useEffect} from "react";
 
 export default function SessionListSection({
   sessions,
+  courseId,
 }: {
-  sessions?: ISessionType[];
+  sessions: ISessionType[];
+  courseId: string;
 }) {
+  const {sessionsData, setSession} = useSessionEditState();
+  useEffect(() => {
+    setSession(sessions);
+  }, [setSession, sessions]);
   if (!sessions || sessions.length === 0) return null;
 
   return (
@@ -16,8 +25,12 @@ export default function SessionListSection({
         <h3 className="font-bold text-lg text-(--mt-black)">세부 훈련 내용</h3>
       </div>
       <div className="space-y-2">
-        {sessions.map((session) => (
-          <SessionAccordion key={session.sessionId} session={session} />
+        {sessionsData.map((session) => (
+          <SessionAccordion
+            key={session.sessionId}
+            session={session}
+            courseId={courseId}
+          />
         ))}
       </div>
     </div>

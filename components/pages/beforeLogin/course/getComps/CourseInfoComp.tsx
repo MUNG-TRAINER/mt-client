@@ -2,68 +2,66 @@ import CourseActionButtons from "@/components/pages/afterLogin/course/view/Cours
 import CourseBasicsSection from "../CourseBasicsSection";
 import CourseHero from "../CourseHero";
 import CourseIntroSection from "../CourseIntroSection";
-import SessionListSection from "../SessionListSection";
+import SessionListSection from "../sessions/SessionListSection";
 import TrainerInfoCard from "../TrainerInfoCard";
-import { ICourseType } from "@/types/course/courseType";
-import { ITrainerInfoType } from "@/types/trainer/trainerType";
-import { ISessionType } from "@/types/course/sessionType";
+import {ICourseType} from "@/types/course/courseType";
+import {ITrainerInfoType} from "@/types/trainer/trainerType";
+import {ISessionType} from "@/types/course/sessionType";
+import {
+  getDifficultyLabel,
+  getLessonFormLabel,
+} from "@/util/course/courseMappings";
+import getDurationMinutes from "@/util/time/getDurationMinutes";
 interface ICourseInfoCompPropsTypes {
-  course: ICourseType;
-  durationMinutes: number;
-  maxStudents: number;
-  lessonFormLabel: string;
-  difficultyLabel: string;
-  trainer: ITrainerInfoType | undefined;
-  totalSessions: number;
-  schedule: string;
-  firstSessionPrice: number | undefined;
-  sessionCount: number;
+  courseInfo: ICourseType;
+  trainerInfo: ITrainerInfoType | undefined;
   sessionList: ISessionType[];
-  trainerId: number;
   courseId: string;
 }
 export default function CourseInfoComp({
-  course,
-  durationMinutes,
-  maxStudents = 0,
-  lessonFormLabel,
-  difficultyLabel,
-  trainer,
-  totalSessions,
-  schedule,
-  firstSessionPrice,
-  sessionCount,
+  courseInfo,
+  trainerInfo,
   sessionList,
-  trainerId,
   courseId,
 }: ICourseInfoCompPropsTypes) {
+  const lessonFormLabel = getLessonFormLabel(courseInfo?.lessonForm);
+  const difficultyLabel = getDifficultyLabel(courseInfo.difficulty);
+  const totalSessions = sessionList?.length || 0;
+  const firstSession = sessionList?.[0];
+  const durationMinutes = firstSession
+    ? getDurationMinutes(firstSession.startTime, firstSession.endTime)
+    : 0;
+
   return (
     <>
       <CourseHero
-        course={course}
+        courseInfo={courseInfo}
         durationMinutes={durationMinutes}
-        maxStudents={maxStudents}
+        maxStudents={firstSession.maxStudents || 0}
         lessonFormLabel={lessonFormLabel}
         difficultyLabel={difficultyLabel}
       />
 
-      <div className="pt-5 space-y-6">
-        <TrainerInfoCard trainer={trainer} />
+      <TrainerInfoCard trainer={trainerInfo} />
 
-        <CourseBasicsSection
-          course={course}
-          totalSessions={totalSessions}
-          schedule={schedule}
-          firstSessionPrice={firstSessionPrice}
-          sessionCount={sessionCount}
-        />
+      <CourseBasicsSection
+        courseInfo={courseInfo}
+        totalSessions={totalSessions}
+        schedule={courseInfo.schedule}
+        firstSessionPrice={firstSession.price}
+        sessionCount={sessionList.length}
+      />
 
-        <CourseIntroSection course={course} />
+      <CourseIntroSection courseInfo={courseInfo} />
 
-        <SessionListSection sessions={sessionList} />
-      </div>
+      <SessionListSection sessions={sessionList} courseId={courseId} />
 
-      <CourseActionButtons trainerId={trainerId} />
+      <CourseActionButtons
+        courseInfo={courseInfo}
+        sessionList={sessionList}
+        courseId={courseId}
+        trainerId={courseInfo?.trainerId}
+      />
     </>
   );
 }

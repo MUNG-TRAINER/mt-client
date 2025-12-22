@@ -3,7 +3,7 @@ import SessionDate from "./SessionDate";
 import MaxStudents from "./MaxStudents";
 import CourseTextAtrea from "../common/CourseTextAtrea";
 import SessionPrice from "./SessionPrice";
-import {useSessionState} from "@/stores/sessionState";
+import {useSessionState} from "@/stores/session/sessionState";
 import SessionSchedule from "./SessionSchedule";
 import CourseLocation from "../CourseLocation";
 import {IUploadCourseTypes} from "@/types/course/courseType";

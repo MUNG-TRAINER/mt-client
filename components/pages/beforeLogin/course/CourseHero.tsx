@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { ICourseHeroProps } from "@/types/course/courseType";
+import {ICourseHeroProps} from "@/types/course/courseType";
 import {
   BoltIcon,
   CheckBadgeIcon,
@@ -9,7 +9,7 @@ import {
 } from "@/components/icons/courseInfoIcons";
 
 export default function CourseHero({
-  course,
+  courseInfo,
   durationMinutes,
   maxStudents,
   lessonFormLabel,
@@ -17,11 +17,11 @@ export default function CourseHero({
 }: ICourseHeroProps) {
   return (
     <>
-      {course.mainImage ? (
+      {courseInfo.mainImage ? (
         <div className="relative w-full h-64 bg-(--mt-gray-light)">
           <Image
-            src={course.mainImage}
-            alt={course.title}
+            src={courseInfo.mainImage}
+            alt={courseInfo.title}
             fill
             className="object-cover"
           />
@@ -37,7 +37,7 @@ export default function CourseHero({
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1 min-w-0 space-y-3">
             <h1 className="text-xl font-bold text-(--mt-black)">
-              {course.title}
+              {courseInfo.title}
             </h1>
 
             <div className="grid grid-cols-4 gap-4">
@@ -66,12 +66,12 @@ export default function CourseHero({
 
           <span
             className={`px-4 py-1 rounded-md font-bold text-sm whitespace-nowrap ${
-              course.isFree
+              courseInfo.isFree
                 ? "bg-(--mt-blue-light) text-(--mt-blue-point)"
                 : "bg-(--mt-green-smoke) text-(--mt-green-point)"
             }`}
           >
-            {course.isFree ? "무료" : "유료"}
+            {courseInfo.isFree ? "무료" : "유료"}
           </span>
         </div>
       </div>

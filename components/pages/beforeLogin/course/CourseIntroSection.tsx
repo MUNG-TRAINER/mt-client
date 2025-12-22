@@ -1,31 +1,44 @@
+"use client";
 import Image from "next/image";
 import {ICourseType} from "@/types/course/courseType";
 import {InfoIcon, WarningIcon} from "@/components/icons/courseInfoIcons";
+import {useState} from "react";
 
-export default function CourseIntroSection({course}: {course: ICourseType}) {
+export default function CourseIntroSection({
+  courseInfo,
+}: {
+  courseInfo: ICourseType;
+}) {
+  const [move, setMove] = useState(false);
   return (
-    <div className="space-y-4">
-      {course.description && (
+    <div className="flex flex-col gap-4 overflow-hidden">
+      {courseInfo.description && (
         <div className="flex items-start gap-3">
           <div>
             <h3 className="text-lg font-bold text-(--mt-black) mb-1">
               과정 소개
             </h3>
             <p className="text-sm text-(--mt-gray) whitespace-pre-line">
-              {course.description}
+              {courseInfo.description}
             </p>
           </div>
         </div>
       )}
 
-      {course.detailImage && (
-        <div className="relative w-full h-48 rounded-xl overflow-hidden bg-(--mt-gray-light)">
-          <Image
-            src={course.detailImage}
-            alt={`${course.title} 상세 이미지`}
-            fill
-            className="object-cover"
-          />
+      {courseInfo.detailImageUrls && (
+        <div
+          className="flex items-center gap-2 w-xl min-w-full"
+          onClick={() => setMove((prev) => !prev)}
+        >
+          {courseInfo.detailImageUrls.length > 0 &&
+            courseInfo.detailImageUrls.map((val, index) => (
+              <div
+                key={index}
+                className={`relative w-48 h-48 rounded-xl overflow-hidden bg-(--mt-gray-light) transition-transform duration-200 ease-in-out ${move ? "-translate-x-full" : "translate-x-0"}`}
+              >
+                <Image src={val} alt={`${courseInfo.title} 상세 이미지`} fill />
+              </div>
+            ))}
         </div>
       )}
 
@@ -44,14 +57,14 @@ export default function CourseIntroSection({course}: {course: ICourseType}) {
         </div>
       </div>
 
-      {course.refundPolicy && (
+      {courseInfo.refundPolicy && (
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
           <div className="flex items-start gap-2">
             <InfoIcon className="size-5 text-blue-600 shrink-0 mt-0.5" />
             <div className="flex-1">
               <h3 className="font-bold text-blue-800 mb-2">환불 정책</h3>
               <div className="text-sm text-blue-700 whitespace-pre-line">
-                {course.refundPolicy}
+                {courseInfo.refundPolicy}
               </div>
             </div>
           </div>

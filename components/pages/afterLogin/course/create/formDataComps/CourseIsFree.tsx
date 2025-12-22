@@ -2,7 +2,7 @@
 
 import {useCallback, useRef} from "react";
 import CourseTypeBtn from "./common/CourseTypeBtn";
-import {useSessionState} from "@/stores/sessionState";
+import {useSessionState} from "@/stores/session/sessionState";
 
 export default function CourseIsFree() {
   const {free, setFreeTrue, setFreeFalse, setPrice} = useSessionState();

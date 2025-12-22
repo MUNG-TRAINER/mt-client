@@ -4,7 +4,7 @@ import {ChangeEvent, useCallback, useRef, useState} from "react";
 import CreateCourseInput from "../CreateCourseInput";
 import CourseTypeBtn from "./common/CourseTypeBtn";
 import CourseCountBtn from "./courseType/CourseCountBtn";
-import {useSessionState} from "@/stores/sessionState";
+import {useSessionState} from "@/stores/session/sessionState";
 import SessionComp from "./session/SessionComp";
 
 export default function CourseType() {

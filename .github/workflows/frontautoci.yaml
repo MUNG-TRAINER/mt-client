@@ -1,0 +1,73 @@
+name: CI - Build & Push Next.js Image + Update Manifest Repo
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. App Repo Checkout
+      - name: Checkout app repository
+        uses: actions/checkout@v4
+
+      # 2. Node.js 설치
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: "npm"
+
+      # 3. Dependencies 설치
+      - name: Install dependencies
+        run: npm install
+
+      # 4. Next.js Build
+      - name: Build Next.js app
+        run: npm run build
+
+      # 5. Docker 이미지 빌드 (commit SHA tag)
+      - name: Docker build
+        run: |
+          docker build \
+            -t ${{ secrets.DOCKER_USER }}/mt-front:${{ github.sha }} .
+
+      # 6. DockerHub 로그인
+      - name: Docker login
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      # 7. Docker 이미지 Push
+      - name: Docker push
+        run: |
+          docker push ${{ secrets.DOCKER_USER }}/mt-front:${{ github.sha }}
+
+      # 8. Manifest Repo Checkout (GitOps Repo)
+      - name: Checkout manifest repository
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ secrets.MANIFEST_REPO }}
+          token: ${{ secrets.MANIFEST_REPO_TOKEN }}
+          path: manifests
+
+      # 9. kustomization.yaml image tag 업데이트 (overlays/dev 기준)
+      - name: Update k8s image tag
+        run: |
+          sed -i \
+          "s/newTag: .*/newTag: ${{ github.sha }}/" \
+          manifests/overlays/dev/kustomization.yaml
+
+      # 10. Manifest Repo Commit & Push
+      - name: Commit & Push manifest repo
+        run: |
+          cd manifests
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add overlays/dev/kustomization.yaml
+          git commit -m "chore(dev): update mt-front image to ${{ github.sha }}"
+          git push

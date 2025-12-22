@@ -31,7 +31,7 @@ export default function JoinForm() {
   // form action
   const [state, action] = useActionState(
     isTrainer ? joinTrainerAction : joinUserAction,
-    initailState
+    initailState,
   );
   // Custom Hook
   const {offset, setZeroOffset, setResetPolicy} = usePolicyState();
@@ -57,7 +57,7 @@ export default function JoinForm() {
     const kakaoScript = document.createElement("script");
     kakaoScript.setAttribute(
       "src",
-      "//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"
+      "//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js",
     );
     document.body.appendChild(kakaoScript);
     return () => {
@@ -70,13 +70,7 @@ export default function JoinForm() {
     setZeroOffset();
     setResetPolicy();
     resetToggleIsAgree();
-  }, [
-    state,
-    handleResetState,
-    setZeroOffset,
-    setResetPolicy,
-    resetToggleIsAgree,
-  ]);
+  }, [handleResetState, setZeroOffset, setResetPolicy, resetToggleIsAgree]);
 
   return (
     <form action={action} className="flex overflow-x-hidden py-2">

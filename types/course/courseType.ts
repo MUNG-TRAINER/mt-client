@@ -65,7 +65,7 @@ export interface ICourseType {
   trainerId: number;
   title: string;
   description: string;
-  type: string;
+  type: "ONCE" | "MULTI";
   lessonForm: "WALK" | "GROUP" | "PRIVATE" | string;
   status: string;
   isFree: boolean;
@@ -75,7 +75,7 @@ export interface ICourseType {
   refundPolicy: string;
   mainImage: string;
   mainImageKey: string;
-  detailImage: string;
+  detailImageUrls: string[];
   detailImageKey: string;
   items: string;
   dogSize: string;
@@ -98,14 +98,14 @@ export interface IDifficultyBadge {
 }
 
 export interface ICourseHeroProps {
-  course: ICourseType;
+  courseInfo: ICourseType;
   durationMinutes: number;
   maxStudents: number;
   lessonFormLabel: string;
   difficultyLabel: string;
 }
 export interface ICourseBasicsSectionProps {
-  course: ICourseType;
+  courseInfo: ICourseType;
   totalSessions: number;
   schedule: string;
   firstSessionPrice?: number;

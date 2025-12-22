@@ -13,7 +13,7 @@ import CourseRefundPolicy from "./CourseRefundPolicy";
 import CourseSchedule from "./CourseSchedule";
 import CourseTitle from "./CourseTitle";
 import CourseType from "./CourseType";
-import {useSessionState} from "@/stores/sessionState";
+import {useSessionState} from "@/stores/session/sessionState";
 import useCourseUpload from "@/hooks/afterLogin/course/useCourseUpload";
 import {FormEvent} from "react";
 
