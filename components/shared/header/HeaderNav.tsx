@@ -3,14 +3,31 @@ import {BellIcon} from "@/components/icons/bells";
 import {Hamburger3Icon} from "@/components/icons/hamburger";
 import Link from "next/link";
 import {useDrawer} from "@/stores/drawerState";
+import {usePathname, useRouter} from "next/navigation";
+import {ChevronLeftIcon} from "@/components/icons/chevron";
+
+const notAllowBackBtn: {[key: string]: boolean} = {
+  "/": false,
+  "/login": false,
+  "/join": false,
+};
 
 export default function HeaderNav() {
   const {onToggle} = useDrawer();
+  const path = usePathname();
+  const router = useRouter();
   return (
     <>
+      {notAllowBackBtn[path.toString()] && (
+        <li className="flex justify-center items-center">
+          <button onClick={() => router.back()}>
+            <ChevronLeftIcon className="size-6 text-(--mt-white)" />
+          </button>
+        </li>
+      )}
       <li>
         <Link href={"/"}>
-          <h3 className="font-dohyeon text-(--mt-white)">DAENG&apos;S COOL</h3>
+          <h3 className="font-dohyeon text-(--mt-white)">MUNG&apos;s COOL</h3>
         </Link>
       </li>
       <li className="ml-auto">

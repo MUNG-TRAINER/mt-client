@@ -11,3 +11,13 @@ export interface ISessionType {
   content: string;
   price: number;
 }
+
+export interface IEditSessionType {
+  sessionId: string;
+  trainerId: string;
+  sessionDate: string;
+  startTime: string;
+  endTime: string;
+  locationDetail: string;
+  maxStudents: string;
+}

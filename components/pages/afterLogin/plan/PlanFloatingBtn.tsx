@@ -27,15 +27,39 @@ export default function PlanFloatingBtn() {
             )}
             {data.role === "USER" && (
               <>
-                <li>
-                  <Link href={"/"}>수업신청하기</Link>
+                <li onClick={togglePlanPage}>
+                  <Link
+                    href={"/course/search?lessonForm=WALK"}
+                    className="w-full block"
+                  >
+                    산책 신청 하기
+                  </Link>
+                </li>
+                <li onClick={togglePlanPage}>
+                  <Link
+                    href={"/course/search?lessonForm=PRIVATE"}
+                    className="w-full block"
+                  >
+                    개인 레슨 신청 하기
+                  </Link>
+                </li>
+                <li onClick={togglePlanPage}>
+                  <Link
+                    href={"/course/search?lessonForm=GROUP"}
+                    className="w-full block"
+                  >
+                    그룹 레슨 신청 하기
+                  </Link>
                 </li>
               </>
             )}
           </>
         )}
-        <li className="mt-auto">
-          <button onClick={togglePlanPage} className="flex items-center gap-2 ">
+        <li className="mt-auto cursor-pointer">
+          <button
+            onClick={togglePlanPage}
+            className="flex items-center gap-2 w-full"
+          >
             <ChevronDownIcon className="size-5" />
             <span className="text-sm">닫기</span>
           </button>

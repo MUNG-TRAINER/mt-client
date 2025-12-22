@@ -1,76 +1,79 @@
 import {HeartIcon} from "@/components/icons/courseInfoIcons";
 import useCheckLoggedIn from "@/hooks/afterLogin/users/useCheckLoggedIn";
 import Link from "next/link";
-import {useCourseState} from "@/stores/courseState";
 
-export default function CourseActionButtons({trainerId, isClose,
-}: {trainerId: number;  isClose: boolean;
+import {ICourseType} from "@/types/course/courseType";
+import {ISessionType} from "@/types/course/sessionType";
+import {checkIsClose} from "@/util/course/checkIsClose";
+import {useSessionState} from "@/stores/session/sessionState";
+
+export default function CourseActionButtons({
+  trainerId,
+  courseId,
+  courseInfo,
+  sessionList,
+}: {
+  courseInfo: ICourseType;
+  sessionList: ISessionType[];
+  courseId: string;
+  trainerId: number;
 }) {
-  const {checkIsOwner} = useCheckLoggedIn();
+  /* State */
+  const {editMode} = useSessionState();
+  const {data, checkIsOwner} = useCheckLoggedIn();
+  /* fn */
   const isOwner = checkIsOwner(trainerId);
-  const {setEditModeOn} = useCourseState();
+  const isClose = checkIsClose(sessionList, courseInfo);
+  if (data && "code" in data) return null;
   return (
-    <div className="sticky mt-5 bottom-0 z-50 flex flex-col gap-3 w-full">
+    <div
+      className={`sticky mt-5 bottom-10 z-50 flex flex-col gap-3 w-full transition-transform duration-200 ease-in-out ${editMode ? "translate-y-[200%]" : "translate-y-0"}`}
+    >
       {isOwner && (
-        <div className="flex justify-center gap-3">
-          <Link
-            href={`/`}
-            className="w-full flex items-center justify-center bg-white gap-2 px-6 py-3 border-2 border-(--mt-gray-light) text-(--mt-gray) rounded-lg font-bold hover:bg-(--mt-gray-smoke) transition-colors"
-          >
-            재업로드하기
-          </Link>
-          {isClose ? (
-            <div
-              aria-disabled="true"
-              className="w-full flex items-center justify-center bg-white gap-2 px-6 py-3 border-2 border-(--mt-gray-light) text-(--mt-gray) rounded-lg font-bold opacity-50 cursor-not-allowed pointer-events-none"
+        <div className="flex justify-center gap-3 *:w-full *:flex *:items-center *:justify-center *:bg-white *:gap-2 *:px-6 *:py-3 *:border-2 *:border-(--mt-gray-light) *:text-(--mt-gray) *:rounded-lg *:font-bold">
+          {isClose && (
+            <Link href={`/`} className="z-60 hover:bg-(--mt-gray-smoke)">
+              재업로드하기
+            </Link>
+          )}
+          {!isClose && (
+            <Link
+              aria-disabled={isClose}
+              href={isClose ? "#" : `/course/${courseId}/edit`}
+              className={`${isClose ? "opacity-50 cursor-not-allowed pointer-events-none" : "hover:bg-(--mt-gray-smoke)"} `}
             >
               수정하기
-            </div>
-          ) : (
-            <button
-              onClick={setEditModeOn}
-              className="w-full flex items-center justify-center bg-white gap-2 px-6 py-3 border-2 border-(--mt-gray-light) text-(--mt-gray) rounded-lg font-bold hover:bg-(--mt-gray-smoke) transition-colors"
-            >
-              수정하기
-            </button>
+            </Link>
           )}
         </div>
       )}
-
-      <div className="flex justify-center gap-3">
-        {isClose ? (
-          <div
-            aria-disabled="true"
-            className="flex items-center justify-center bg-white gap-2 px-6 py-3 border-2 border-(--mt-gray-light) text-(--mt-gray) rounded-lg font-bold opacity-50 cursor-not-allowed pointer-events-none"
-          >
-            <HeartIcon className="size-5" />
-            찜하기
-          </div>
-        ) : (
+      {data && "role" in data && data.role === "USER" && (
+        <div className="flex justify-center gap-3 *:flex *:items-center *:justify-center *:font-bold *:py-3 *:rounded-lg">
           <Link
-            href={`/`}
-            className="flex items-center justify-center bg-white gap-2 px-6 py-3 border-2 border-(--mt-gray-light) text-(--mt-gray) rounded-lg font-bold hover:bg-(--mt-gray-smoke) transition-colors"
+            href={isClose ? "#" : "/"}
+            aria-disabled={isClose}
+            tabIndex={isClose ? -1 : 0}
+            onClick={(e) => {
+              if (isClose) e.preventDefault();
+            }}
+            className={`bg-white gap-2 px-6 border-2 border-(--mt-gray-light) text-(--mt-gray) ${isClose ? "opacity-50 cursor-not-allowed pointer-events-none" : "hover:bg-(--mt-gray-smoke)"} `}
           >
             <HeartIcon className="size-5" />
             찜하기
           </Link>
-        )}
-        {isClose ? (
-          <div
-            aria-disabled="true"
-            className="flex-1 flex items-center justify-center py-3 bg-(--mt-blue-point) text-white rounded-lg font-bold shadow-lg opacity-50 cursor-not-allowed pointer-events-none"
-          >
-            수강 신청
-          </div>
-        ) : (
           <Link
-            href={`/`}
-            className="flex-1 flex items-center justify-center py-3 bg-(--mt-blue-point) text-white rounded-lg font-bold hover:bg-(--mt-blue) transition-colors shadow-lg"
+            href={isClose ? "#" : "/"}
+            aria-disabled={isClose}
+            tabIndex={isClose ? -1 : 0}
+            onClick={(e) => {
+              if (isClose) e.preventDefault();
+            }}
+            className={`flex-1 bg-(--mt-blue-point) text-white shadow-lg ${isClose ? "opacity-50 cursor-not-allowed pointer-events-none" : "hover:bg-(--mt-blue)"}`}
           >
             수강 신청
           </Link>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }

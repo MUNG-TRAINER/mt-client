@@ -1,5 +1,6 @@
 "use client";
-import { API_BASE_URL } from "@/util/env";
+import {API_BASE_URL} from "@/util/env";
+import {loginApi} from "../login/loginApi";
 
 const TOKEN_EXPIRED = "TOKEN_EXPIRED";
 const UNAUTHORIZED = "UNAUTHORIZED";
@@ -14,9 +15,11 @@ async function fetchData(input: RequestInfo, init: RequestInit = {}) {
     credentials: "include",
   });
 }
+
 export async function fetchWithAuth(
   input: RequestInfo,
-  init: RequestInit = {}
+  init: RequestInit = {},
+  optional: boolean | undefined = true,
 ) {
   try {
     let res = await fetchData(input, init);
@@ -33,7 +36,11 @@ export async function fetchWithAuth(
     if (res.status === 401) {
       const result = await res.json();
       if (result.code === TOKEN_EXPIRED) {
-        await refreshToken();
+        if (optional) {
+          await revalidateRefreshToken();
+        } else {
+          await loginApi.optionalCheck();
+        }
         res = await fetchData(input, init);
         return res;
       }
@@ -61,6 +68,19 @@ async function refreshToken() {
     credentials: "include",
   });
 
+  if (!resposne.ok) {
+    window.location.href = "/login";
+    throw new Error("로그인되어있지 않습니다. 로그인해주세요.");
+  }
+}
+
+async function revalidateRefreshToken() {
+  const resposne = await fetch(`/api/auth/refresh-token`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
   if (!resposne.ok) {
     window.location.href = "/login";
     throw new Error("로그인되어있지 않습니다. 로그인해주세요.");

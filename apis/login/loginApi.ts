@@ -49,4 +49,11 @@ export const loginApi = {
     const data: IResultResponseData<ICheckLoggedInType> = await res.json();
     return data.data;
   },
+  optionalCheck: async () => {
+    const res = await fetch("/api/auth/optionalCheck");
+    if (!res.ok) {
+      return (await res.json()) as Promise<{success: boolean}>;
+    }
+    return (await res.json()) as Promise<{success: boolean}>;
+  },
 };

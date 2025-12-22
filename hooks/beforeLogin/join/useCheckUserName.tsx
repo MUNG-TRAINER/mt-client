@@ -5,6 +5,7 @@ export default function useCheckUserName(userName: string) {
   const {data, isSuccess, isError, isPending, refetch} = useQuery({
     queryKey: ["checkUserName", userName],
     queryFn: () => joinApi.checkUserName(userName),
+    enabled: false,
   });
   return {data, isSuccess, isError, isPending, refetch};
 }

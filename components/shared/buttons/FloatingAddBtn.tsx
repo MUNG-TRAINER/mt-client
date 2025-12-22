@@ -17,8 +17,8 @@ export default function FloatingAddBtn({
   };
   return (
     <button
-      className={`z-90 fixed bottom-24 right-5 bg-blue-500 p-5 rounded-full transition-transform duration-200 ease-in-out ${
-        btnState ? "translate-x-[200%]" : "translate-x-0"
+      className={`z-90 fixed bottom-28 right-5 sm:right-36 xl:right-36 bg-blue-500 p-5 rounded-full transition-normal duration-200 ease-in-out ${
+        btnState ? "translate-x-[1000%]" : "translate-x-0"
       } ${classNames}`}
       onClick={handleClick}
       {...prev}
