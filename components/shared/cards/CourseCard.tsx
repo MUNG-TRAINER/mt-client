@@ -80,14 +80,9 @@ const CourseCard: React.FC<ApplicationInfoProps> = ({
         </div>
       </div>
       {location && (
-        <div className="flex mb-2 text-xs gap-4">
-          <div className="flex items-center justify-center gap-2 p-1 text-gray-400">
-            <Image
-              src={LocationImage}
-              alt="장소"
-              width={18}
-              height={18}
-            />
+        <div className="flex mb-1 text-xs gap-4 justify-between pl-1 pr-1">
+          <div className="flex items-center justify-center gap-2 text-gray-400">
+            <Image src={LocationImage} alt="장소" width={18} height={18} />
             {location}
           </div>
           <p className="text-xs text-gray-400 mb-1 flex gap-1 items-center">
