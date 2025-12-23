@@ -1,39 +1,38 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { SearchBar } from "@/components/shared/search/SearchBar";
-import { CourseList } from "@/components/shared/course/CourseList";
 import { useCourseSearch } from "@/hooks/course/useCourseSearch";
+import { useCoursesByDate } from "@/hooks/course/useCoursesByDate";
+import { useCourseSearchFilters } from "@/hooks/course/useCourseSearchFilters";
 import { CourseSearchResponse } from "@/types/course/courseType";
-
-type LessonFormFilter = "ALL" | "WALK" | "GROUP" | "PRIVATE";
-
-// 유효한 LessonFormFilter 값인지 확인
-const getValidFilter = (value: string | null): LessonFormFilter => {
-  if (value === "WALK" || value === "GROUP" || value === "PRIVATE") {
-    return value;
-  }
-  return "ALL";
-};
+import { CourseFilterBar } from "./CourseFilterBar";
+import { MonthNavigator } from "./MonthNavigator";
+import { SearchResultInfo } from "./SearchResultInfo";
+import { CalendarView } from "./CalendarView";
+import { ListView } from "./ListView";
 
 export default function CourseSearchClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [keyword, setKeyword] = useState("");
   const observerTarget = useRef<HTMLDivElement>(null);
 
-  // URL에서 lessonForm 파라미터 가져오기
-  const urlLessonForm = searchParams.get("lessonForm");
-
-  const [selectedFilter, setSelectedFilter] = useState<LessonFormFilter>(() =>
-    getValidFilter(urlLessonForm)
-  );
-
-  // URL의 lessonForm 파라미터가 변경될 때 selectedFilter를 동기화
-  useEffect(() => {
-    setSelectedFilter(getValidFilter(urlLessonForm));
-  }, [urlLessonForm]);
+  // 필터 및 검색 상태 관리
+  const {
+    keyword,
+    viewMode,
+    currentMonth,
+    selectedDate,
+    selectedFilter,
+    handleSearch,
+    handleDateClick,
+    handleMonthChange,
+    handleFilterChange,
+    handleViewModeChange,
+  } = useCourseSearchFilters({
+    urlLessonForm: searchParams.get("lessonForm"),
+  });
 
   const {
     data,
@@ -45,10 +44,22 @@ export default function CourseSearchClient() {
   } = useCourseSearch({
     keyword: keyword || undefined,
     lessonForm: selectedFilter === "ALL" ? undefined : selectedFilter,
+    enabled: viewMode === "list",
   });
 
-  // 무한 스크롤 구현
+  // 달력 뷰용 데이터
+  const { data: dateCoursesData, isLoading: isDateCoursesLoading } =
+    useCoursesByDate({
+      date: selectedDate,
+      keyword: keyword || undefined,
+      lessonForm: selectedFilter === "ALL" ? undefined : selectedFilter,
+      enabled: viewMode === "calendar" && !!selectedDate,
+    });
+
+  // 무한 스크롤 구현 (리스트 뷰에서만)
   useEffect(() => {
+    if (viewMode !== "list") return;
+
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
@@ -68,38 +79,29 @@ export default function CourseSearchClient() {
         observer.unobserve(currentTarget);
       }
     };
-  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
-
-  const handleSearch = (searchKeyword: string) => {
-    setKeyword(searchKeyword);
-  };
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage, viewMode]);
 
   const handleReserve = (courseId: number) => {
     router.push(`/course/${courseId}`);
   };
 
-  // 필터 변경 핸들러
-  const handleFilterChange = (filter: LessonFormFilter) => {
-    setSelectedFilter(filter);
-
-    // URL 업데이트
-    const params = new URLSearchParams();
-    if (filter !== "ALL") {
-      params.set("lessonForm", filter);
-    }
-
-    const newUrl = params.toString()
-      ? `/course/search?${params.toString()}`
-      : "/course/search";
-
-    router.push(newUrl);
-  };
-
-  // 모든 페이지의 데이터를 하나로 합침
+  // 모든 페이지의 데이터를 하나로 합침 (리스트 뷰)
   const allCourses =
-    data?.pages.flatMap((page: CourseSearchResponse) => page.courses) || [];
+    viewMode === "list"
+      ? data?.pages.flatMap((page: CourseSearchResponse) => page.courses) || []
+      : [];
+
+  // 달력 뷰에서 선택된 날짜의 코스 목록
+  const dateCourses =
+    viewMode === "calendar" && selectedDate
+      ? dateCoursesData?.courses || []
+      : [];
+
+  // 표시할 코스 목록
+  const displayCourses = viewMode === "list" ? allCourses : dateCourses;
+
   // 커서 기반에서는 totalCount가 없으므로 현재 로드된 개수만 표시
-  const loadedCount = allCourses.length;
+  const loadedCount = displayCourses.length;
 
   return (
     <div className="w-full h-full flex flex-col gap-4">
@@ -112,40 +114,30 @@ export default function CourseSearchClient() {
         />
       </div>
 
-      {/* 훈련형태 필터 */}
-      <div className="flex gap-2 overflow-x-auto pb-1">
-        {[
-          { value: "ALL" as const, label: "전체" },
-          { value: "WALK" as const, label: "산책 모임" },
-          { value: "PRIVATE" as const, label: "개인 레슨" },
-          { value: "GROUP" as const, label: "그룹 레슨" },
-        ].map((filter) => (
-          <button
-            key={filter.value}
-            onClick={() => handleFilterChange(filter.value)}
-            className={`px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition-colors ${
-              selectedFilter === filter.value
-                ? "bg-blue-600 text-white"
-                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-            }`}
-          >
-            {filter.label}
-          </button>
-        ))}
-      </div>
+      {/* 훈련형태 필터 + 뷰 모드 토글 버튼 */}
+      <CourseFilterBar
+        selectedFilter={selectedFilter}
+        onFilterChange={handleFilterChange}
+        viewMode={viewMode}
+        onViewModeChange={handleViewModeChange}
+      />
+
+      {/* 달력 뷰일 때 월 네비게이션 */}
+      {viewMode === "calendar" && (
+        <MonthNavigator
+          currentMonth={currentMonth}
+          onMonthChange={handleMonthChange}
+        />
+      )}
 
       {/* 검색 결과 정보 */}
-      {!isLoading && allCourses.length > 0 && (
-        <div className="flex items-center justify-between text-xs">
-          <p className="text-gray-600">
-            <span className="font-semibold text-gray-900">{loadedCount}</span>개
-            {keyword && (
-              <span className="ml-1">
-                (<span className="font-semibold">&quot;{keyword}&quot;</span>)
-              </span>
-            )}
-          </p>
-        </div>
+      {!isLoading && !isDateCoursesLoading && displayCourses.length > 0 && (
+        <SearchResultInfo
+          count={loadedCount}
+          keyword={keyword}
+          selectedDate={selectedDate}
+          viewMode={viewMode}
+        />
       )}
 
       {/* 에러 처리 */}
@@ -157,25 +149,30 @@ export default function CourseSearchClient() {
         </div>
       )}
 
-      {/* 과정 목록 */}
-      <div className="flex-1 overflow-y-auto">
-        <CourseList
-          courses={allCourses}
+      {/* 달력 뷰 */}
+      {viewMode === "calendar" && (
+        <CalendarView
+          currentMonth={currentMonth}
+          keyword={keyword}
+          selectedFilter={selectedFilter}
+          selectedDate={selectedDate}
+          dateCourses={dateCourses}
+          isLoading={isDateCoursesLoading}
+          onDateClick={handleDateClick}
           onReserve={handleReserve}
-          isLoading={isLoading}
-          isEmpty={!isLoading && allCourses.length === 0}
         />
+      )}
 
-        {/* 무한 스크롤 감지 영역 */}
-        <div
-          ref={observerTarget}
-          className="h-10 flex items-center justify-center"
-        >
-          {isFetchingNextPage && (
-            <div className="text-sm text-gray-500">로딩 중...</div>
-          )}
-        </div>
-      </div>
+      {/* 리스트 뷰 */}
+      {viewMode === "list" && (
+        <ListView
+          courses={allCourses}
+          isLoading={isLoading}
+          isFetchingNextPage={isFetchingNextPage}
+          observerTarget={observerTarget}
+          onReserve={handleReserve}
+        />
+      )}
     </div>
   );
 }
