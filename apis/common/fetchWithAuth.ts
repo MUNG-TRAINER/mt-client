@@ -35,10 +35,13 @@ export async function fetchWithAuth(
 
     if (res.status === 401) {
       const result = await res.json();
+      console.log(result);
       if (result.code === TOKEN_EXPIRED) {
         if (optional) {
+          console.log("Diq");
           await revalidateRefreshToken();
-        } else {
+        }
+        if (!optional) {
           await loginApi.optionalCheck();
         }
         res = await fetchData(input, init);
