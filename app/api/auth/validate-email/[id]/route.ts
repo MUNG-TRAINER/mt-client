@@ -10,7 +10,7 @@ export async function GET(
   const param = await params;
 
   const response = await fetch(
-    `${API_BASE_URL}/auth/check-email?email=${param.id}`,
+    `${API_BASE_URL}/auth/check-email?email=${encodeURIComponent(param.id)}`,
     {
       method: "GET",
       headers: {

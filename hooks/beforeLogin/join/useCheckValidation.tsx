@@ -76,9 +76,9 @@ export default function useCheckValidation({
     setCheckEmail(false);
     setCheckUserName(false);
     setUnableStates({email: true, userName: true});
-    queryClient.removeQueries({queryKey: ["checkEmail", emailInput]});
-    queryClient.removeQueries({queryKey: ["checkUserName", userNameInput]});
-  }, [queryClient, emailInput, userNameInput]);
+    queryClient.removeQueries({queryKey: ["checkEmail"]});
+    queryClient.removeQueries({queryKey: ["checkUserName"]});
+  }, [queryClient]);
 
   return {
     checkUserName,

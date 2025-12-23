@@ -9,7 +9,7 @@ export async function GET(
   const param = await params;
   try {
     const res = await fetch(
-      `${API_BASE_URL}/auth/check-username?username=${param.id}`,
+      `${API_BASE_URL}/auth/check-username?username=${encodeURIComponent(param.id)}`,
       {
         method: "GET",
         headers: {
