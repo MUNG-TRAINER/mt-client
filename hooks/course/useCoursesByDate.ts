@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { courseAPI } from "@/apis/course/courseApi";
 import { CourseSearchResponse } from "@/types/course/courseType";
 
-interface UseCoursesbyDateParams {
+interface UseCoursesByDateParams {
   date: string | null;
   keyword?: string;
   lessonForm?: "WALK" | "GROUP" | "PRIVATE";
@@ -17,7 +17,7 @@ export const useCoursesByDate = ({
   keyword,
   lessonForm,
   enabled = true,
-}: UseCoursesbyDateParams) => {
+}: UseCoursesByDateParams) => {
   return useQuery<CourseSearchResponse>({
     queryKey: ["courses", "date", date, keyword, lessonForm],
     queryFn: () => {

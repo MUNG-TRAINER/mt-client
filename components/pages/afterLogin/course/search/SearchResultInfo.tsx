@@ -1,4 +1,4 @@
-type ViewMode = "list" | "calendar";
+import type { ViewMode } from "@/types/course/courseFilterTypes";
 
 interface SearchResultInfoProps {
   count: number;

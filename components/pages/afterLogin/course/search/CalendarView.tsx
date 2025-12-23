@@ -1,8 +1,7 @@
 import { CourseCalendar } from "@/components/shared/calendar/CourseCalendar";
 import { CourseList } from "@/components/shared/course/CourseList";
 import { CourseItem } from "@/types/course/courseType";
-
-type LessonFormFilter = "ALL" | "WALK" | "GROUP" | "PRIVATE";
+import type { LessonFormFilter } from "@/types/course/courseFilterTypes";
 
 interface CalendarViewProps {
   currentMonth: Date;

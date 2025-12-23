@@ -1,5 +1,7 @@
-type LessonFormFilter = "ALL" | "WALK" | "GROUP" | "PRIVATE";
-type ViewMode = "list" | "calendar";
+import type {
+  LessonFormFilter,
+  ViewMode,
+} from "@/types/course/courseFilterTypes";
 
 interface CourseFilterBarProps {
   selectedFilter: LessonFormFilter;

@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-
-type LessonFormFilter = "ALL" | "WALK" | "GROUP" | "PRIVATE";
-type ViewMode = "list" | "calendar";
+import type {
+  LessonFormFilter,
+  ViewMode,
+} from "@/types/course/courseFilterTypes";
 
 // 유효한 LessonFormFilter 값인지 확인
 const getValidFilter = (value: string | null): LessonFormFilter => {

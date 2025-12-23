@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import { useCourseCalendar } from "@/hooks/course/useCourseCalendar";
 
 interface CourseCalendarProps {
@@ -22,6 +23,12 @@ export function CourseCalendar({
 }: CourseCalendarProps) {
   const year = currentMonth.getFullYear();
   const month = currentMonth.getMonth();
+
+  // 오늘 날짜 정보를 컴포넌트 최상단에서 한 번만 계산
+  const today = new Date();
+  const todayYear = today.getFullYear();
+  const todayMonth = today.getMonth();
+  const todayDate = today.getDate();
 
   // 해당 월의 첫 날과 마지막 날
   const startDate = `${year}-${(month + 1).toString().padStart(2, "0")}-01`;
@@ -66,6 +73,27 @@ export function CourseCalendar({
     enabled: !isAllFilter,
   });
 
+  // 성능 최적화: sessionDates 배열을 Set으로 변환하여 O(1) 조회
+  const walkDateSet = useMemo(
+    () => new Set(walkData?.sessionDates.map((sd) => sd.sessionDate) || []),
+    [walkData]
+  );
+
+  const groupDateSet = useMemo(
+    () => new Set(groupData?.sessionDates.map((sd) => sd.sessionDate) || []),
+    [groupData]
+  );
+
+  const privateDateSet = useMemo(
+    () => new Set(privateData?.sessionDates.map((sd) => sd.sessionDate) || []),
+    [privateData]
+  );
+
+  const filteredDateSet = useMemo(
+    () => new Set(filteredData?.sessionDates.map((sd) => sd.sessionDate) || []),
+    [filteredData]
+  );
+
   // 달력 렌더링을 위한 날짜 배열 생성
   const firstDayOfMonth = new Date(year, month, 1).getDay();
   const daysInMonth = lastDay;
@@ -75,30 +103,22 @@ export function CourseCalendar({
     ...Array.from({ length: daysInMonth }, (_, i) => i + 1),
   ];
 
-  // 특정 날짜에 수업 형태별 세션이 있는지 확인
+  // 특정 날짜에 수업 형태별 세션이 있는지 확인 (O(1) 조회)
   const getSessionsByType = (day: number) => {
     const dateStr = `${year}-${(month + 1).toString().padStart(2, "0")}-${day
       .toString()
       .padStart(2, "0")}`;
 
     if (isAllFilter) {
-      // 전체 선택 시 각 형태별 세션 확인
+      // 전체 선택 시 각 형태별 세션 확인 - Set.has()로 O(1) 조회
       return {
-        hasWalk: !!walkData?.sessionDates.find(
-          (sd) => sd.sessionDate === dateStr
-        ),
-        hasGroup: !!groupData?.sessionDates.find(
-          (sd) => sd.sessionDate === dateStr
-        ),
-        hasPrivate: !!privateData?.sessionDates.find(
-          (sd) => sd.sessionDate === dateStr
-        ),
+        hasWalk: walkDateSet.has(dateStr),
+        hasGroup: groupDateSet.has(dateStr),
+        hasPrivate: privateDateSet.has(dateStr),
       };
     } else {
-      // 특정 형태 선택 시
-      const hasSession = !!filteredData?.sessionDates.find(
-        (sd) => sd.sessionDate === dateStr
-      );
+      // 특정 형태 선택 시 - Set.has()로 O(1) 조회
+      const hasSession = filteredDateSet.has(dateStr);
       return {
         hasWalk: lessonForm === "WALK" && hasSession,
         hasGroup: lessonForm === "GROUP" && hasSession,
@@ -155,9 +175,7 @@ export function CourseCalendar({
             sessions.hasWalk || sessions.hasGroup || sessions.hasPrivate;
           const isSelected = isSelectedDate(day);
           const isToday =
-            year === new Date().getFullYear() &&
-            month === new Date().getMonth() &&
-            day === new Date().getDate();
+            year === todayYear && month === todayMonth && day === todayDate;
 
           return (
             <button
