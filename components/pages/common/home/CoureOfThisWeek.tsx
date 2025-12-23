@@ -6,6 +6,8 @@ import CourseOfWeekTrainer from "./CourseOfWeekTrainer";
 
 export default function CourseOfThisWeek() {
   const {data, isPending, isError} = useCheckLoggedIn();
+
+  if (isPending) return <div>Loading...</div>;
   if (data && "code" in data) return null;
   if (data && "role" in data && data.role === "USER") {
     return <CourseOfWeekUser />;

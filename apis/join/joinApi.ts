@@ -2,7 +2,7 @@ import {ICheckIdType} from "@/types/join/checkIdType";
 
 export const joinApi = {
   checkUserName: async (userName: string): Promise<ICheckIdType> => {
-    const response = await fetch(`/api/auth/validate-username/${userName}`, {
+    const response = await fetch(`/api/auth/validate-username/${encodeURIComponent(userName)}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -18,7 +18,7 @@ export const joinApi = {
     return result;
   },
   checkEmail: async (email: string): Promise<ICheckIdType> => {
-    const response = await fetch(`/api/auth/validate-email/${email}`, {
+    const response = await fetch(`/api/auth/validate-email/${encodeURIComponent(email)}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
