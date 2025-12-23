@@ -12,7 +12,8 @@ export async function GET() {
     },
   });
   if (!res.ok) {
-    throw new Error("유저의 정보를 불러올 수 없습니다.");
+    console.log(await res.json());
+    return NextResponse.json({message: "유저의 정보를 불러올 수 없습니다."});
   }
   const data = await res.json();
   return NextResponse.json({data});
