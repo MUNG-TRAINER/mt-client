@@ -1,4 +1,6 @@
 "use client";
+import {PencilIcon} from "@/components/icons/pencil";
+import {PhotoIcon} from "@/components/icons/photo";
 import CourseLabelBox from "@/components/pages/afterLogin/course/create/formDataComps/common/CourseLabelBox";
 import {handleChangeImg} from "@/util/imgURLstate";
 import Image from "next/image";
@@ -25,7 +27,7 @@ export default function EditCourseDetailImg({
       <label htmlFor="">세부이미지</label>
       <ul className="flex justify-between gap-3">
         <li>
-          {detailImg1 !== "" ? (
+          {detailImg1 ? (
             <div
               className="relative size-32"
               onClick={() => detailImageOne.current?.click()}
@@ -34,10 +36,17 @@ export default function EditCourseDetailImg({
             </div>
           ) : (
             <div
-              className="relative size-32"
+              className="relative size-32  border border-dashed border-(--mt-gray-point) flex items-center justify-center"
               onClick={() => detailImageOne.current?.click()}
             >
-              <Image src={newDetailImageOne} alt="세부이미지_1" fill />
+              {newDetailImageOne ? (
+                <EditDetailImages
+                  src={newDetailImageOne}
+                  alt="변경할 세부이미지_1"
+                />
+              ) : (
+                <PhotoIcon className="text-(--mt-gray) size-20" />
+              )}
             </div>
           )}
           <input
@@ -50,7 +59,7 @@ export default function EditCourseDetailImg({
           />
         </li>
         <li>
-          {detailImg2 !== "" ? (
+          {detailImg2 ? (
             <div
               className="relative size-32"
               onClick={() => detailImageTwo.current?.click()}
@@ -59,10 +68,17 @@ export default function EditCourseDetailImg({
             </div>
           ) : (
             <div
-              className="relative size-32"
+              className="relative size-32  border border-dashed border-(--mt-gray-point) flex items-center justify-center"
               onClick={() => detailImageTwo.current?.click()}
             >
-              <Image src={newDetailImageTwo} alt="세부이미지_1" fill />
+              {newDetailImageTwo ? (
+                <EditDetailImages
+                  src={newDetailImageTwo}
+                  alt="변경할 세부이미지_2"
+                />
+              ) : (
+                <PhotoIcon className="text-(--mt-gray) size-20" />
+              )}
             </div>
           )}
 
@@ -76,7 +92,7 @@ export default function EditCourseDetailImg({
           />
         </li>
         <li>
-          {detailImg3 !== "" ? (
+          {detailImg3 ? (
             <div
               className="relative size-32"
               onClick={() => detailImageThree.current?.click()}
@@ -85,13 +101,19 @@ export default function EditCourseDetailImg({
             </div>
           ) : (
             <div
-              className="relative size-32"
+              className="relative size-32  border border-dashed border-(--mt-gray-point) flex items-center justify-center"
               onClick={() => detailImageThree.current?.click()}
             >
-              <Image src={newDetailImageThree} alt="세부이미지_1" fill />
+              {newDetailImageThree ? (
+                <EditDetailImages
+                  src={newDetailImageThree}
+                  alt="변경할 세부이미지_3"
+                />
+              ) : (
+                <PhotoIcon className="text-(--mt-gray) size-20" />
+              )}
             </div>
           )}
-
           <input
             id="detailImage[2]"
             ref={detailImageThree}
@@ -103,5 +125,16 @@ export default function EditCourseDetailImg({
         </li>
       </ul>
     </CourseLabelBox>
+  );
+}
+
+function EditDetailImages({src, alt}: {src: string; alt: string}) {
+  return (
+    <>
+      <button className="size-5 rounded-full text-(--mt-white) bg-red-500 absolute bottom-2 right-2 flex items-center justify-center">
+        <PencilIcon className="size-3" />
+      </button>
+      <Image src={src} alt={alt} fill />
+    </>
   );
 }

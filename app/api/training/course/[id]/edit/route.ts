@@ -5,6 +5,7 @@ import {NextResponse} from "next/server";
 
 export async function POST() {
   const cookie = await cookies();
+  console.log(API_BASE_URL);
   const res = await fetch(`${API_BASE_URL}/auth/refresh-token`, {
     method: "POST",
     headers: {

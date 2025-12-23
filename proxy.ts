@@ -1,15 +1,27 @@
 import {NextRequest, NextResponse} from "next/server";
+import {NAME_ACCESS_TOKEN, NAME_REFRESH_TOKEN} from "./util/cookieExtractor";
 
+const publicRoute: Record<string, boolean> = {
+  "/": true,
+  "/login": true,
+  "/join": true,
+};
+const isCourseDetailPage = (path: string) => {
+  const courseDetailPage = /^\/course\/\d+$/;
+  return courseDetailPage.test(path);
+};
 export async function proxy(request: NextRequest) {
-  const ACCESS_TOKEN = request.cookies.get("access_token")?.value;
+  const REFRESH_TOKEN = request.cookies.get(NAME_REFRESH_TOKEN)?.value;
+  const ACCESS_TOKEN = request.cookies.get(NAME_ACCESS_TOKEN)?.value;
   const {pathname} = request.nextUrl;
 
-  // /course/search 경로 보호
-  if (pathname.startsWith("/course/search")) {
-    if (!ACCESS_TOKEN) {
-      const loginUrl = new URL("/login", request.url);
-      return NextResponse.redirect(loginUrl);
-    }
+  if (isCourseDetailPage(pathname) || publicRoute[pathname]) {
+    return NextResponse.next();
+  }
+
+  if (!ACCESS_TOKEN && !REFRESH_TOKEN) {
+    const loginUrl = new URL("/login", request.url);
+    return NextResponse.redirect(loginUrl);
   }
 
   return NextResponse.next();

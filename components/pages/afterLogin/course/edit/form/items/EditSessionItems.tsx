@@ -1,3 +1,4 @@
+"use client";
 import CourseTextAtrea from "@/components/pages/afterLogin/course/create/formDataComps/common/CourseTextAtrea";
 import CourseLocation from "@/components/pages/afterLogin/course/create/formDataComps/CourseLocation";
 import MaxStudents from "@/components/pages/afterLogin/course/create/formDataComps/session/MaxStudents";
@@ -17,7 +18,7 @@ const EditSessionItems = React.memo(function EditSessionItems({
 }) {
   const {free, price, setPrice} = useSessionState();
   return (
-    <div className="flex flex-col gap-1 p-3 border border-(--mt-blue-smoke) rounded-md shadow">
+    <div className="flex flex-col gap-3 p-3 border border-(--mt-blue-smoke) rounded-md shadow">
       <span className="font-bold text-xl">{index + 1}회차</span>
       <hr className="text-(--mt-gray-light)" />
       <input

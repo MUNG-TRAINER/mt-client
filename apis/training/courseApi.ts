@@ -103,6 +103,7 @@ export const courseApi = {
     }
     formData.set("detailImgUrl", detailImageUrl.join(","));
 
+    formData.set("status", "SCHEDULED");
     const data = {
       title: formData.get("title"),
       status: formData.get("status"),
