@@ -20,6 +20,7 @@ export default function useCheckLoggedIn() {
       }
       return res as ICheckLoggedInType;
     },
+    staleTime: 0,
     retry: false,
   });
 

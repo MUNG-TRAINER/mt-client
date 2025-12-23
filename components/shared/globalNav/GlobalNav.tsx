@@ -1,19 +1,19 @@
 "use client";
-import { CalendarDaysIcon } from "@/components/icons/calendar";
-import { HomeIcon } from "@/components/icons/home";
-import { MagnifyingGlassIcon } from "@/components/icons/search";
-import { StarIcon } from "@/components/icons/start";
-import { UserIcon } from "@/components/icons/user";
+import {CalendarDaysIcon} from "@/components/icons/calendar";
+import {HomeIcon} from "@/components/icons/home";
+import {MagnifyingGlassIcon} from "@/components/icons/search";
+import {StarIcon} from "@/components/icons/start";
+import {UserIcon} from "@/components/icons/user";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { ReactNode } from "react";
+import {usePathname} from "next/navigation";
+import {ReactNode} from "react";
 
 interface IGlobalNavListProps {
   to: string;
   icon: ReactNode;
   txt: string;
 }
-function GlobalNavList({ to, txt, icon }: IGlobalNavListProps) {
+function GlobalNavList({to, txt, icon}: IGlobalNavListProps) {
   const path = usePathname();
   return (
     <li>
@@ -36,7 +36,7 @@ export default function GlobalNav() {
           txt="검색"
           icon={<MagnifyingGlassIcon />}
         />
-        <GlobalNavList to="/wishlit" txt="찜" icon={<StarIcon />} />
+        <GlobalNavList to="/wishlist" txt="찜" icon={<StarIcon />} />
         <GlobalNavList to="/mypage" txt="MY" icon={<UserIcon />} />
       </ul>
     </nav>
