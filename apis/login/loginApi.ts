@@ -43,6 +43,7 @@ export const loginApi = {
         "Content-Type": "application/json",
       },
       credentials: "include",
+      cache: "no-store",
     });
     if (res.status === 401) {
       const data: IResultResponseData<IFailedCheckLoggedInType> =

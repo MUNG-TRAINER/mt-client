@@ -22,6 +22,10 @@ export default function useCheckLoggedIn() {
       return res as ICheckLoggedInType;
     },
     staleTime: 0,
+    gcTime: 0,
+    refetchOnMount: "always",
+    refetchOnWindowFocus: true,
+    retry: false,
   });
 
   const refreshUserCheck = async () => {
