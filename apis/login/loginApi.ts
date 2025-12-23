@@ -37,7 +37,13 @@ export const loginApi = {
     return data;
   },
   check: async () => {
-    const res = await fetch(`/api/auth/check`);
+    const res = await fetch(`/api/auth/check`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
     if (res.status === 401) {
       const data: IResultResponseData<IFailedCheckLoggedInType> =
         await res.json();
@@ -50,7 +56,13 @@ export const loginApi = {
     return data.data;
   },
   optionalCheck: async () => {
-    const res = await fetch("/api/auth/optionalCheck");
+    const res = await fetch("/api/auth/optionalCheck", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
     if (!res.ok) {
       return (await res.json()) as Promise<{success: boolean}>;
     }

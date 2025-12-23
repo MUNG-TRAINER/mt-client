@@ -1,5 +1,6 @@
 import type { NextConfig } from "next";
 import createMDX from "@next/mdx";
+
 const nextConfig: NextConfig = {
   /* config options here */
   output: "standalone",
@@ -21,7 +22,6 @@ const nextConfig: NextConfig = {
   },
   pageExtensions: ["md", "mdx", "ts", "tsx", "js", "jsx"],
 };
-
 const withMDX = createMDX({
   extension: /\.(md|mdx)$/,
 });

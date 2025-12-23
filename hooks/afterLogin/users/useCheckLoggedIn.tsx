@@ -4,7 +4,8 @@ import {
   IFailedCheckLoggedInType,
 } from "@/types/login/loginDataType";
 import {useQuery, useQueryClient} from "@tanstack/react-query";
-import {usePathname} from "next/navigation";
+import {usePathname, useRouter} from "next/navigation";
+import {useEffect} from "react";
 
 export default function useCheckLoggedIn() {
   const queryClient = useQueryClient();
@@ -22,11 +23,15 @@ export default function useCheckLoggedIn() {
     retry: false,
   });
 
-  const refreshUserCheck = () => {
-    queryClient.invalidateQueries({queryKey: ["loggedIn"]});
+  const refreshUserCheck = async () => {
+    await queryClient.invalidateQueries({queryKey: ["loggedIn"]});
   };
   const resetUserCheck = () => {
     queryClient.removeQueries({queryKey: ["loggedIn"]});
+  };
+  const forceRefresh = async () => {
+    // 강제 refetch
+    await queryClient.refetchQueries({queryKey: ["loggedIn"]});
   };
   const checkIsOwner = (targetId: number | string) => {
     return (
@@ -36,13 +41,17 @@ export default function useCheckLoggedIn() {
       Number(data.userId) === Number(targetId)
     );
   };
-
-  // useEffect(() => {
-  //   if (data && "role" in data && data.role === "USER") {
-  //   }
-  //   if (data && "role" in data && data.role === "TRAINER") {
-  //   }
-  // }, [data]);
+  const path = usePathname();
+  const router = useRouter();
+  useEffect(() => {
+    if (data && "role" in data && data.role === "USER") {
+    }
+    if (data && "role" in data && data.role === "TRAINER") {
+      if (path === "/applications") {
+        router.back();
+      }
+    }
+  }, [data, path, router]);
 
   return {
     data,
@@ -50,6 +59,7 @@ export default function useCheckLoggedIn() {
     isError,
     refreshUserCheck,
     resetUserCheck,
+    forceRefresh,
     checkIsOwner,
   };
 }

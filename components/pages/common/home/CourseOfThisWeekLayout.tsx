@@ -1,12 +1,13 @@
 "use client";
-import { ApplicationType } from "@/types/applications/applicationsType";
-import { ICourseType } from "@/types/course/courseType";
+import {ApplicationType} from "@/types/applications/applicationsType";
+import {ICourseType} from "@/types/course/courseType";
+import {randomColor} from "@/util/randomColor";
 import Image from "next/image";
 import Link from "next/link";
 
 type TWeekType =
-  | { type: "course"; data: ICourseType[] }
-  | { type: "application"; data: ApplicationType[] };
+  | {type: "course"; data: ICourseType[]}
+  | {type: "application"; data: ApplicationType[]};
 interface ICourseOfThisWeekLayoutProps {
   title: string;
   data: TWeekType;
@@ -29,20 +30,26 @@ export default function CourseOfThisWeekLayout({
                 이번 주 훈련은 없습니다.
               </span>
             )
-          : data.data.map((v, i) => (
+          : data.data.map((v, i, arr) => (
               <li key={i} className="bg-blue-200">
                 <Link
                   href={`/course/${v.courseId}`}
                   className="flex justify-between items-center"
                 >
-                  <div className="relative size-14 rounded-full overflow-hidden">
-                    <Image
-                      src={v.mainImage + ""}
-                      alt="메인이미지"
-                      fill
-                      sizes="100"
+                  {v.mainImage ? (
+                    <div className="relative size-14 rounded-full overflow-hidden">
+                      <Image
+                        src={v.mainImage + ""}
+                        alt="메인이미지"
+                        fill
+                        sizes="100"
+                      />
+                    </div>
+                  ) : (
+                    <div
+                      className={`size-14 rounded-full ${randomColor(arr)}`}
                     />
-                  </div>
+                  )}
                   <div>
                     <h3>{v.title}</h3>
                   </div>
@@ -55,20 +62,26 @@ export default function CourseOfThisWeekLayout({
                 이번 주 교육은 없습니다.
               </span>
             )
-          : data.data.map((v, i) => (
+          : data.data.map((v, i, arr) => (
               <li key={i} className="bg-blue-200">
                 <Link
                   href={`/course/${v.courseId}`}
                   className="flex justify-between items-center"
                 >
-                  <div className="relative size-14 rounded-full overflow-hidden">
-                    <Image
-                      src={v.mainImage + ""}
-                      alt="메인이미지"
-                      fill
-                      sizes="100"
+                  {v.mainImage ? (
+                    <div className="relative size-14 rounded-full overflow-hidden">
+                      <Image
+                        src={v.mainImage + ""}
+                        alt="메인이미지"
+                        fill
+                        sizes="100"
+                      />
+                    </div>
+                  ) : (
+                    <div
+                      className={`size-14 rounded-full ${randomColor(arr)}`}
                     />
-                  </div>
+                  )}
                   <div>
                     <h3>{v.title}</h3>
                   </div>

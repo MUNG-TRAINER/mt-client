@@ -7,7 +7,7 @@ import {Metadata} from "next";
 import CourseOfThisWeek from "@/components/pages/common/home/CoureOfThisWeek";
 
 export const metadata: Metadata = {
-  title: "홈 | 댕스쿨",
+  title: "홈",
 };
 
 export default async function Page() {

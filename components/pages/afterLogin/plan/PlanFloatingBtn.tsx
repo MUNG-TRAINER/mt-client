@@ -8,10 +8,10 @@ import {useEffect} from "react";
 
 export default function PlanFloatingBtn() {
   const {data} = useCheckLoggedIn();
-  const {planPage, togglePlanPage} = useFloatingBtnState();
+  const {planPage, togglePlanPage, resetBtnState} = useFloatingBtnState();
   useEffect(() => {
-    return () => togglePlanPage();
-  }, [togglePlanPage]);
+    return () => resetBtnState();
+  }, [resetBtnState]);
   return (
     <>
       <FloatingAddBtn btnState={planPage} clickFn={togglePlanPage} />

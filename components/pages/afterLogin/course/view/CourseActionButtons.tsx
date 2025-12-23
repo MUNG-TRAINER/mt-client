@@ -32,7 +32,10 @@ export default function CourseActionButtons({
       {isOwner && (
         <div className="flex justify-center gap-3 *:w-full *:flex *:items-center *:justify-center *:bg-white *:gap-2 *:px-6 *:py-3 *:border-2 *:border-(--mt-gray-light) *:text-(--mt-gray) *:rounded-lg *:font-bold">
           {isClose && (
-            <Link href={`/`} className="z-60 hover:bg-(--mt-gray-smoke)">
+            <Link
+              href={isClose ? `/course/${courseId}/reupload-course` : `#`}
+              className=" hover:bg-(--mt-gray-smoke)"
+            >
               재업로드하기
             </Link>
           )}

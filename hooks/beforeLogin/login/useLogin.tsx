@@ -6,12 +6,13 @@ import {useRouter} from "next/navigation";
 
 export default function useLogin() {
   const router = useRouter();
-  const {refreshUserCheck} = useCheckLoggedIn();
+  const {forceRefresh, refreshUserCheck} = useCheckLoggedIn();
   const {mutate, isPending, isError, reset} = useMutation({
     mutationKey: ["loginRequest"],
     mutationFn: (data: ILoginDataType) => loginApi.login(data),
-    onSuccess: () => {
-      refreshUserCheck();
+    onSuccess: async () => {
+      await refreshUserCheck();
+      await forceRefresh();
       router.replace("/");
     },
   });

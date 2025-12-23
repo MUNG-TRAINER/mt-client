@@ -1,6 +1,6 @@
-import { IMyPageTypes } from "@/types/mypage/myPageType";
-import { UpdateUserInfoType } from "@/schemas/mypageSchema";
-import { ChangePasswordType } from "@/schemas/passwordSchema";
+import {IMyPageTypes} from "@/types/mypage/myPageType";
+import {UpdateUserInfoType} from "@/schemas/mypageSchema";
+import {ChangePasswordType} from "@/schemas/passwordSchema";
 
 export const usersApi = {
   me: async () => {
@@ -60,7 +60,7 @@ export const usersApi = {
         "Content-Type": "application/json",
       },
       credentials: "include",
-      body: JSON.stringify({ isPublic }),
+      body: JSON.stringify({isPublic}),
     });
 
     if (!response?.ok) {

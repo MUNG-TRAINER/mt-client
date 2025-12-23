@@ -35,10 +35,13 @@ export async function fetchWithAuth(
 
     if (res.status === 401) {
       const result = await res.json();
+      console.log(result);
       if (result.code === TOKEN_EXPIRED) {
         if (optional) {
+          console.log("Diq");
           await revalidateRefreshToken();
-        } else {
+        }
+        if (!optional) {
           await loginApi.optionalCheck();
         }
         res = await fetchData(input, init);
@@ -74,7 +77,7 @@ async function refreshToken() {
   }
 }
 
-async function revalidateRefreshToken() {
+export async function revalidateRefreshToken() {
   const resposne = await fetch(`/api/auth/refresh-token`, {
     method: "POST",
     headers: {
@@ -82,7 +85,8 @@ async function revalidateRefreshToken() {
     },
   });
   if (!resposne.ok) {
-    window.location.href = "/login";
+    console.log(await resposne.text());
+    // window.location.href = "/login";
     throw new Error("로그인되어있지 않습니다. 로그인해주세요.");
   }
 }
