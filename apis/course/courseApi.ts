@@ -1,6 +1,6 @@
-import { fetchWithAuth } from "@/apis/common/fetchWithAuth";
-import { CourseSearchResponse } from "@/types/course/courseType";
-import { API_BASE_URL } from "@/util/env";
+import {fetchWithAuth} from "@/apis/common/fetchWithAuth";
+import {CourseSearchResponse} from "@/types/course/courseType";
+import {API_BASE_URL} from "@/util/env";
 
 interface SearchParams {
   keyword?: string;
@@ -14,7 +14,7 @@ export const courseAPI = {
    * 훈련 과정 검색 (커서 기반 무한 스크롤)
    */
   searchCourses: async (
-    params: SearchParams = {}
+    params: SearchParams = {},
   ): Promise<CourseSearchResponse> => {
     const queryParams = new URLSearchParams();
 
@@ -46,6 +46,7 @@ export const courseAPI = {
   },
 
   getCourseDetail: async (courseId: string) => {
+    // /api/training/course/${courseId}
     const res = await fetchWithAuth(`${API_BASE_URL}/course/${courseId}`, {
       method: "GET",
       headers: {
@@ -59,6 +60,7 @@ export const courseAPI = {
   },
 
   getSessionList: async (courseId: string) => {
+    // /api/training/course/${courseId}/sessions
     const res = await fetchWithAuth(
       `${API_BASE_URL}/course/${courseId}/sessions`,
       {
@@ -66,7 +68,7 @@ export const courseAPI = {
         headers: {
           "Content-Type": "application/json",
         },
-      }
+      },
     );
     if (!res.ok) {
       throw new Error("세션 목록을 불러오는데 실패했습니다.");

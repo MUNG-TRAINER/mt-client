@@ -13,9 +13,15 @@ import EditCourseIsFree from "./form/items/EditCourseIsFree";
 import EditCourseLessonForm from "./form/items/EditCourseLessonForm";
 import CourseItems from "@/components/pages/afterLogin/course/create/formDataComps/CourseItems";
 import Link from "next/link";
-import {useEffect} from "react";
+import {useActionState, useEffect, useState} from "react";
 import useCheckLoggedIn from "@/hooks/afterLogin/users/useCheckLoggedIn";
 import {useRouter} from "next/navigation";
+import {editCoureAction} from "@/app/(afterLogin)/course/[id]/edit/actions";
+
+const initialState = {
+  errMsg: undefined,
+  resMsg: undefined,
+};
 
 export default function CourseInfoEditForm({
   courseInfo,
@@ -25,9 +31,11 @@ export default function CourseInfoEditForm({
   courseId: string;
 }) {
   const router = useRouter();
-  const items = courseInfo?.items.trim().split(", ");
   const {data} = useCheckLoggedIn();
-
+  const [mainImageKey] = useState(() => courseInfo.mainImageKey);
+  const detailImageKey = courseInfo.detailImageKey.split(",");
+  const items = courseInfo?.items.trim().split(", ");
+  const [state, action] = useActionState(editCoureAction, initialState);
   useEffect(() => {
     if (data && "code" in data) {
       router.push(`/coures/${courseId}}`);
@@ -38,7 +46,7 @@ export default function CourseInfoEditForm({
   }, [data, router, courseId]);
   return (
     <div className="bg-(--mt-white) w-full h-full p-6 rounded-md overflow-y-scroll">
-      <form action="">
+      <form action={action}>
         <fieldset className="flex flex-col gap-3">
           <legend>훈련수정</legend>
           {/* 메인이미지 */}
@@ -74,18 +82,15 @@ export default function CourseInfoEditForm({
               placeholder="대략적인 해당 훈련내용을 작성해주세요."
             />
             {/* 세부이미지 */}
-            {courseInfo?.detailImageUrls &&
-              courseInfo.detailImageUrls.length > 0 && (
-                <EditCourseDetailImg
-                  detailImg1={courseInfo?.detailImageUrls[0] + ""}
-                  detailImg2={courseInfo?.detailImageUrls[1] + ""}
-                  detailImg3={courseInfo?.detailImageUrls[2] + ""}
-                />
-              )}
+            <EditCourseDetailImg
+              detailImg1={courseInfo?.detailImageUrls[0]}
+              detailImg2={courseInfo?.detailImageUrls[1]}
+              detailImg3={courseInfo?.detailImageUrls[2]}
+            />
           </div>
           <div className="flex gap-2">
             <button
-              type="button"
+              type="submit"
               className="w-full py-2 bg-(--mt-blue) rounded-md font-bold text-(--mt-white)"
             >
               수정하기

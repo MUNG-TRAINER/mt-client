@@ -43,9 +43,7 @@ export default function CourseDetailPage({
           ⚠️ 인증 오류입니다.
         </div>
       )}
-      <div
-        className={`flex flex-col gap-4 w-full ${isClose ? "opacity-60" : ""} `}
-      >
+      <div className={`flex flex-col gap-4 w-full`}>
         <CourseInfoComp
           courseInfo={courseInfo}
           trainerInfo={trainerInfo || undefined}
