@@ -21,7 +21,12 @@ export async function GET() {
     return response;
   }
   const data = await res.json();
-  const response = NextResponse.json({data});
+
+  
+  // 백엔드에서 이미 {data: {...}} 형태로 오는 경우와 직접 {...} 형태로 오는 경우 모두 처리
+  const response = NextResponse.json(data.data ? data : {data});
+
+  
 
   return response;
 }
