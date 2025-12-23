@@ -1,18 +1,13 @@
 import {IMyPageTypes} from "@/types/mypage/myPageType";
 import {UpdateUserInfoType} from "@/schemas/mypageSchema";
 import {ChangePasswordType} from "@/schemas/passwordSchema";
-import {fetchWithAuth} from "../common/fetchWithAuth";
 
 export const usersApi = {
   me: async () => {
-    const response = await fetchWithAuth(
-      "/api/users/me",
-      {
-        method: "GET",
-        credentials: "include",
-      },
-      true,
-    );
+    const response = await fetch("/api/users/me", {
+      method: "GET",
+      credentials: "include",
+    });
 
     if (!response?.ok) {
       throw new Error("유저의 정보를 불러올 수 없습니다.");
