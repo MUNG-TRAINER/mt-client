@@ -23,7 +23,6 @@ export default function useCheckValidation({
   /* functions */
   // 유저이름 확인
   const handleCheckUserName = async () => {
-    queryClient.removeQueries({queryKey: ["checkUserName", userNameInput]});
     if (!userNameInput.trim()) {
       setCheckUserName(false);
       setUnableStates((prev) => ({
@@ -49,7 +48,6 @@ export default function useCheckValidation({
   };
   // 유저 이메일 확인
   const handleCheckEmail = async () => {
-    queryClient.removeQueries({queryKey: ["checkEmail", emailInput]});
     if (!emailInput.trim()) {
       setCheckEmail(false);
       setUnableStates((prev) => ({
