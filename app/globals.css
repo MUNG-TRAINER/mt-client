@@ -1,5 +1,5 @@
 @import "tailwindcss";
-
+@import "../styles/page/course/regist/modal.css";
 :root {
   --mt-white: #ffffff;
   --mt-black: #212529;

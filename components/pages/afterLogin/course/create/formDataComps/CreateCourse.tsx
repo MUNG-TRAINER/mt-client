@@ -34,7 +34,6 @@ export default function CreateCourse() {
         </legend>
 
         <CreateCourseCard>
-          <input type="text" name="status" defaultValue="SCHEDULED" hidden />
           {/* 훈련 제목 */}
           <CourseTitle />
           {/* 훈련 장소 */}
