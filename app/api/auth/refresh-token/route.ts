@@ -13,6 +13,7 @@ export async function POST() {
     },
   });
   if (!res.ok) {
+    console.log(await res.text());
     throw new Error("refresh token발급에 실패하였습니다.");
   }
   const data = await res.json();

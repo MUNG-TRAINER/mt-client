@@ -4,7 +4,8 @@ import {
   IFailedCheckLoggedInType,
 } from "@/types/login/loginDataType";
 import {useQuery, useQueryClient} from "@tanstack/react-query";
-import {usePathname} from "next/navigation";
+import {usePathname, useRouter} from "next/navigation";
+import {useEffect} from "react";
 
 export default function useCheckLoggedIn() {
   const queryClient = useQueryClient();
@@ -36,13 +37,17 @@ export default function useCheckLoggedIn() {
       Number(data.userId) === Number(targetId)
     );
   };
-
-  // useEffect(() => {
-  //   if (data && "role" in data && data.role === "USER") {
-  //   }
-  //   if (data && "role" in data && data.role === "TRAINER") {
-  //   }
-  // }, [data]);
+  const path = usePathname();
+  const router = useRouter();
+  useEffect(() => {
+    if (data && "role" in data && data.role === "USER") {
+    }
+    if (data && "role" in data && data.role === "TRAINER") {
+      if (path === "/applications") {
+        router.back();
+      }
+    }
+  }, [data, path, router]);
 
   return {
     data,
