@@ -31,11 +31,6 @@ const ApplicationCard: React.FC<Props> = ({app, isSelected}) => {
   const [isRejectModalOpen, setRejectModalOpen] = useState(false);
   const tags = app.tags?.split(",") ?? [];
 
-  const imageSrc =
-    app.mainImage &&
-    (app.mainImage.startsWith("http") || app.mainImage.startsWith("/"))
-      ? app.mainImage
-      : "/images/application/test.jpg";
   const router = useRouter();
   const handleClick = (courseId: number) => {
     router.push(`/course/${courseId}`);
@@ -66,19 +61,18 @@ const ApplicationCard: React.FC<Props> = ({app, isSelected}) => {
           }}
         />
       </div>
-
       <CardList
         title={app.title}
         description={app.description}
         tags={tags}
-        mainImage={imageSrc}
+        mainImage={app.mainImage ?? undefined}
         sessionSchedule={app.sessionSchedule}
         location={app.location}
       />
       {/* ===== Dog Name + Type + LessonForm ===== */}
       <div className="flex justify-between pl-1 pr-1">
         {app.dogName && (
-          <div className="flex items-center text-xs font-medium text-gray-700 gap-1">
+          <div className="flex items-center text-xs font-medium text-gray-400 gap-1">
             <Image
               src={DogImage}
               placeholder="blur"
@@ -89,7 +83,7 @@ const ApplicationCard: React.FC<Props> = ({app, isSelected}) => {
             {app.dogName}
           </div>
         )}
-        <div className="flex gap-1">
+        <div className="flex gap-1 text-gray-700">
           {app.type && (
             <span className="flex gap-1 text-xs items-center leading-none px-1.5 py-0.5">
               <Image
@@ -187,7 +181,6 @@ const ApplicationCard: React.FC<Props> = ({app, isSelected}) => {
           </button>
         )}
       </div>
-
       {/* 거절사유 모달 */}
       {isRejectModalOpen && (
         <div

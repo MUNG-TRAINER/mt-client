@@ -70,7 +70,7 @@ const WishlistCard: React.FC<WishlistItemProps> = ({
   console.log("🔥 WishlistCard props id:", wishlistItemId);
 
   return (
-    <div className="relative cursor-pointer flex flex-col rounded-2xl shadow-md bg-white p-4">
+    <div className="relative cursor-pointer flex flex-col rounded-2xl shadow-md bg-white p-4 ">
       {/* 체크박스 */}
       <div
         className="absolute top-4 right-4 z-10"
@@ -110,7 +110,7 @@ const WishlistCard: React.FC<WishlistItemProps> = ({
           <p className="text-sm text-gray-500">{dogName}</p>
         </div>
         {/* 타입 + 레슨폼 */}
-        <div className="flex justify-end items-end gap-2">
+        <div className="flex justify-end items-end gap-2 text-gray-700">
           <span className="flex gap-1 text-xs items-center leading-none px-1.5 py-0.5 rounded-full">
             <Image
               src={TypeImage}

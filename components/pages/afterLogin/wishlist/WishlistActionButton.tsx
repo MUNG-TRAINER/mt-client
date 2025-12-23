@@ -14,7 +14,7 @@ const WishlistActions: React.FC<WishlistActionsProps> = ({
   onDelete,
 }) => {
   return (
-    <div className="flex gap-1 mt-4">
+    <div className="flex gap-1 w-full">
       <button
         className="flex-1 bg-blue-500 text-white px-3 py-2.5 rounded hover:bg-blue-600 transition"
         onClick={onApply}

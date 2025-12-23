@@ -76,7 +76,7 @@ export default function PlanCourseList({courses, isTrainer = false}: Props) {
                       </div>
                     )}
                   </div>
-                  <div className="flex gap-1">
+                  <div className="flex gap-1 text-gray-700">
                     {/* 상태 표시 */}
                     <span className="flex gap-1 text-xs items-center leading-none px-1.5 py-0.5 rounded-full">
                       <Image

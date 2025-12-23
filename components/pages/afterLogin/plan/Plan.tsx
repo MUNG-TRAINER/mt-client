@@ -1,3 +1,4 @@
+"use client";
 import PlanTabs from "./PlanTabs";
 import PlanCourseList from "./PlanCourseList";
 import {useState} from "react";
@@ -52,7 +53,6 @@ export default function Plan({
           }))
           .filter((course) => course.sessions.length > 0)
     : [];
-
   const formatTime = (time: string) => time.slice(0, 5);
 
   const planCourses = isTrainer

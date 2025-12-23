@@ -89,32 +89,36 @@ const Wishlist = () => {
     );
   }
   return (
-    <div className="w-full p-6 flex flex-col gap-4 bg-white rounded-lg h-full">
-      {wishlist.map((item) => (
-        <WishlistCard
-          key={item.wishlistItemId}
-          wishlistItemId={item.wishlistItemId}
-          title={item.title}
-          description={item.description}
-          tags={item.tags}
-          location={item.location}
-          schedule={item.schedule}
-          mainImage={item.mainImage}
-          dogName={item.dogName}
-          type={item.type}
-          price={item.price}
-          lessonForm={item.lessonForm}
-          isSelected={selectedIds.includes(item.wishlistItemId)}
-          onSelect={(checked) => handleSelect(item.wishlistItemId, checked)}
-          onChangeDog={handleChangeDog}
+    <div className="flex flex-col w-full h-full bg-white">
+      <div className="flex-1 overflow-y-auto flex flex-col gap-4 p-4">
+        {wishlist.map((item) => (
+          <WishlistCard
+            key={item.wishlistItemId}
+            wishlistItemId={item.wishlistItemId}
+            title={item.title}
+            description={item.description}
+            tags={item.tags}
+            location={item.location}
+            schedule={item.schedule}
+            mainImage={item.mainImage}
+            dogName={item.dogName}
+            type={item.type}
+            price={item.price}
+            lessonForm={item.lessonForm}
+            isSelected={selectedIds.includes(item.wishlistItemId)}
+            onSelect={(checked) => handleSelect(item.wishlistItemId, checked)}
+            onChangeDog={handleChangeDog}
+          />
+        ))}
+      </div>
+      <div className="sticky bottom-0 left-0 w-full bg-white p-4 z-20">
+        {/* 하단 버튼 */}
+        <WishlistActions
+          selectedIds={selectedIds}
+          onApply={handleApplyWithDog}
+          onDelete={handleDelete}
         />
-      ))}
-      {/* 하단 버튼 */}
-      <WishlistActions
-        selectedIds={selectedIds}
-        onApply={handleApplyWithDog}
-        onDelete={handleDelete}
-      />
+      </div>
     </div>
   );
 };
