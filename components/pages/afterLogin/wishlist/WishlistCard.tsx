@@ -7,6 +7,7 @@ import DogImage from "@/public/images/application/dog.jpg";
 import TypeImage from "@/public/images/application/repeat.jpg";
 import LessonformImage from "@/public/images/application/check.jpg";
 import DogListModal from "./DogListModal";
+import { useWishlistDogs } from "@/hooks/afterLogin/wishlist/useWishlistDogs";
 
 const Modal: React.FC<{onClose: () => void; children: React.ReactNode}> = ({
   onClose,
@@ -67,8 +68,9 @@ const WishlistCard: React.FC<WishlistItemProps> = ({
   onChangeDog,
 }) => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
-  console.log("🔥 WishlistCard props id:", wishlistItemId);
-
+  const {dogs, loading, error} = useWishlistDogs();
+  const currentDog = dogs.find((dog) => dog.name === dogName);
+  const [isCounselModalOpen, setIsCounselModalOpen] = React.useState(false);
   return (
     <div className="relative cursor-pointer flex flex-col rounded-2xl shadow-md bg-white p-4 ">
       {/* 체크박스 */}
@@ -78,9 +80,10 @@ const WishlistCard: React.FC<WishlistItemProps> = ({
       >
         <input
           type="checkbox"
-          className="w-6 h-6 cursor-pointer"
+          className={`w-6 h-6 cursor-pointer ${currentDog && !currentDog.hasCounseling ? "cursor-not-allowed opacity-50" : ""}`}
           style={{accentColor: "var(--mt-blue-point)"}}
           checked={isSelected}
+          disabled={currentDog && !currentDog.hasCounseling}
           onChange={(e) => {
             e.stopPropagation();
             onSelect?.(e.target.checked);
@@ -107,8 +110,38 @@ const WishlistCard: React.FC<WishlistItemProps> = ({
             width={19}
             height={19}
           />
-          <p className="text-sm text-gray-500">{dogName}</p>
+          <p className="text-sm text-gray-500">{dogName}
+          </p>
+           {currentDog && !currentDog.hasCounseling && (
+                <button className="text-xs text-orange-700 flex items-center rounded-lg px-3 py-1 ml-1 
+                 border border-orange-700 hover:bg-orange-100 hover:border-orange-100" onClick={() => setIsCounselModalOpen(true)} >상담하기</button>
+              )}
         </div>
+        {/* 상담 모달 */}
+          {isCounselModalOpen && (
+            <Modal onClose={() => setIsCounselModalOpen(false)}>
+              <h3 className="text-lg font-semibold mb-2">상담 안내</h3>
+              <p className="mb-4">상담이 안되어 있는 반려견입니다.<br/> 상담하러 가시겠습니까?</p>
+              <div className="flex justify-end gap-2">
+                <button
+                  className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+                  onClick={() => setIsCounselModalOpen(false)}
+                >
+                  취소
+                </button>
+                <button
+                  className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                  onClick={() => {
+                    // 상담 페이지 API 호출 부분
+                    console.log("상담하기 클릭됨");
+                    setIsCounselModalOpen(false);
+                  }}
+                >
+                  상담하기
+                </button>
+              </div>
+            </Modal>
+          )}
         {/* 타입 + 레슨폼 */}
         <div className="flex justify-end items-end gap-2 text-gray-700">
           <span className="flex gap-1 text-xs items-center leading-none px-1.5 py-0.5 rounded-full">
@@ -160,6 +193,7 @@ const WishlistCard: React.FC<WishlistItemProps> = ({
           />
         </Modal>
       )}
+      
     </div>
   );
 };

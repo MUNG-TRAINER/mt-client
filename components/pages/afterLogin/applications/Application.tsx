@@ -32,7 +32,7 @@ const Applications = () => {
         </ul>
       )}
 
-      <ApplicationsActionButton />
+<ApplicationsActionButton applications={applicationsToShow} />
     </div>
   );
 };

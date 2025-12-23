@@ -27,7 +27,6 @@ const Wishlist = () => {
   };
   const handleChangeDog = async (wishlistItemId: number, dogId: number) => {
     try {
-      console.log("🔥 handleChangeDog:", wishlistItemId, dogId);
       await update(wishlistItemId, {dogId});
       setSelectedDogIds((prev) => ({...prev, [wishlistItemId]: dogId}));
       await refetch(); // 새로고침
@@ -65,7 +64,6 @@ const Wishlist = () => {
           courseId: item.courseId,
         };
       });
-      console.log("신청 요청 body:", body);
       await apply(body);
       alert("신청 완료!");
       await refetch();

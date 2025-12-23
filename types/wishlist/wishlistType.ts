@@ -16,3 +16,10 @@ export interface WishlistType {
   schedule: string;
   location: string;
 }
+
+export interface WishlistDogType {
+  dogId: number;
+  name: string;
+  breed: string;
+  hasCounseling: boolean;
+}

@@ -1,4 +1,4 @@
-import {WishlistType} from "@/types/wishlist/wishlistType";
+import {WishlistDogType, WishlistType} from "@/types/wishlist/wishlistType";
 
 interface WishlistCreateRequest {
   courseId: number;
@@ -25,6 +25,17 @@ export const wishlistApi = {
       headers: {"Content-Type": "application/json"},
     });
     if (!res.ok) throw new Error("찜 한 내역 리스트 불러오는데 실패했습니다");
+
+    const json = await res.json();
+    return Array.isArray(json.data) ? json.data : [];
+  },
+  // 반려견 리스트 조회
+  getDogsList: async (): Promise<WishlistDogType[]> => {
+    const res = await fetch("/api/wishlist/dogs", {
+      method: "GET",
+      headers: {"Content-Type": "application/json"},
+    });
+    if (!res.ok) throw new Error("반려견 리스트를 가져오는데 실패했습니다.");
 
     const json = await res.json();
     return Array.isArray(json.data) ? json.data : [];
