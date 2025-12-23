@@ -1,17 +1,34 @@
 "use client";
 
-interface WishlistButtonProps {
-  wishlistItemId: number;
+import React from "react";
+
+interface WishlistActionsProps {
+  selectedIds: number[];
+  onApply: () => void;
+  onDelete: (ids: number[]) => void;
 }
 
-const WishlistButton = ({wishlistItemId}: WishlistButtonProps) => {
+const WishlistActions: React.FC<WishlistActionsProps> = ({
+  selectedIds,
+  onApply,
+  onDelete,
+}) => {
   return (
-    <div className="flex gap-2 mt-2">
-      <button className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition">
+    <div className="flex gap-1 mt-4">
+      <button
+        className="flex-1 bg-blue-500 text-white px-3 py-2.5 rounded hover:bg-blue-600 transition"
+        onClick={onApply}
+      >
         신청하기
+      </button>
+      <button
+        className="flex-1 bg-gray-200 text-gray-700 px-3 py-2.5 rounded hover:bg-gray-300 transition"
+        onClick={() => onDelete(selectedIds)}
+      >
+        삭제하기
       </button>
     </div>
   );
 };
 
-export default WishlistButton;
+export default WishlistActions;

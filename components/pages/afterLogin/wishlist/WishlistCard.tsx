@@ -1,10 +1,13 @@
 "use client";
 
 import React from "react";
+import CourseCard from "@/components/shared/cards/CourseCard";
+import Image from "next/image";
+import DogImage from "@/public/images/application/dog.jpg";
+import TypeImage from "@/public/images/application/repeat.jpg";
+import LessonformImage from "@/public/images/application/check.jpg";
+import DogListModal from "./DogListModal";
 
-// =========================
-// 재사용 가능한 모달 컴포넌트
-// =========================
 const Modal: React.FC<{onClose: () => void; children: React.ReactNode}> = ({
   onClose,
   children,
@@ -30,15 +33,6 @@ const Modal: React.FC<{onClose: () => void; children: React.ReactNode}> = ({
   );
 };
 
-// =========================
-// WishlistCard 컴포넌트
-// =========================
-import CourseCard from "@/components/shared/cards/CourseCard";
-import Image from "next/image";
-import DogImage from "@/public/images/application/dog.jpg";
-import TypeImage from "@/public/images/application/repeat.jpg";
-import LessonformImage from "@/public/images/application/check.jpg";
-
 interface WishlistItemProps {
   wishlistItemId: number;
   title: string;
@@ -51,6 +45,9 @@ interface WishlistItemProps {
   type: string;
   price: number;
   lessonForm: string;
+  isSelected?: boolean;
+  onSelect?: (checked: boolean) => void;
+  onChangeDog: (wishlistItemId: number, dogId: number) => void;
 }
 
 const WishlistCard: React.FC<WishlistItemProps> = ({
@@ -65,11 +62,31 @@ const WishlistCard: React.FC<WishlistItemProps> = ({
   type,
   price,
   lessonForm,
+  isSelected = false,
+  onSelect,
+  onChangeDog,
 }) => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
+  console.log("🔥 WishlistCard props id:", wishlistItemId);
 
   return (
-    <div className="bg-white rounded-2xl shadow-md p-4 flex flex-col">
+    <div className="relative cursor-pointer flex flex-col rounded-2xl shadow-md bg-white p-4">
+      {/* 체크박스 */}
+      <div
+        className="absolute top-4 right-4 z-10"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <input
+          type="checkbox"
+          className="w-6 h-6 cursor-pointer"
+          style={{accentColor: "var(--mt-blue-point)"}}
+          checked={isSelected}
+          onChange={(e) => {
+            e.stopPropagation();
+            onSelect?.(e.target.checked);
+          }}
+        />
+      </div>
       {/* CourseCard */}
       <CourseCard
         title={title}
@@ -125,19 +142,22 @@ const WishlistCard: React.FC<WishlistItemProps> = ({
         </div>
       </div>
       <button
-        className="flex-1 flex items-center justify-center gap-2 py-2 text-sm mt-3 text-sm font-semibold rounded-lg bg-blue-100 text-(--mt-blue-point)"
+        className="flex-1 flex items-center justify-center gap-2 py-2 text-sm mt-3 text-sm font-semibold rounded-lg text-[var(--mt-blue-point)]"
+        style={{border: "1px solid #3b82f6"}}
         onClick={() => setIsModalOpen(true)}
       >
         반려견 변경
       </button>
 
-      {/* ==================== */}
-      {/* 수정 모달 */}
       {isModalOpen && (
         <Modal onClose={() => setIsModalOpen(false)}>
-          <h3 className="text-lg font-semibold mb-2">수정하기</h3>
-          {/* 여기서 수정 폼 넣으면 됨 */}
-          <p>여기에 수정 폼을 넣으세요.</p>
+          <h3 className="text-lg font-semibold mb-2">반려견 선택</h3>
+          <DogListModal
+            onSelect={(dogId) => {
+              onChangeDog(wishlistItemId, dogId);
+            }}
+            onClose={() => setIsModalOpen(false)}
+          />
         </Modal>
       )}
     </div>

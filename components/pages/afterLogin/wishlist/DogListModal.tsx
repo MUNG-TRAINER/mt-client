@@ -1,0 +1,65 @@
+"use client";
+
+import React, {useState} from "react";
+import useMyDogs from "@/hooks/afterLogin/dogs/useMyDogs";
+
+interface DogListModalProps {
+  onSelect?: (dogId: number) => void; // 최종 선택된 반려견 Id 전달
+  onClose?: () => void; // 모달 닫기
+  onChangeDog?: (wishlistItemId: number, dogId: number) => void;
+}
+
+const DogListModal: React.FC<DogListModalProps> = ({onSelect, onClose}) => {
+  const {data, isPending, isError} = useMyDogs();
+  const [selectedDogId, setSelectedDogId] = useState<number | null>(null);
+
+  if (isPending) return <p>로딩 중...</p>;
+  if (isError)
+    return <p className="text-red-500">반려견 목록을 불러올 수 없습니다.</p>;
+  if (!data || !data.length) return <p>등록된 반려견이 없습니다.</p>;
+
+  const handleConfirm = () => {
+    if (selectedDogId === null) {
+      alert("반려견을 선택해주세요.");
+      return;
+    }
+    onSelect?.(selectedDogId);
+    onClose?.();
+  };
+
+  return (
+    <div className="flex flex-col gap-3 max-h-80 overflow-y-auto">
+      {data.map((dog) => (
+        <label
+          key={dog.dogId}
+          className={`flex items-center justify-between border rounded-lg p-3 cursor-pointer hover:bg-gray-50 ${
+            selectedDogId === dog.dogId
+              ? "border-blue-500 bg-blue-50"
+              : "border-gray-300"
+          }`}
+        >
+          <div className="flex flex-col">
+            <span className="font-medium text-gray-800">{dog.name}</span>
+            <span className="text-xs text-gray-500">{dog.breed}</span>
+          </div>
+          <input
+            type="radio"
+            name="dog"
+            className="w-5 h-5 accent-blue-500"
+            checked={selectedDogId === dog.dogId}
+            onChange={() => setSelectedDogId(dog.dogId)}
+          />
+        </label>
+      ))}
+
+      <button
+        className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition font-semibold"
+        onClick={handleConfirm}
+      >
+        수정하기
+      </button>
+    </div>
+  );
+};
+
+export default DogListModal;
