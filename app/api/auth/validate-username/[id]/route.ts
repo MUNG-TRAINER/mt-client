@@ -4,12 +4,12 @@ import {NextRequest, NextResponse} from "next/server";
 
 export async function GET(
   _req: NextRequest,
-  ctx: RouteContext<"/api/auth/validate-username/[id]">,
+  {params}: {params: Promise<{id: string}>},
 ) {
+  const param = await params;
   try {
-    const {id} = await ctx.params;
     const res = await fetch(
-      `${API_BASE_URL}/auth/check-username?username=${id}`,
+      `${API_BASE_URL}/auth/check-username?username=${param.id}`,
       {
         method: "GET",
         headers: {
