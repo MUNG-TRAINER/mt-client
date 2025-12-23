@@ -1,3 +1,4 @@
+"use client";
 import {loginApi} from "@/apis/login/loginApi";
 import {
   ICheckLoggedInType,
@@ -21,7 +22,6 @@ export default function useCheckLoggedIn() {
       return res as ICheckLoggedInType;
     },
     staleTime: 0,
-    retry: false,
   });
 
   const refreshUserCheck = async () => {
