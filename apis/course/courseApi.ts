@@ -75,4 +75,66 @@ export const courseAPI = {
     }
     return res.json();
   },
+
+  /**
+   * 달력 조회 - 특정 기간의 세션이 있는 날짜 목록
+   */
+  getCalendar: async (params: {
+    startDate: string;
+    endDate: string;
+    keyword?: string;
+    lessonForm?: "WALK" | "GROUP" | "PRIVATE";
+  }) => {
+    const queryParams = new URLSearchParams({
+      startDate: params.startDate,
+      endDate: params.endDate,
+    });
+
+    if (params.keyword) {
+      queryParams.append("keyword", params.keyword);
+    }
+    if (params.lessonForm) {
+      queryParams.append("lessonForm", params.lessonForm);
+    }
+
+    const response = await fetchWithAuth(
+      `${API_BASE_URL}/course/calendar?${queryParams.toString()}`
+    );
+
+    if (!response.ok) {
+      throw new Error("달력 데이터를 불러오는데 실패했습니다.");
+    }
+
+    return response.json();
+  },
+
+  /**
+   * 특정 날짜의 코스 목록 조회
+   */
+  getCoursesByDate: async (params: {
+    date: string;
+    keyword?: string;
+    lessonForm?: "WALK" | "GROUP" | "PRIVATE";
+  }): Promise<CourseSearchResponse> => {
+    const queryParams = new URLSearchParams({
+      date: params.date,
+    });
+
+    if (params.keyword) {
+      queryParams.append("keyword", params.keyword);
+    }
+    if (params.lessonForm) {
+      queryParams.append("lessonForm", params.lessonForm);
+    }
+
+    const response = await fetchWithAuth(
+      `${API_BASE_URL}/course/calendar/courses?${queryParams.toString()}`
+    );
+
+    if (!response.ok) {
+      throw new Error("코스 목록을 불러오는데 실패했습니다.");
+    }
+
+    return response.json();
+  },
 };
