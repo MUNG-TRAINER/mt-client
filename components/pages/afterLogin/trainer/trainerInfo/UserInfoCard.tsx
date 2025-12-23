@@ -1,16 +1,17 @@
 "use client";
-import { UserIcon } from "@/components/icons/user";
-import { EnvelopeIcon } from "@/components/icons/envelope";
-import { PhoneIcon } from "@/components/icons/phone";
+import {UserIcon} from "@/components/icons/user";
+import {EnvelopeIcon} from "@/components/icons/envelope";
+import {PhoneIcon} from "@/components/icons/phone";
 import useMe from "@/hooks/afterLogin/users/useMe";
 import Image from "next/image";
 import Link from "next/link";
-import { ITrainerInfoType } from "@/types/trainer/trainerType";
+import {ITrainerInfoType} from "@/types/trainer/trainerType";
 import useCheckLoggedIn from "./../../../../../hooks/afterLogin/users/useCheckLoggedIn";
 
-export default function UserInfoCard({ user }: { user: ITrainerInfoType }) {
-  const { checkIsOwner } = useCheckLoggedIn();
+export default function UserInfoCard({user}: {user: ITrainerInfoType}) {
+  const {checkIsOwner} = useCheckLoggedIn();
   const isOwner = checkIsOwner(user.trainerId);
+  console.log(isOwner);
   return (
     <div className="bg-white rounded-lg border border-(--mt-gray-light) p-6 space-y-6">
       <div className="flex flex-col items-center gap-4">
