@@ -35,7 +35,7 @@ export default function CourseInfoEditForm({
   const [mainImageKey] = useState(() => courseInfo.mainImageKey);
   const detailImageKey = courseInfo.detailImageKey.split(",");
   const items = courseInfo?.items.trim().split(", ");
-  // const [state, action] = useActionState(editCoureAction, initialState);
+  const [state, action] = useActionState(editCoureAction, initialState);
   useEffect(() => {
     if (data && "code" in data) {
       router.push(`/coures/${courseId}}`);
@@ -46,7 +46,7 @@ export default function CourseInfoEditForm({
   }, [data, router, courseId]);
   return (
     <div className="bg-(--mt-white) w-full h-full p-6 rounded-md overflow-y-scroll">
-      <form action="">
+      <form action={action}>
         <fieldset className="flex flex-col gap-3">
           <legend>훈련수정</legend>
           {/* 메인이미지 */}
