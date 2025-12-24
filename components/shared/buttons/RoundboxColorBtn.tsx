@@ -1,4 +1,4 @@
-import {IRoundBoxColorBtnProps} from "@/types/components/btnTypes";
+import { IRoundBoxColorBtnProps } from "@/types/components/btnTypes";
 
 export default function RoundboxColorBtn({
   txt,
@@ -10,11 +10,9 @@ export default function RoundboxColorBtn({
 }: IRoundBoxColorBtnProps) {
   return (
     <button
-      className={`flex justify-center items-center  gap-2 w-full py-4 rounded-2xl font-bold  ${
-        states
-          ? `${btnColor} ${btnTxtColor}`
-          : "bg-(--mt-gray) text-(--mt-gray-point)"
-      } `}
+      className={`flex justify-center items-center gap-2 w-full py-4 rounded-2xl font-bold ${btnColor} ${btnTxtColor} ${
+        states ? "opacity-50 cursor-not-allowed" : ""
+      }`}
       disabled={states}
       {...props}
     >
