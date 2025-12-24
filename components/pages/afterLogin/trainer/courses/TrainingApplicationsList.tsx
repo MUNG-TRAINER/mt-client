@@ -1,4 +1,5 @@
 import { CalendarIcon } from "@/components/icons/calendar";
+import { getDifficultyBadgeConfig } from "@/util/course/difficultyUtils";
 import type { IDogStatsResponse } from "@/types/trainer/trainerUserType";
 
 interface TrainingApplicationsListProps {
@@ -13,18 +14,10 @@ export function TrainingApplicationsList({
   }
 
   const getDifficultyBadge = (difficulty: string | undefined) => {
-    if (!difficulty) return null;
+    const config = getDifficultyBadgeConfig(difficulty);
+    if (!config) return null;
 
-    const config = {
-      초급: { label: "초급", color: "bg-green-100 text-green-700" },
-      중급: { label: "중급", color: "bg-yellow-100 text-yellow-700" },
-      고급: { label: "고급", color: "bg-red-100 text-red-700" },
-    };
-
-    const { label, color } = config[difficulty as keyof typeof config] || {
-      label: difficulty,
-      color: "bg-gray-100 text-gray-700",
-    };
+    const { label, color } = config;
 
     return (
       <span

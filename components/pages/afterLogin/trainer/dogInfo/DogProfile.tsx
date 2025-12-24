@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { DogIcon } from "@/components/icons/dog";
+import { getBackgroundColorStyle } from "@/util/color/generateColorFromId";
 import type { IDogStatsResponse } from "@/types/trainer/trainerUserType";
 
 interface DogProfileProps {
@@ -24,9 +25,7 @@ export function DogProfile({ dog }: DogProfileProps) {
       ) : (
         <div
           className="flex items-center justify-center relative size-30 rounded-full overflow-hidden"
-          style={{
-            backgroundColor: `hsl(${(dog.dogId * 137.5) % 360}, 70%, 80%)`,
-          }}
+          style={getBackgroundColorStyle(dog.dogId)}
         >
           <DogIcon className="size-16 text-white" />
         </div>

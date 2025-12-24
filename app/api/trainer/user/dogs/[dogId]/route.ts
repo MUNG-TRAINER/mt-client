@@ -4,11 +4,13 @@ import { cookies } from "next/headers";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { dogId: string } }
+  context:
+    | { params: { dogId: string } }
+    | Promise<{ params: { dogId: string } }>
 ) {
   const cookie = await cookies();
-
   try {
+    const { params } = await context;
     const { dogId } = params;
 
     const response = await fetch(`${API_BASE_URL}/trainer/user/dogs/${dogId}`, {

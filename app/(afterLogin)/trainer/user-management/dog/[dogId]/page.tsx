@@ -3,12 +3,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import { trainerUserApi } from "@/apis/trainer/trainerUserApi";
-import { DogProfile } from "@/components/pages/afterLogin/trainer/DogProfile";
-import { DogBasicInfo } from "@/components/pages/afterLogin/trainer/DogBasicInfo";
-import { DogStatsCards } from "@/components/pages/afterLogin/trainer/DogStatsCards";
-import { CounselingRecords } from "@/components/pages/afterLogin/trainer/CounselingRecords";
-import { TrainingApplicationsList } from "@/components/pages/afterLogin/trainer/TrainingApplicationsList";
-import { MultiCoursesList } from "@/components/pages/afterLogin/trainer/MultiCoursesList";
+import { DogProfile } from "@/components/pages/afterLogin/trainer/dogInfo/DogProfile";
+import { DogBasicInfo } from "@/components/pages/afterLogin/trainer/dogInfo/DogBasicInfo";
+import { DogStatsCards } from "@/components/pages/afterLogin/trainer/dogInfo/DogStatsCards";
+import { CounselingRecords } from "@/components/pages/afterLogin/trainer/counseling/CounselingRecords";
+import { TrainingApplicationsList } from "@/components/pages/afterLogin/trainer/courses/TrainingApplicationsList";
+import { MultiCoursesList } from "@/components/pages/afterLogin/trainer/courses/MultiCoursesList";
 
 export default function DogStatsPage() {
   const router = useRouter();

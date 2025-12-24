@@ -1,4 +1,4 @@
-import { InfoCard } from "./InfoCard";
+import { InfoCard } from "../common/InfoCard";
 import type { IDogStatsResponse } from "@/types/trainer/trainerUserType";
 
 interface DogBasicInfoProps {

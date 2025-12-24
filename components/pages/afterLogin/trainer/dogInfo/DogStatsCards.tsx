@@ -1,7 +1,7 @@
 import { CalendarIcon } from "@/components/icons/calendar";
 import { CheckCircleIcon } from "@/components/icons/check";
 import { StarIcon } from "@/components/icons/start";
-import { StatCard } from "./StatCard";
+import { StatCard } from "../common/StatCard";
 import type { IDogStatsResponse } from "@/types/trainer/trainerUserType";
 
 interface DogStatsCardsProps {
