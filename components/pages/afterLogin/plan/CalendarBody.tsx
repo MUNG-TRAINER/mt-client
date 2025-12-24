@@ -25,12 +25,13 @@ export default function CalendarBody({
   const koreanWeeks = ["일", "월", "화", "수", "목", "금", "토"];
 
   const getDateStatus = (date: number) => {
-    if (!courses) return {scheduled: false, done: false};
     let scheduled = false;
     let done = false;
+    if (!courses) return {scheduled, done};
     courses.forEach((course) => {
       course.sessions.forEach((s) => {
         const sessionDate = new Date(s.sessionDate);
+        console.log(sessionDate)
         if (
           sessionDate.getFullYear() === year &&
           sessionDate.getMonth() === month &&

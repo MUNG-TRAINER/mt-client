@@ -1,3 +1,4 @@
+"use client";
 import {loginApi} from "@/apis/login/loginApi";
 import {
   ICheckLoggedInType,
@@ -20,14 +21,22 @@ export default function useCheckLoggedIn() {
       }
       return res as ICheckLoggedInType;
     },
+    staleTime: 0,
+    gcTime: 0,
+    refetchOnMount: "always",
+    refetchOnWindowFocus: true,
     retry: false,
   });
 
-  const refreshUserCheck = () => {
-    queryClient.invalidateQueries({queryKey: ["loggedIn"]});
+  const refreshUserCheck = async () => {
+    await queryClient.invalidateQueries({queryKey: ["loggedIn"]});
   };
   const resetUserCheck = () => {
     queryClient.removeQueries({queryKey: ["loggedIn"]});
+  };
+  const forceRefresh = async () => {
+    // 강제 refetch
+    await queryClient.refetchQueries({queryKey: ["loggedIn"]});
   };
   const checkIsOwner = (targetId: number | string) => {
     return (
@@ -55,6 +64,7 @@ export default function useCheckLoggedIn() {
     isError,
     refreshUserCheck,
     resetUserCheck,
+    forceRefresh,
     checkIsOwner,
   };
 }

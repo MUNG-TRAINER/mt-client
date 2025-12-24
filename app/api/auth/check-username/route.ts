@@ -2,14 +2,18 @@ import {ICheckIdType} from "@/types/join/checkIdType";
 import {API_BASE_URL} from "@/util/env";
 import {NextRequest, NextResponse} from "next/server";
 
-export async function GET(
-  _req: NextRequest,
-  ctx: RouteContext<"/api/auth/validate-email/[id]">,
-) {
+export async function GET(req: NextRequest) {
+  const searchParams = req.nextUrl.searchParams;
+  const username = searchParams.get("username");
+  if (!username) {
+    return NextResponse.json({
+      valid: false,
+      message: "userName이 필요합니다.",
+    });
+  }
   try {
-    const {id} = await ctx.params;
-    const response = await fetch(
-      `${API_BASE_URL}/auth/check-email?email=${id}`,
+    const res = await fetch(
+      `${API_BASE_URL}/auth/check-username?username=${encodeURIComponent(username)}`,
       {
         method: "GET",
         headers: {
@@ -17,16 +21,16 @@ export async function GET(
         },
       },
     );
-    if (!response.ok) {
+    if (!res.ok) {
       //배포시삭제
-      const text = await response.text();
+      const text = await res.text();
       return NextResponse.json({
         valid: false,
         message: "서버에 오류가 발생했습니다.",
         text,
       });
     }
-    const result: ICheckIdType = await response.json();
+    const result: ICheckIdType = await res.json();
     return NextResponse.json({...result});
   } catch (error) {
     const err = error as Error;

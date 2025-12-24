@@ -7,9 +7,7 @@ const WishlistPage = () => {
 
   if (loading) return <div>찜 한 내역을 불러오는 중..</div>;
 
-  return (
-      <Wishlist />
-  );
+  return <Wishlist />;
 };
 
 export default WishlistPage;

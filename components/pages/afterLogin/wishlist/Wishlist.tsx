@@ -8,10 +8,13 @@ import WishlistActions from "./WishlistActionButton";
 import {useDeleteWishlist} from "@/hooks/afterLogin/wishlist/useDeleteWishlist";
 import {useUpdateWishlist} from "./../../../../hooks/afterLogin/wishlist/usePatchWishlist";
 import {useApplyWishlist} from "@/hooks/afterLogin/wishlist/useApplyWishlist";
+import {useWishlistDogs} from "@/hooks/afterLogin/wishlist/useWishlistDogs";
+import ConfirmModal from "./ConfirmModal";
 
 const Wishlist = () => {
   const {wishlist, loading, refetch} = useUserWishlist();
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
+  const {dogs} = useWishlistDogs();
 
   const {remove} = useDeleteWishlist();
   const {update} = useUpdateWishlist();
@@ -19,6 +22,12 @@ const Wishlist = () => {
   const [selectedDogIds, setSelectedDogIds] = useState<Record<number, number>>(
     {}
   );
+  const [modalContent, setModalContent] = useState<{
+    title?: string;
+    description: string;
+  } | null>(null);
+
+  const closeModal = () => setModalContent(null);
 
   const handleSelect = (id: number, isChecked: boolean) => {
     setSelectedIds((prev) =>
@@ -26,14 +35,37 @@ const Wishlist = () => {
     );
   };
   const handleChangeDog = async (wishlistItemId: number, dogId: number) => {
+    const item = wishlist.find((w) => w.wishlistItemId === wishlistItemId);
+    if (!item) return;
+
+    // 장바구니 중복 체크
+    const duplicate = wishlist.find(
+      (w) =>
+        w.courseId === item.courseId &&
+        (selectedDogIds[w.wishlistItemId] ?? w.dogId) === dogId
+    );
+    if (duplicate && duplicate.wishlistItemId !== wishlistItemId) {
+      setModalContent({
+        title: "중복 선택",
+        description: "이미 장바구니에 있는 반려견입니다.",
+      });
+      return;
+    }
+
     try {
       await update(wishlistItemId, {dogId});
       setSelectedDogIds((prev) => ({...prev, [wishlistItemId]: dogId}));
-      await refetch(); // 새로고침
-      alert("반려견 변경 완료!");
+      await refetch();
+      setModalContent({
+        title: "변경 완료",
+        description: "반려견이 성공적으로 변경되었습니다.",
+      });
     } catch (err) {
       console.error(err);
-      alert("변경 실패");
+      setModalContent({
+        title: "변경 실패",
+        description: "반려견 변경에 실패했습니다.",
+      });
     }
   };
 
@@ -41,36 +73,53 @@ const Wishlist = () => {
     if (!ids.length) return;
     try {
       await remove({wishlistItemId: ids});
-      alert("삭제 완료!");
       await refetch();
     } catch (err) {
       console.error(err);
-      alert("삭제 실패");
     }
   };
   const handleApplyWithDog = async () => {
-    if (!selectedIds.length)
-      return alert("적어도 하나의 찜 항목을 선택해주세요.");
+    if (!selectedIds.length) {
+      setModalContent({description: "적어도 하나의 찜 항목을 선택해주세요."});
+      return;
+    }
 
+    for (const id of selectedIds) {
+      const item = wishlist.find((w) => w.wishlistItemId === id)!;
+      const dogId = selectedDogIds[id] ?? item.dogId;
+
+      // 강아지 정보 가져오기
+      const dog = dogs.find((d) => d.dogId === dogId);
+      if (dog && !dog.hasCounseling) {
+        setModalContent({
+          title: "상담 필요",
+          description:
+            "상담이 필요한 강아지가 포함되어있습니다. 상담을 먼저 진행해주세요.",
+        });
+        return;
+      }
+    }
+
+    // 신청 API 호출
     try {
       const body = selectedIds.map((id) => {
-        const item = wishlist.find((w) => w.wishlistItemId === id);
-        if (!item) throw new Error("찜 항목을 찾을 수 없습니다.");
-
-        const dogId = selectedDogIds[id] ?? item.dogId; // 변경된 값 있으면 사용, 없으면 기존
-        return {
-          wishlistItemId: id,
-          dogId,
-          courseId: item.courseId,
-        };
+        const item = wishlist.find((w) => w.wishlistItemId === id)!;
+        const dogId = selectedDogIds[id] ?? item.dogId;
+        return {wishlistItemId: id, dogId, courseId: item.courseId};
       });
       await apply(body);
-      alert("신청 완료!");
+      setModalContent({
+        title: "신청 완료",
+        description: "신청이 완료되었습니다!",
+      });
       await refetch();
-      setSelectedIds([]); // 선택 초기화
+      setSelectedIds([]);
     } catch (err) {
       console.error(err);
-      alert("신청 실패");
+      setModalContent({
+        title: "신청 실패",
+        description: "신청 중 오류가 발생했습니다.",
+      });
     }
   };
   if (loading) {
@@ -86,6 +135,7 @@ const Wishlist = () => {
       <p className="text-center text-gray-500">장바구니가 비어있습니다.</p>
     );
   }
+
   return (
     <div className="flex flex-col w-full h-full bg-white">
       <div className="flex-1 overflow-y-auto flex flex-col gap-4 p-4">
@@ -106,6 +156,7 @@ const Wishlist = () => {
             isSelected={selectedIds.includes(item.wishlistItemId)}
             onSelect={(checked) => handleSelect(item.wishlistItemId, checked)}
             onChangeDog={handleChangeDog}
+            setModalContent={setModalContent}
           />
         ))}
       </div>
@@ -117,6 +168,15 @@ const Wishlist = () => {
           onDelete={handleDelete}
         />
       </div>
+
+      {modalContent && (
+        <ConfirmModal
+          isOpen={!!modalContent}
+          onClose={() => setModalContent(null)}
+          title={modalContent?.title ?? ""}
+          description={modalContent?.description ?? ""}
+        />
+      )}
     </div>
   );
 };
