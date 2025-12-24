@@ -10,11 +10,20 @@ export async function GET() {
       Cookie: cookie.toString(),
       "Content-Type": "application/json",
     },
+    cache: "no-store",
   });
   if (!res.ok) {
     console.log(await res.json());
-    return NextResponse.json({message: "유저의 정보를 불러올 수 없습니다."});
+    const response = NextResponse.json(
+      {message: "유저의 정보를 불러올 수 없습니다."},
+      {status: res.status},
+    );
+    return response;
   }
   const data = await res.json();
-  return NextResponse.json({data});
+
+  // 백엔드에서 이미 {data: {...}} 형태로 오는 경우와 직접 {...} 형태로 오는 경우 모두 처리
+  const response = NextResponse.json(data.data ? data : {data});
+
+  return response;
 }

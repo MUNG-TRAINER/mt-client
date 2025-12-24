@@ -5,6 +5,7 @@ const publicRoute: Record<string, boolean> = {
   "/": true,
   "/login": true,
   "/join": true,
+  "/introduce": true,
 };
 const isCourseDetailPage = (path: string) => {
   const courseDetailPage = /^\/course\/\d+$/;
