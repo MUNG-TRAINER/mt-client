@@ -11,7 +11,6 @@ interface WishlistApplyRequest {
 
 // /api/wishlist/apply POST
 export async function POST(req: NextRequest) {
-  //   const body: WishlistApplyRequest[] = await req.json(); // 리스트로 받음
   const bodyRaw = await req.text();
   const body = JSON.parse(bodyRaw) as WishlistApplyRequest[];
 

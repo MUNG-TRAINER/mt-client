@@ -53,7 +53,7 @@ export async function PATCH(
     if (responseText) {
       try {
         data = JSON.parse(responseText);
-      } catch (e) {
+      } catch (_) {
         // 빈 응답으로 처리
       }
     }

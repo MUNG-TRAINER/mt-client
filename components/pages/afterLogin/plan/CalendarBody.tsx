@@ -31,7 +31,6 @@ export default function CalendarBody({
     courses.forEach((course) => {
       course.sessions.forEach((s) => {
         const sessionDate = new Date(s.sessionDate);
-        console.log(sessionDate)
         if (
           sessionDate.getFullYear() === year &&
           sessionDate.getMonth() === month &&

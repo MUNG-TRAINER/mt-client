@@ -117,7 +117,7 @@ const ApplicationCard: React.FC<Props> = ({app, isSelected}) => {
         <div className="flex justify-end items-baseline gap-1 mt-5 mb-1">
           <span className="text-sm text-gray-500">총 금액</span>
           <span className="text-xl font-bold text-[var(--mt-blue-point)]">
-            {app.price}원
+            {app.price.toLocaleString()}원
           </span>
         </div>
       )}

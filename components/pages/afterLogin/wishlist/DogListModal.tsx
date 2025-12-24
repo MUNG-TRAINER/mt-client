@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import React, {useState} from "react";
-import { useWishlistDogs } from "@/hooks/afterLogin/wishlist/useWishlistDogs";
+import {useWishlistDogs} from "@/hooks/afterLogin/wishlist/useWishlistDogs";
 import DogImage from "@/public/images/application/dog.jpg";
 
 interface DogListModalProps {
@@ -13,14 +13,19 @@ interface DogListModalProps {
 const DogListModal: React.FC<DogListModalProps> = ({onSelect, onClose}) => {
   const {dogs, loading, error} = useWishlistDogs();
   const [selectedDogId, setSelectedDogId] = useState<number | null>(null);
+  const [modalContent, setModalContent] = useState<{
+    title?: string;
+    description: string;
+  } | null>(null);
 
   if (loading) return <p>로딩 중...</p>;
-  if (error) return <p className="text-red-500">반려견 목록을 불러올 수 없습니다.</p>;
+  if (error)
+    return <p className="text-red-500">반려견 목록을 불러올 수 없습니다.</p>;
   if (!dogs.length) return <p>등록된 반려견이 없습니다.</p>;
 
   const handleConfirm = () => {
     if (selectedDogId === null) {
-      alert("반려견을 선택해주세요.");
+      setModalContent({description: "반려견을 선택해주세요."});
       return;
     }
     onSelect?.(selectedDogId);
@@ -40,7 +45,7 @@ const DogListModal: React.FC<DogListModalProps> = ({onSelect, onClose}) => {
         >
           <div className="flex flex-col">
             <div className="flex gap-2">
-               <Image
+              <Image
                 src={DogImage}
                 placeholder="blur"
                 alt="강아지"
@@ -48,9 +53,11 @@ const DogListModal: React.FC<DogListModalProps> = ({onSelect, onClose}) => {
                 height={19}
                 className="w-6"
               />
-            <span className="font-medium text-gray-800 ">{dog.name}</span>
-             {!dog.hasCounseling &&(
-                <span className="text-xs text-orange-700 flex items-center">상담 필요</span>
+              <span className="font-medium text-gray-800 ">{dog.name}</span>
+              {!dog.hasCounseling && (
+                <span className="text-xs text-orange-700 flex items-center">
+                  상담 필요
+                </span>
               )}
             </div>
           </div>
