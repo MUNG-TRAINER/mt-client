@@ -2,10 +2,7 @@ import {ICheckIdType} from "@/types/join/checkIdType";
 import {API_BASE_URL} from "@/util/env";
 import {NextRequest, NextResponse} from "next/server";
 
-export async function GET(
-  req: NextRequest,
-  {params}: {params: Promise<{id: string}>},
-) {
+export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
   const username = searchParams.get("username");
   if (!username) {
