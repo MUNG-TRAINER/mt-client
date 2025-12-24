@@ -25,13 +25,13 @@ export const useUserPlanCourses = () => {
     queryFn: () => userCourseApi.getCoursesByStatus("DONE"),
   });
 
-  const isLoadig = scheduledPending && donePending;
+  const loading = scheduledPending && donePending;
 
   const isError = scheduledError && doneError;
 
   const allCourses: UserCourseType[] = useMemo(() => {
-    return isLoadig ? [] : [...userCourseScheduled, ...userCourseDone];
-  }, [isLoadig, userCourseDone, userCourseScheduled]);
+    return loading ? [] : [...userCourseScheduled, ...userCourseDone];
+  }, [loading, userCourseDone, userCourseScheduled]);
 
   const courses = useMemo(() => {
     const status = activeTab === "scheduled" ? "SCHEDULED" : "DONE";
@@ -41,7 +41,7 @@ export const useUserPlanCourses = () => {
   }, [allCourses, activeTab]);
 
   return {
-    isLoadig,
+    loading,
     isError,
     allCourses,
     courses,
