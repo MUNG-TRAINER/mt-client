@@ -2,12 +2,15 @@ import {ICheckIdType} from "@/types/join/checkIdType";
 
 export const joinApi = {
   checkUserName: async (userName: string): Promise<ICheckIdType> => {
-    const response = await fetch(`/api/auth/validate-username/${encodeURIComponent(userName)}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
+    const response = await fetch(
+      `/api/auth/check-username?username=${encodeURIComponent(userName)}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
       },
-    });
+    );
     if (!response.ok) {
       return {
         valid: false,
@@ -18,12 +21,15 @@ export const joinApi = {
     return result;
   },
   checkEmail: async (email: string): Promise<ICheckIdType> => {
-    const response = await fetch(`/api/auth/validate-email/${encodeURIComponent(email)}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
+    const response = await fetch(
+      `/api/auth/check-email?email=${encodeURIComponent(email)}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
       },
-    });
+    );
     if (!response.ok) {
       return {
         valid: false,

@@ -2,15 +2,18 @@ import {ICheckIdType} from "@/types/join/checkIdType";
 import {API_BASE_URL} from "@/util/env";
 import {NextRequest, NextResponse} from "next/server";
 
-export async function GET(
-  _req: NextRequest,
-  {params}: {params: Promise<{id: string}>},
-) {
+export async function GET(req: NextRequest) {
   // try {
-  const param = await params;
-
+  const searchParams = req.nextUrl.searchParams;
+  const email = searchParams.get("email");
+  if (!email) {
+    return NextResponse.json({
+      valid: false,
+      message: "userName이 필요합니다.",
+    });
+  }
   const response = await fetch(
-    `${API_BASE_URL}/auth/check-email?email=${encodeURIComponent(param.id)}`,
+    `${API_BASE_URL}/auth/check-email?email=${encodeURIComponent(email)}`,
     {
       method: "GET",
       headers: {
