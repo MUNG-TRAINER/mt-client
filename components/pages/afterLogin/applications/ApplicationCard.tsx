@@ -5,11 +5,10 @@ import {ApplicationType} from "@/types/applications/applicationsType";
 import CardList from "../../../shared/cards/CourseCard";
 import Image from "next/image";
 import {useApplicationState} from "@/stores/applicationsState";
-import { useRouter } from "next/navigation";
+import {useRouter} from "next/navigation";
 import DogImage from "@/public/images/application/dog.jpg";
 import TypeImage from "@/public/images/application/repeat.jpg";
 import LessonformImage from "@/public/images/application/check.jpg";
-import SessionNoImage from "@/public/images/application/star.jpg";
 
 interface Props {
   app: ApplicationType;
@@ -32,11 +31,6 @@ const ApplicationCard: React.FC<Props> = ({app, isSelected}) => {
   const [isRejectModalOpen, setRejectModalOpen] = useState(false);
   const tags = app.tags?.split(",") ?? [];
 
-  const imageSrc =
-    app.mainImage &&
-    (app.mainImage.startsWith("http") || app.mainImage.startsWith("/"))
-      ? app.mainImage
-      : "/images/application/test.jpg"; 
   const router = useRouter();
   const handleClick = (courseId: number) => {
     router.push(`/course/${courseId}`);
@@ -57,25 +51,28 @@ const ApplicationCard: React.FC<Props> = ({app, isSelected}) => {
           style={{accentColor: "var(--mt-blue-point)"}}
           className="w-6 h-6 cursor-pointer"
           checked={isSelected} // 상위 상태 반영
-          disabled={["CANCELLED", "EXPIRED", "REJECTED"].includes(app.applicationStatus)} 
-          onChange={(e) =>
-            setSelectedIndex(app.applicationId, e.target.checked)
-          } // 상위로 전달
+          disabled={["CANCELLED", "EXPIRED", "REJECTED"].includes(
+            app.applicationStatus
+          )}
+          onClick={(e) => e.stopPropagation()}
+          onChange={(e) => {
+            e.stopPropagation();
+            setSelectedIndex(app.courseId, e.target.checked);
+          }}
         />
       </div>
-
       <CardList
         title={app.title}
         description={app.description}
         tags={tags}
-        mainImage={imageSrc}
+        mainImage={app.mainImage ?? undefined}
         sessionSchedule={app.sessionSchedule}
         location={app.location}
       />
       {/* ===== Dog Name + Type + LessonForm ===== */}
       <div className="flex justify-between pl-1 pr-1">
         {app.dogName && (
-          <div className="flex items-center text-xs font-medium text-gray-700 gap-1">
+          <div className="flex items-center text-xs font-medium text-gray-400 gap-1">
             <Image
               src={DogImage}
               placeholder="blur"
@@ -86,7 +83,7 @@ const ApplicationCard: React.FC<Props> = ({app, isSelected}) => {
             {app.dogName}
           </div>
         )}
-        <div className="flex gap-1">
+        <div className="flex gap-1 text-gray-700">
           {app.type && (
             <span className="flex gap-1 text-xs items-center leading-none px-1.5 py-0.5">
               <Image
@@ -102,7 +99,7 @@ const ApplicationCard: React.FC<Props> = ({app, isSelected}) => {
           )}
 
           {app.lessonForm && (
-           <span className="flex gap-1 text-xs items-center leading-none px-1.5 py-0.5">
+            <span className="flex gap-1 text-xs items-center leading-none">
               <Image
                 src={LessonformImage}
                 placeholder="blur"
@@ -114,23 +111,16 @@ const ApplicationCard: React.FC<Props> = ({app, isSelected}) => {
               {app.lessonForm}
             </span>
           )}
-
-          {app.sessionNumber && (
-           <span className="flex gap-1 text-xs items-center leading-none px-1.5 py-0.5">
-              <Image
-                src={SessionNoImage}
-                placeholder="blur"
-                alt="회차 정보"
-                width={13}
-                height={5}
-                className="w-3.75 h-3.75 items-center"
-              />
-              {app.sessionNumber}회차
-            </span>
-          )}
         </div>
       </div>
-
+      {app.price && (
+        <div className="flex justify-end items-baseline gap-1 mt-5 mb-1">
+          <span className="text-sm text-gray-500">총 금액</span>
+          <span className="text-xl font-bold text-[var(--mt-blue-point)]">
+            {app.price.toLocaleString()}원
+          </span>
+        </div>
+      )}
       {/* 버튼 영역 */}
       <div className="flex gap-2 mt-2">
         {app.applicationStatus === "REJECTED" && (
@@ -146,7 +136,9 @@ const ApplicationCard: React.FC<Props> = ({app, isSelected}) => {
               style={{border: "1px solid #C5C5C5", color: "#EF4444"}}
               onClick={(e) => {
                 e.stopPropagation();
-                app.rejectReason ? setRejectModalOpen(true) : alert("거절 사유가 없습니다.");
+                app.rejectReason
+                  ? setRejectModalOpen(true)
+                  : alert("거절 사유가 없습니다.");
               }}
             >
               거절사유
@@ -189,7 +181,6 @@ const ApplicationCard: React.FC<Props> = ({app, isSelected}) => {
           </button>
         )}
       </div>
-
       {/* 거절사유 모달 */}
       {isRejectModalOpen && (
         <div
