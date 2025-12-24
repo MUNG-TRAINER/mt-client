@@ -9,6 +9,7 @@ import Image from "next/image";
 import {useState, useEffect} from "react";
 import {useRouter} from "next/navigation";
 import {trainerApi} from "@/apis/trainer/trainerApi";
+import {presignedUrlApi} from "@/apis/common/presignedUrl";
 
 interface ITrainerEditFormProps {
   trainer: ITrainerInfoType;
@@ -113,6 +114,7 @@ export default function TrainerEditForm({
           profileFile.name,
           profileFile.type,
         );
+        // const res  = await presignedUrlApi.getPresignedUrl({})
         console.log("presignedUrl response:", res);
         const {uploadUrl, fileKey} = res;
         await trainerApi.fileUpload(uploadUrl, profileFile);

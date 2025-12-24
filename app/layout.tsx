@@ -21,8 +21,8 @@ const doHyeonFont = Do_Hyeon({
 
 export const metadata: Metadata = {
   title: {
-    template: "%s | 댕스쿨",
-    default: "댕스쿨 | 댕스쿨",
+    template: "%s | 멍스쿨",
+    default: "멍스쿨 | 멍스쿨",
   },
 };
 

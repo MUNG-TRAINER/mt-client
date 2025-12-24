@@ -1,7 +1,7 @@
-import { ITrainerInfoType } from "@/types/trainer/trainerType";
+import {ITrainerInfoType} from "@/types/trainer/trainerType";
 import UserInfoCard from "@/components/pages/afterLogin/trainer/trainerInfo/UserInfoCard";
-import { API_BASE_URL } from "@/util/env";
-import { redirect } from "next/navigation";
+import {API_BASE_URL} from "@/util/env";
+import {redirect} from "next/navigation";
 import TrainerDetailSection from "@/components/pages/afterLogin/trainer/trainerInfo/TrainerDetailCard";
 
 async function getTrainerInfo(id: string) {
@@ -10,6 +10,7 @@ async function getTrainerInfo(id: string) {
     headers: {
       "Content-Type": "application/json",
     },
+    cache: "no-cache",
   });
 
   const data = await res.json();
@@ -19,11 +20,7 @@ async function getTrainerInfo(id: string) {
   return data;
 }
 
-export default async function Page({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+export default async function Page({params}: {params: Promise<{id: string}>}) {
   const param = await params;
   const trainerData: ITrainerInfoType = await getTrainerInfo(param.id);
   return (
