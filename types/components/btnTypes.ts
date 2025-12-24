@@ -1,4 +1,4 @@
-import {HTMLAttributes, ReactNode} from "react";
+import { ButtonHTMLAttributes, HTMLAttributes, ReactNode } from "react";
 
 export interface IRoundBorderBoxBtnProps
   extends HTMLAttributes<HTMLButtonElement> {
@@ -7,11 +7,10 @@ export interface IRoundBorderBoxBtnProps
   fnState?: () => void;
 }
 export interface IRoundBoxColorBtnProps
-  extends HTMLAttributes<HTMLButtonElement> {
+  extends ButtonHTMLAttributes<HTMLButtonElement> {
   txt: string;
   btnColor?: string;
   btnTxtColor?: string;
   btnIcon?: ReactNode;
-  states?: boolean;
   fnState?: () => void;
 }
