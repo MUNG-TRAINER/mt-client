@@ -12,6 +12,5 @@ export interface IRoundBoxColorBtnProps
   btnColor?: string;
   btnTxtColor?: string;
   btnIcon?: ReactNode;
-  states?: boolean;
   fnState?: () => void;
 }

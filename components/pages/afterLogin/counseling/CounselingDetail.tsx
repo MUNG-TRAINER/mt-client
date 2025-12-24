@@ -33,7 +33,11 @@ export default function CounselingDetail({
     mutationFn: (id: number) => counselingApi.cancelCounseling(id),
     onSuccess: (data) => {
       if (data.success) {
-        queryClient.invalidateQueries({ queryKey: ["counselings"] });
+        // 내 상담 목록과 현재 상담 상세 무효화
+        queryClient.invalidateQueries({ queryKey: ["counselings", "my"] });
+        queryClient.invalidateQueries({
+          queryKey: ["counseling", counselingId],
+        });
         setShowSuccessModal(true);
       } else {
         setShowErrorModal(true);
@@ -94,7 +98,6 @@ export default function CounselingDetail({
               fill
               sizes="80px"
               className="object-cover"
-              priority
             />
           ) : (
             <div
@@ -179,7 +182,6 @@ export default function CounselingDetail({
             txt="상담 취소"
             btnColor="bg-red-500"
             btnTxtColor="text-white"
-            states={false}
             onClick={handleCancel}
           />
         </div>
@@ -196,14 +198,13 @@ export default function CounselingDetail({
               txt="돌아가기"
               btnColor="bg-gray-400"
               btnTxtColor="text-white"
-              states={false}
               onClick={() => setShowCancelConfirm(false)}
             />
             <RoundboxColorBtn
               txt="취소하기"
               btnColor="bg-red-500"
               btnTxtColor="text-white"
-              states={cancelMutation.isPending}
+              disabled={cancelMutation.isPending}
               onClick={confirmCancel}
             />
           </div>

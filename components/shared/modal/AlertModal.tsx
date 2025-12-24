@@ -1,4 +1,5 @@
 "use client";
+import { useEffect } from "react";
 import { CheckIcon } from "@/components/icons/check";
 import { XMarkIcon } from "@/components/icons/xMark";
 
@@ -17,6 +18,26 @@ export default function AlertModal({
   message,
   onClose,
 }: AlertModalProps) {
+  // ESC 키로 모달 닫기
+  useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener("keydown", handleEscape);
+      // 모달 열릴 때 body 스크롤 방지
+      document.body.style.overflow = "hidden";
+    }
+
+    return () => {
+      document.removeEventListener("keydown", handleEscape);
+      document.body.style.overflow = "unset";
+    };
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   const iconConfig = {
@@ -43,10 +64,15 @@ export default function AlertModal({
   const config = iconConfig[type];
   const Icon = config.icon;
 
+  const modalId = `alert-modal-${type}`;
+
   return (
     <div
       className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50"
       onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby={modalId}
     >
       <div
         className="bg-white rounded-2xl p-8 max-w-sm w-full mx-4 shadow-xl"
@@ -60,7 +86,10 @@ export default function AlertModal({
         </div>
 
         {/* 제목 */}
-        <h3 className="text-xl font-bold text-(--mt-black) mb-3 text-center">
+        <h3
+          id={modalId}
+          className="text-xl font-bold text-(--mt-black) mb-3 text-center"
+        >
           {title}
         </h3>
 

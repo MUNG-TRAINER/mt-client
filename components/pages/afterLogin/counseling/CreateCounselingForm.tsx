@@ -29,7 +29,8 @@ export default function CreateCounselingForm({
   const createMutation = useMutation({
     mutationFn: counselingApi.createCounseling,
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["counselings"] });
+      // 내 상담 목록만 무효화
+      queryClient.invalidateQueries({ queryKey: ["counselings", "my"] });
       setShowSuccessModal(true);
     },
     onError: () => {
@@ -129,7 +130,6 @@ export default function CreateCounselingForm({
               fill
               sizes="80px"
               className="object-cover"
-              priority
             />
           ) : (
             <div
@@ -205,7 +205,7 @@ export default function CreateCounselingForm({
             txt="상담 신청하기"
             btnColor="bg-(--mt-blue-point)"
             btnTxtColor="text-(--mt-white)"
-            states={createMutation.isPending || !isFormValid}
+            disabled={createMutation.isPending || !isFormValid}
             type="submit"
           />
         </div>

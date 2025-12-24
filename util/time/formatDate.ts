@@ -9,6 +9,11 @@ export function formatDateTime(dateTimeString: string): string {
 
   const date = new Date(dateTimeString);
 
+  // 유효하지 않은 날짜 체크
+  if (isNaN(date.getTime())) {
+    return "";
+  }
+
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const day = String(date.getDate()).padStart(2, "0");
@@ -28,6 +33,11 @@ export function formatDate(dateString: string): string {
   if (!dateString) return "";
 
   const date = new Date(dateString);
+
+  // 유효하지 않은 날짜 체크
+  if (isNaN(date.getTime())) {
+    return "";
+  }
 
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");

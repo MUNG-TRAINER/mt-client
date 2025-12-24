@@ -23,7 +23,7 @@ export default function CounselingCard({ counseling }: ICounselingCardProps) {
               fill
               sizes="64px"
               className="object-cover"
-              priority
+              loading="lazy"
             />
           ) : (
             <div

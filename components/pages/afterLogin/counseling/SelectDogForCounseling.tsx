@@ -49,7 +49,7 @@ export default function SelectDogForCounseling() {
                       fill
                       sizes="64px"
                       className="object-cover"
-                      priority
+                      loading="lazy"
                     />
                   ) : (
                     <div
