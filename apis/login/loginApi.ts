@@ -18,6 +18,7 @@ export const loginApi = {
       body: JSON.stringify(data),
     });
     if (!res.ok) {
+      console.log(await res.text());
       throw new Error("로그인에 실패하였습니다.");
     }
     const result = await res.json();
