@@ -1,4 +1,4 @@
-"use client";
+// "use client";
 import {API_BASE_URL} from "@/util/env";
 import {loginApi} from "../login/loginApi";
 
