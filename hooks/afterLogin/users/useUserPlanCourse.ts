@@ -1,34 +1,48 @@
-import { useEffect, useMemo, useState } from "react";
-import { UserCourseType } from "@/types/course/userCourse";
-import { userCourseApi } from "@/apis/users/userCourseApi";
+import {useMemo, useState} from "react";
+import {UserCourseType} from "@/types/course/userCourse";
+import {userCourseApi} from "@/apis/users/userCourseApi";
+import {useQuery} from "@tanstack/react-query";
 
 export const useUserPlanCourses = () => {
-  const [allCourses, setAllCourses] = useState<UserCourseType[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] =
-    useState<"scheduled" | "completed">("scheduled");
+  const [activeTab, setActiveTab] = useState<"scheduled" | "completed">(
+    "scheduled",
+  );
+  const {
+    data: userCourseScheduled = [],
+    isPending: scheduledPending,
+    isError: scheduledError,
+  } = useQuery({
+    queryKey: ["userCourseScheduled"],
+    queryFn: () => userCourseApi.getCoursesByStatus("SCHEDULED"),
+  });
 
-    useEffect(() => {
-        setLoading(true);
-      
-        Promise.all([
-          userCourseApi.getCoursesByStatus("SCHEDULED"),
-          userCourseApi.getCoursesByStatus("DONE"),
-        ])
-          .then(([scheduled, done]) => setAllCourses([...scheduled, ...done]))
-          .catch(() => alert("훈련과정 내역을 불러오는 데 실패했습니다."))
-          .finally(() => setLoading(false));
-      }, []);
+  const {
+    data: userCourseDone = [],
+    isPending: donePending,
+    isError: doneError,
+  } = useQuery({
+    queryKey: ["userCourseDone"],
+    queryFn: () => userCourseApi.getCoursesByStatus("DONE"),
+  });
+
+  const isLoadig = scheduledPending && donePending;
+
+  const isError = scheduledError && doneError;
+
+  const allCourses: UserCourseType[] = useMemo(() => {
+    return isLoadig ? [] : [...userCourseScheduled, ...userCourseDone];
+  }, [isLoadig, userCourseDone, userCourseScheduled]);
 
   const courses = useMemo(() => {
     const status = activeTab === "scheduled" ? "SCHEDULED" : "DONE";
     return allCourses.filter((course) =>
-      course.sessions.some((s) => s.sessionStatus === status)
+      course.sessions.some((s) => s.sessionStatus === status),
     );
   }, [allCourses, activeTab]);
 
   return {
-    loading,
+    isLoadig,
+    isError,
     allCourses,
     courses,
     activeTab,

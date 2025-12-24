@@ -1,4 +1,5 @@
-import { CounselingDogListResponse } from "@/types/counseling/counselingType";
+import {CounselingDogListResponse} from "@/types/counseling/counselingType";
+import {fetchWithAuth} from "../common/fetchWithAuth";
 
 /**
  * 상담 관련 API
@@ -9,11 +10,14 @@ export const counselingApi = {
    * @param completed - true: 상담 완료, false: 상담 대기
    */
   getCounselingDogs: async (
-    completed: boolean
+    completed: boolean,
   ): Promise<CounselingDogListResponse> => {
-    const response = await fetch(`/api/counseling?completed=${completed}`, {
-      method: "GET",
-    });
+    const response = await fetchWithAuth(
+      `/api/counseling?completed=${completed}`,
+      {
+        method: "GET",
+      },
+    );
 
     if (!response?.ok) {
       throw new Error("상담 리스트를 불러올 수 없습니다.");
@@ -30,15 +34,18 @@ export const counselingApi = {
    */
   saveCounselingContent: async (
     counselingId: number,
-    content: string
-  ): Promise<{ success: boolean; message: string }> => {
-    const response = await fetch(`/api/counseling/${counselingId}/content`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
+    content: string,
+  ): Promise<{success: boolean; message: string}> => {
+    const response = await fetchWithAuth(
+      `/api/counseling/${counselingId}/content`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({content}),
       },
-      body: JSON.stringify({ content }),
-    });
+    );
 
     if (!response?.ok) {
       throw new Error("상담 내용 저장에 실패했습니다.");

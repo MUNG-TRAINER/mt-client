@@ -1,6 +1,6 @@
-import { API_BASE_URL } from "@/util/env";
-import { cookies } from "next/headers";
-import { NextRequest, NextResponse } from "next/server";
+import {API_BASE_URL} from "@/util/env";
+import {cookies} from "next/headers";
+import {NextRequest, NextResponse} from "next/server";
 
 /**
  * 허용된 쿼리 파라미터 목록
@@ -21,14 +21,14 @@ type AllowedParams =
 interface BuildQueryParamsOptions {
   searchParams: URLSearchParams;
   allowedParams: AllowedParams[];
-  requiredParams?: { name: AllowedParams; errorMessage: string }[];
+  requiredParams?: {name: AllowedParams; errorMessage: string}[];
 }
 
 interface FetchCourseAPIOptions {
   req: NextRequest;
   endpoint: string;
   allowedParams: AllowedParams[];
-  requiredParams?: { name: AllowedParams; errorMessage: string }[];
+  requiredParams?: {name: AllowedParams; errorMessage: string}[];
   errorMessage: string;
 }
 
@@ -39,16 +39,16 @@ export function buildQueryParams({
   searchParams,
   allowedParams,
   requiredParams = [],
-}: BuildQueryParamsOptions): { params: URLSearchParams; error?: NextResponse } {
+}: BuildQueryParamsOptions): {params: URLSearchParams; error?: NextResponse} {
   const params = new URLSearchParams();
 
   // 필수 파라미터 검증
-  for (const { name, errorMessage } of requiredParams) {
+  for (const {name, errorMessage} of requiredParams) {
     const value = searchParams.get(name);
     if (!value) {
       return {
         params,
-        error: NextResponse.json({ error: errorMessage }, { status: 400 }),
+        error: NextResponse.json({error: errorMessage}, {status: 400}),
       };
     }
     params.append(name, value);
@@ -65,7 +65,7 @@ export function buildQueryParams({
     }
   }
 
-  return { params };
+  return {params};
 }
 
 /**
@@ -80,10 +80,10 @@ export async function fetchCourseAPI({
 }: FetchCourseAPIOptions): Promise<NextResponse> {
   try {
     const cookie = await cookies();
-    const { searchParams } = new URL(req.url);
+    const {searchParams} = new URL(req.url);
 
     // 쿼리 파라미터 빌드 및 검증
-    const { params, error } = buildQueryParams({
+    const {params, error} = buildQueryParams({
       searchParams,
       allowedParams,
       requiredParams,
@@ -110,19 +110,17 @@ export async function fetchCourseAPI({
 
     // 에러 처리
     if (!res.ok) {
-      const errorData = await res
-        .json()
-        .catch(() => ({ message: errorMessage }));
+      const errorData = await res.json().catch(() => ({message: errorMessage}));
       return NextResponse.json(
-        { error: errorData.message || errorMessage },
-        { status: res.status }
+        {error: errorData.message || errorMessage},
+        {status: res.status},
       );
     }
 
     // 성공 응답
     const data = await res.json();
     return NextResponse.json(data);
-  } catch (error) {
-    return NextResponse.json({ error: errorMessage }, { status: 500 });
+  } catch {
+    return NextResponse.json({error: errorMessage}, {status: 500});
   }
 }
