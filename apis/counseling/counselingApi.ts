@@ -7,6 +7,7 @@ import {
   IUserCounselingDetailType,
   ICancelCounselingResponseType,
 } from "@/types/counseling/counselingType";
+import {fetchWithAuth} from "../common/fetchWithAuth";
 
 /**
  * 상담 관련 API
@@ -18,11 +19,14 @@ export const counselingApi = {
    * @param completed - true: 상담 완료, false: 상담 대기
    */
   getCounselingDogs: async (
-    completed: boolean
+    completed: boolean,
   ): Promise<CounselingDogListResponse> => {
-    const response = await fetch(`/api/counseling?completed=${completed}`, {
-      method: "GET",
-    });
+    const response = await fetchWithAuth(
+      `/api/counseling?completed=${completed}`,
+      {
+        method: "GET",
+      },
+    );
 
     if (!response?.ok) {
       throw new Error("상담 리스트를 불러올 수 없습니다.");
@@ -39,15 +43,18 @@ export const counselingApi = {
    */
   saveCounselingContent: async (
     counselingId: number,
-    content: string
-  ): Promise<{ success: boolean; message: string }> => {
-    const response = await fetch(`/api/counseling/${counselingId}/content`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
+    content: string,
+  ): Promise<{success: boolean; message: string}> => {
+    const response = await fetchWithAuth(
+      `/api/counseling/${counselingId}/content`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({content}),
       },
-      body: JSON.stringify({ content }),
-    });
+    );
 
     if (!response?.ok) {
       throw new Error("상담 내용 저장에 실패했습니다.");
@@ -63,7 +70,7 @@ export const counselingApi = {
    * 상담 신청용 반려견 정보 조회 (중복 신청 체크)
    */
   getDogForCounseling: async (
-    dogId: number
+    dogId: number,
   ): Promise<IDogForCounselingType> => {
     const response = await fetch(`/api/users/counseling/dogs/${dogId}`, {
       method: "GET",
@@ -82,7 +89,7 @@ export const counselingApi = {
    * 상담 신청
    */
   createCounseling: async (
-    requestData: ICreateCounselingRequestType
+    requestData: ICreateCounselingRequestType,
   ): Promise<ICreateCounselingResponseType> => {
     const response = await fetch("/api/users/counseling", {
       method: "POST",
@@ -122,7 +129,7 @@ export const counselingApi = {
    * 상담 상세 조회
    */
   getCounselingDetail: async (
-    counselingId: number
+    counselingId: number,
   ): Promise<IUserCounselingDetailType> => {
     const response = await fetch(`/api/users/counseling/${counselingId}`, {
       method: "GET",
@@ -141,7 +148,7 @@ export const counselingApi = {
    * 상담 취소
    */
   cancelCounseling: async (
-    counselingId: number
+    counselingId: number,
   ): Promise<ICancelCounselingResponseType> => {
     const response = await fetch(`/api/users/counseling/${counselingId}`, {
       method: "DELETE",

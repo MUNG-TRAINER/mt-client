@@ -10,14 +10,19 @@ export async function GET() {
     headers: {
       Cookie: cookie.toString(),
     },
+    cache: "no-cache",
   });
 
   if (!res.ok) {
     const errorData = await res.json();
     return NextResponse.json(
-      {error: errorData.message || "유저의 정보를 불러올 수 없습니다."},
+      {
+        error: errorData.message || "ss 유저의 정보를 불러올 수 없습니다.",
+        code: errorData.code || res.status,
+      },
       {status: res.status},
     );
+    return NextResponse.json({...errorData});
   }
 
   const data = await res.json();

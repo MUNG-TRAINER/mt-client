@@ -16,13 +16,16 @@ export async function proxy(request: NextRequest) {
   const ACCESS_TOKEN = request.cookies.get(NAME_ACCESS_TOKEN)?.value;
   const {pathname} = request.nextUrl;
 
-  if (isCourseDetailPage(pathname) || publicRoute[pathname]) {
+  if (isCourseDetailPage(pathname)) {
     return NextResponse.next();
   }
-
+  if (publicRoute[pathname]) {
+    return NextResponse.next();
+  }
   if (!ACCESS_TOKEN && !REFRESH_TOKEN) {
     const loginUrl = new URL("/login", request.url);
-    return NextResponse.redirect(loginUrl);
+    NextResponse.redirect(loginUrl);
+    return NextResponse.next();
   }
 
   return NextResponse.next();
