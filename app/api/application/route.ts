@@ -11,7 +11,7 @@ export async function DELETE(req: NextRequest) {
       Cookie: cookie.toString(),
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({applicationId: requestBody}),
+    body: JSON.stringify({courseIds: requestBody}),
   });
 
   if (!res.ok) {

@@ -26,13 +26,13 @@ const Applications = () => {
             <ApplicationCard
               key={app.applicationId}
               app={app}
-              isSelected={selectedIndex.includes(app.applicationId)}
+              isSelected={selectedIndex.includes(app.courseId)}
             />
           ))}
         </ul>
       )}
 
-      <ApplicationsActionButton />
+<ApplicationsActionButton applications={applicationsToShow} />
     </div>
   );
 };

@@ -1,8 +1,10 @@
+"use client";
+
 import {UserCourseType} from "@/types/course/userCourse";
 import {useState} from "react";
 import CalendarHeader from "./CalendarHeader";
 import CalendarBody from "./CalendarBody";
-import { TrainerCourseType } from "@/types/trainer/trainerCourseType";
+import {TrainerCourseType} from "@/types/trainer/trainerCourseType";
 
 interface CalendarProps {
   courses: UserCourseType[] | TrainerCourseType[];

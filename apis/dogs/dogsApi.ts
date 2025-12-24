@@ -12,7 +12,6 @@ export const dogsApi = {
     const response = await fetchWithAuth("/api/dogs", {
       method: "GET",
     });
-
     if (!response?.ok) {
       throw new Error("반려견 목록을 불러올 수 없습니다.");
     }
