@@ -1,3 +1,4 @@
+"use client";
 import PlanTabs from "./PlanTabs";
 import PlanCourseList from "./PlanCourseList";
 import {useState} from "react";
@@ -6,8 +7,8 @@ import PlanFloatingBtn from "./PlanFloatingBtn";
 import Calendar from "./Calendar";
 import {UserCourseType} from "@/types/course/userCourse";
 import useCheckLoggedIn from "@/hooks/afterLogin/users/useCheckLoggedIn";
-import { TrainerCourseType } from "@/types/trainer/trainerCourseType";
-import { useRouter } from "next/navigation";
+import {TrainerCourseType} from "@/types/trainer/trainerCourseType";
+import {useRouter} from "next/navigation";
 import DogImage from "@/public/images/application/dog.jpg";
 import CalendarImage from "@/public/images/application/calendar.jpg";
 import SessionNoImage from "@/public/images/application/star.jpg";
@@ -34,7 +35,7 @@ export default function Plan({
 
   // 선택된 날짜에 해당하는 세션만 필터링
   const selectedSessions = selectedDate
-  ? (isTrainer
+    ? isTrainer
       ? (allCourses as TrainerCourseType[])
           .map((course) => ({
             ...course,
@@ -50,17 +51,17 @@ export default function Plan({
               (s) => s.sessionDate === selectedDate
             ),
           }))
-          .filter((course) => course.sessions.length > 0))
-  : [];
+          .filter((course) => course.sessions.length > 0)
+    : [];
   const formatTime = (time: string) => time.slice(0, 5);
 
   const planCourses = isTrainer
-  ? (courses as TrainerCourseType[])
-  : (courses as UserCourseType[]);
+    ? (courses as TrainerCourseType[])
+    : (courses as UserCourseType[]);
 
-const planAllCourses = isTrainer
-  ? (allCourses as TrainerCourseType[])
-  : (allCourses as UserCourseType[]);
+  const planAllCourses = isTrainer
+    ? (allCourses as TrainerCourseType[])
+    : (allCourses as UserCourseType[]);
 
   const router = useRouter();
   const handleClick = (courseId: number) => {
@@ -69,7 +70,7 @@ const planAllCourses = isTrainer
   return (
     <div className="relative w-full -h-screen bg-(--mt-white) p-6 rounded-md flex flex-col gap-3 ">
       <Calendar
-         courses={planAllCourses}
+        courses={planAllCourses}
         selectedDate={selectedDate as string | undefined}
         onDateClick={(date) => setSelectedDate(date)}
         isTrainer={isTrainer}
@@ -95,19 +96,19 @@ const planAllCourses = isTrainer
                   <div className="text-[15px]">{course.title}</div>
                 </div>
                 <div className="flex w-full justify-end gap-3 mt-4">
-                {!isTrainer && (
-                  <div className="text-sm flex items-center gap-1">
-                    <Image
-                      src={DogImage}
-                      placeholder="blur"
-                      alt="강아지"
-                      width={13}
-                      height={13}
-                      className="w-4.75 h-4.75 items-center"
-                    />
-                  {(session as UserCourseType['sessions'][0]).dogName}
-                  </div>
-                )}
+                  {!isTrainer && (
+                    <div className="text-sm flex items-center gap-1">
+                      <Image
+                        src={DogImage}
+                        placeholder="blur"
+                        alt="강아지"
+                        width={13}
+                        height={13}
+                        className="w-4.75 h-4.75 items-center"
+                      />
+                      {(session as UserCourseType["sessions"][0]).dogName}
+                    </div>
+                  )}
                   <div className="text-sm flex items-center gap-1">
                     <Image
                       src={CalendarImage}
@@ -120,17 +121,17 @@ const planAllCourses = isTrainer
                     {formatTime(session.startTime)} ~{" "}
                     {formatTime(session.endTime)}
                   </div>
-                        <span className="flex gap-1 text-sm items-center leading-none px-1.5 py-0.5">
-                            <Image
-                              src={SessionNoImage}
-                              placeholder="blur"
-                              alt="회차 정보"
-                              width={14}
-                              height={5}
-                              className="w-3.75 h-3.75 items-center"
-                            />
-                            {session.sessionNo}회차
-                          </span>
+                  <span className="flex gap-1 text-sm items-center leading-none px-1.5 py-0.5">
+                    <Image
+                      src={SessionNoImage}
+                      placeholder="blur"
+                      alt="회차 정보"
+                      width={14}
+                      height={5}
+                      className="w-3.75 h-3.75 items-center"
+                    />
+                    {session.sessionNo}회차
+                  </span>
                 </div>
               </div>
             ))

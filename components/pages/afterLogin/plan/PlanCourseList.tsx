@@ -1,23 +1,24 @@
 "use client";
 
 import CourseCard from "@/components/shared/cards/CourseCard";
-import { UserCourseType } from "@/types/course/userCourse";
+import {UserCourseType} from "@/types/course/userCourse";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { TrainerCourseType } from "@/types/trainer/trainerCourseType";
+import {useRouter} from "next/navigation";
+import {TrainerCourseType} from "@/types/trainer/trainerCourseType";
+
 import DogImage from "@/public/images/application/dog.jpg";
 import TypeImage from "@/public/images/application/repeat.jpg";
 import LessonformImage from "@/public/images/application/check.jpg";
 import SessionNoImage from "@/public/images/application/star.jpg";
 import BellImage from "@/public/images/application/bell.jpg";
-import { useState } from "react";
+import {useState} from "react";
 import AttendanceModal from "../trainer/attendance/AttendanceModal";
 
 interface Props {
   courses: UserCourseType[] | TrainerCourseType[];
   isTrainer: boolean;
 }
-export default function PlanCourseList({ courses, isTrainer = false }: Props) {
+export default function PlanCourseList({courses, isTrainer = false}: Props) {
   const router = useRouter();
   const formatTime = (time: string) => time.slice(0, 5);
   const [selectedSession, setSelectedSession] = useState<{
@@ -45,7 +46,6 @@ export default function PlanCourseList({ courses, isTrainer = false }: Props) {
               key={`${course.courseId}-${session.sessionId}-${courseIndex}-${sessionIndex}`} // course+session으로 고유 key
               onClick={() => handleClick(course.courseId)}
               className="relative cursor-pointer flex flex-col rounded-2xl shadow-md bg-white p-4"
-              style={{ border: "1px solid #E9ECEF" }}
             >
               {/* ===== Course Card ===== */}
               <CourseCard
@@ -76,7 +76,7 @@ export default function PlanCourseList({ courses, isTrainer = false }: Props) {
                       </div>
                     )}
                   </div>
-                  <div className="flex gap-1">
+                  <div className="flex gap-1 text-gray-700">
                     {/* 상태 표시 */}
                     <span className="flex gap-1 text-xs items-center leading-none px-1.5 py-0.5 rounded-full">
                       <Image
@@ -122,7 +122,7 @@ export default function PlanCourseList({ courses, isTrainer = false }: Props) {
                 <div className="mt-2">
                   <button
                     className="flex items-center justify-center gap-1 py-2 text-sm font-semibold rounded-lg w-full"
-                    style={{ border: "1px solid #C5C5C5", color: "#444" }}
+                    style={{border: "1px solid #C5C5C5", color: "#444"}}
                     onClick={(e) => {
                       e.stopPropagation();
                       setSelectedSession({
@@ -151,7 +151,6 @@ export default function PlanCourseList({ courses, isTrainer = false }: Props) {
           ))
         )}
       </ul>
-
       {/* 출석 모달 - 예정된 훈련은 편집 가능, 완료된 훈련은 읽기 전용 */}
       {selectedSession && (
         <AttendanceModal

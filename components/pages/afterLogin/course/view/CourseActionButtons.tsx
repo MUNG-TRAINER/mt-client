@@ -27,7 +27,9 @@ export default function CourseActionButtons({
   if (data && "code" in data) return null;
   return (
     <div
-      className={`sticky mt-5 bottom-10 z-50 flex flex-col gap-3 w-full transition-transform duration-200 ease-in-out ${editMode ? "translate-y-[200%]" : "translate-y-0"}`}
+      className={`sticky mt-5 bottom-10 z-50 flex flex-col gap-3 w-full transition-transform duration-200 ease-in-out ${
+        editMode ? "translate-y-[200%]" : "translate-y-0"
+      }`}
     >
       {isOwner && (
         <div className="flex justify-center gap-3 *:w-full *:flex *:items-center *:justify-center *:bg-white *:gap-2 *:px-6 *:py-3 *:border-2 *:border-(--mt-gray-light) *:text-(--mt-gray) *:rounded-lg *:font-bold">
@@ -43,7 +45,11 @@ export default function CourseActionButtons({
             <Link
               aria-disabled={isClose}
               href={isClose ? "#" : `/course/${courseId}/edit`}
-              className={`${isClose ? "opacity-50 cursor-not-allowed pointer-events-none" : "hover:bg-(--mt-gray-smoke)"} `}
+              className={`${
+                isClose
+                  ? "opacity-50 cursor-not-allowed pointer-events-none"
+                  : "hover:bg-(--mt-gray-smoke)"
+              } `}
             >
               수정하기
             </Link>
@@ -59,7 +65,11 @@ export default function CourseActionButtons({
             onClick={(e) => {
               if (isClose) e.preventDefault();
             }}
-            className={`bg-white gap-2 px-6 border-2 border-(--mt-gray-light) text-(--mt-gray) ${isClose ? "opacity-50 cursor-not-allowed pointer-events-none" : "hover:bg-(--mt-gray-smoke)"} `}
+            className={`bg-white gap-2 px-6 border-2 border-(--mt-gray-light) text-(--mt-gray) ${
+              isClose
+                ? "opacity-50 cursor-not-allowed pointer-events-none"
+                : "hover:bg-(--mt-gray-smoke)"
+            } `}
           >
             <HeartIcon className="size-5" />
             찜하기
@@ -71,7 +81,11 @@ export default function CourseActionButtons({
             onClick={(e) => {
               if (isClose) e.preventDefault();
             }}
-            className={`flex-1 bg-(--mt-blue-point) text-white shadow-lg ${isClose ? "opacity-50 cursor-not-allowed pointer-events-none" : "hover:bg-(--mt-blue)"}`}
+            className={`flex-1 bg-(--mt-blue-point) text-white shadow-lg ${
+              isClose
+                ? "opacity-50 cursor-not-allowed pointer-events-none"
+                : "hover:bg-(--mt-blue)"
+            }`}
           >
             수강 신청
           </Link>

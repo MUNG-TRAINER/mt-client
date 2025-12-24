@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
         Cookie: cookieStore.toString(),
         "Content-Type": "application/json",
       },
-    },
+    }
   );
 
   if (!res.ok) {
