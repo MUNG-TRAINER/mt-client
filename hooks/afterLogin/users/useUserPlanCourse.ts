@@ -1,42 +1,51 @@
-import {useEffect, useMemo, useState} from "react";
+import {useMemo, useState} from "react";
 import {UserCourseType} from "@/types/course/userCourse";
 import {userCourseApi} from "@/apis/users/userCourseApi";
+import {useQuery} from "@tanstack/react-query";
 
 export const useUserPlanCourses = () => {
-  const [allCourses, setAllCourses] = useState<UserCourseType[]>([]);
-  const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<"scheduled" | "completed">(
-    "scheduled"
+    "scheduled",
   );
-  const [error, setError] = useState<Error | null>(null);
+  const {
+    data: userCourseScheduled = [],
+    isPending: scheduledPending,
+    isError: scheduledError,
+  } = useQuery({
+    queryKey: ["userCourseScheduled"],
+    queryFn: () => userCourseApi.getCoursesByStatus("SCHEDULED"),
+  });
 
-  useEffect(() => {
-    setLoading(true);
+  const {
+    data: userCourseDone = [],
+    isPending: donePending,
+    isError: doneError,
+  } = useQuery({
+    queryKey: ["userCourseDone"],
+    queryFn: () => userCourseApi.getCoursesByStatus("DONE"),
+  });
 
-    Promise.all([
-      userCourseApi.getCoursesByStatus("SCHEDULED"),
-      userCourseApi.getCoursesByStatus("DONE"),
-    ])
-      .then(([scheduled, done]) => setAllCourses([...scheduled, ...done]))
-      .catch((err) => {
-        setError(new Error("훈련과정 내역을 불러오는 데 실패했습니다."));
-      })
-      .finally(() => setLoading(false));
-  }, []);
+  const loading = scheduledPending && donePending;
+
+  const isError = scheduledError && doneError;
+
+  const allCourses: UserCourseType[] = useMemo(() => {
+    return loading ? [] : [...userCourseScheduled, ...userCourseDone];
+  }, [loading, userCourseDone, userCourseScheduled]);
 
   const courses = useMemo(() => {
     const status = activeTab === "scheduled" ? "SCHEDULED" : "DONE";
     return allCourses.filter((course) =>
-      course.sessions.some((s) => s.sessionStatus === status)
+      course.sessions.some((s) => s.sessionStatus === status),
     );
   }, [allCourses, activeTab]);
 
   return {
     loading,
+    isError,
     allCourses,
     courses,
     activeTab,
     setActiveTab,
-    error,
   };
 };

@@ -1,6 +1,7 @@
 import {IResultResponse} from "@/types/response/resultResponse";
 import {presignedUrlApi} from "../common/presignedUrl";
 import {IUploadCourseTypes} from "@/types/course/courseType";
+import {fetchWithAuth} from "../common/fetchWithAuth";
 
 export const courseApi = {
   createCourse: async (formData: FormData, count: number) => {
@@ -61,7 +62,7 @@ export const courseApi = {
       throw new Error("지원하지않는 파일 입니다.");
     }
     if (mainImgFile) {
-      const response = await fetch("/api/s3/getPresignedUrl", {
+      const response = await fetchWithAuth("/api/s3/getPresignedUrl", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -122,7 +123,7 @@ export const courseApi = {
       sessionUploadRequests: sessions,
     };
 
-    const res = await fetch(`/api/training/course/create`, {
+    const res = await fetchWithAuth(`/api/training/course/create`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
