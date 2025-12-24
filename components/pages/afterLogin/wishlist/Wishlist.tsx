@@ -21,7 +21,7 @@ const Wishlist = () => {
 
   if (loading)
     return (
-      <div className="flex justify-center items-center h-64">
+      <div className="flex justify-center items-center mx-auto">
         <LoadingSpinner />
       </div>
     );
@@ -31,10 +31,11 @@ const Wishlist = () => {
     );
 
   return (
-    <div className="flex flex-col w-full h-full bg-white">
-      <div className="flex-1 overflow-y-auto flex flex-col gap-4 p-4">
+    <div className="relative flex flex-col w-full h-full">
+      <div className="flex-1 overflow-y-auto flex flex-col gap-4">
         {wishlist.map((item) => (
-          <WishlistCard
+          <
+            WishlistCard
             key={item.wishlistItemId}
             {...item}
             isSelected={selectedIds.includes(item.wishlistItemId)}

@@ -59,7 +59,7 @@ export default function CourseActionButtons({
       {data && "role" in data && data.role === "USER" && (
         <div className="flex justify-center gap-3 *:flex *:items-center *:justify-center *:font-bold *:py-3 *:rounded-lg">
           <Link
-            href={isClose ? "#" : "/"}
+            href={isClose ? "#" : `/course/${courseId}/regist`}
             aria-disabled={isClose}
             tabIndex={isClose ? -1 : 0}
             onClick={(e) => {

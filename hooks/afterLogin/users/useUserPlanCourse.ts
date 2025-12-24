@@ -1,6 +1,7 @@
 import {useEffect, useMemo, useState} from "react";
 import {UserCourseType} from "@/types/course/userCourse";
 import {userCourseApi} from "@/apis/users/userCourseApi";
+import { useQuery } from "@tanstack/react-query";
 
 export const useUserPlanCourses = () => {
   const [allCourses, setAllCourses] = useState<UserCourseType[]>([]);

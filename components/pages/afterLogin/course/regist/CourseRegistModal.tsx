@@ -7,6 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import {useRouter} from "next/navigation";
 import {useState} from "react";
+import { useApplyWishlist } from "@/hooks/afterLogin/wishlist/useApplyWishlist";
 
 export default function CourseRegistModal({
   courseId,
