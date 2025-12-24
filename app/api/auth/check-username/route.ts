@@ -3,13 +3,20 @@ import {API_BASE_URL} from "@/util/env";
 import {NextRequest, NextResponse} from "next/server";
 
 export async function GET(
-  _req: NextRequest,
+  req: NextRequest,
   {params}: {params: Promise<{id: string}>},
 ) {
-  const param = await params;
+  const searchParams = req.nextUrl.searchParams;
+  const username = searchParams.get("username");
+  if (!username) {
+    return NextResponse.json({
+      valid: false,
+      message: "userName이 필요합니다.",
+    });
+  }
   try {
     const res = await fetch(
-      `${API_BASE_URL}/auth/check-username?username=${encodeURIComponent(param.id)}`,
+      `${API_BASE_URL}/auth/check-username?username=${encodeURIComponent(username)}`,
       {
         method: "GET",
         headers: {
