@@ -16,6 +16,7 @@ import CourseType from "./CourseType";
 import {useSessionState} from "@/stores/session/sessionState";
 import useCourseUpload from "@/hooks/afterLogin/course/useCourseUpload";
 import {FormEvent} from "react";
+import Link from "next/link";
 
 export default function CreateCourse() {
   const {count} = useSessionState();
@@ -90,15 +91,23 @@ export default function CreateCourse() {
         </CreateCourseCard>
       </fieldset>
       <CreateCourseCard>
-        <button
-          type="submit"
-          className={`w-full ${
-            isPending ? "bg-(--mt-gray)" : "bg-(--mt-blue-point)"
-          }  py-2 rounded-lg shadow text-(--mt-white) font-bold`}
-          disabled={isPending}
-        >
-          {isPending ? "로딩중..." : "개설하기"}
-        </button>
+        <div className="flex items-center justify-between gap-3">
+          <Link
+            href={`/plan`}
+            className="w-full text-center border-2 border-(--mt-gray-point) py-2 rounded-md font-bold bg-(--mt-white)"
+          >
+            취소하기
+          </Link>
+          <button
+            type="submit"
+            className={`w-full ${
+              isPending ? "bg-(--mt-gray)" : "bg-(--mt-blue-point)"
+            }  py-2 rounded-lg shadow text-(--mt-white) font-bold`}
+            disabled={isPending}
+          >
+            {isPending ? "로딩중..." : "개설하기"}
+          </button>
+        </div>
         {isError && (
           <p className="text-red-500 text-center">업로드에 실패하였습니다.</p>
         )}

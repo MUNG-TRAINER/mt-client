@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+"use client";
+import {useState, useEffect} from "react";
+import {useRouter} from "next/navigation";
 import type {
   LessonFormFilter,
   ViewMode,
@@ -26,7 +27,7 @@ export function useCourseSearchFilters({
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedFilter, setSelectedFilter] = useState<LessonFormFilter>(() =>
-    getValidFilter(urlLessonForm)
+    getValidFilter(urlLessonForm),
   );
 
   // URL의 lessonForm 파라미터가 변경될 때 selectedFilter를 동기화

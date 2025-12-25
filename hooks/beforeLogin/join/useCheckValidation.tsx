@@ -1,3 +1,4 @@
+"use client";
 import {useCallback, useState} from "react";
 import useCheckUserName from "./useCheckUserName";
 import useCheckEmail from "./useCheckEmail";

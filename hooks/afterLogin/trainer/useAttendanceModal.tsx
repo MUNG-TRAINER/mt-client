@@ -1,9 +1,7 @@
-import { useState, useEffect, useRef } from "react";
-import { attendanceAPI } from "@/apis/trainer/attendanceApi";
-import {
-  AttendanceType,
-  AttendanceStatus,
-} from "@/types/trainer/attendanceType";
+"use client";
+import {useState, useEffect, useRef} from "react";
+import {attendanceAPI} from "@/apis/trainer/attendanceApi";
+import {AttendanceType, AttendanceStatus} from "@/types/trainer/attendanceType";
 
 interface UseAttendanceModalProps {
   isOpen: boolean;
@@ -49,7 +47,7 @@ export function useAttendanceModal({
       try {
         const data = await attendanceAPI.getAttendanceList(courseId, sessionId);
         setAttendanceList(data);
-        loadedSessionRef.current = { courseId, sessionId };
+        loadedSessionRef.current = {courseId, sessionId};
       } catch {
         alert("출석 목록을 불러오는데 실패했습니다.");
       } finally {
@@ -64,7 +62,7 @@ export function useAttendanceModal({
   // 출석 토글 핸들러 (낙관적 업데이트)
   const handleToggleAttendance = async (
     userName: string,
-    currentStatus: AttendanceStatus
+    currentStatus: AttendanceStatus,
   ) => {
     if (!isEditable) return;
 
@@ -75,9 +73,9 @@ export function useAttendanceModal({
     setAttendanceList((prevList) =>
       prevList.map((attendance) =>
         attendance.userName === userName
-          ? { ...attendance, status: newStatus }
-          : attendance
-      )
+          ? {...attendance, status: newStatus}
+          : attendance,
+      ),
     );
 
     try {
@@ -86,16 +84,16 @@ export function useAttendanceModal({
         courseId,
         sessionId,
         userName,
-        { status: newStatus }
+        {status: newStatus},
       );
     } catch {
       // 실패 시 롤백
       setAttendanceList((prevList) =>
         prevList.map((attendance) =>
           attendance.userName === userName
-            ? { ...attendance, status: currentStatus }
-            : attendance
-        )
+            ? {...attendance, status: currentStatus}
+            : attendance,
+        ),
       );
       alert("출석 상태 변경에 실패했습니다.");
     }

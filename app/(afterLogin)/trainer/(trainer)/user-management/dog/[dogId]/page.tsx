@@ -1,29 +1,20 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
-import { useParams, useRouter } from "next/navigation";
-import { trainerUserApi } from "@/apis/trainer/trainerUserApi";
-import { DogProfile } from "@/components/pages/afterLogin/trainer/dogInfo/DogProfile";
-import { DogBasicInfo } from "@/components/pages/afterLogin/trainer/dogInfo/DogBasicInfo";
-import { DogStatsCards } from "@/components/pages/afterLogin/trainer/dogInfo/DogStatsCards";
-import { CounselingRecords } from "@/components/pages/afterLogin/trainer/counseling/CounselingRecords";
-import { TrainingApplicationsList } from "@/components/pages/afterLogin/trainer/courses/TrainingApplicationsList";
-import { MultiCoursesList } from "@/components/pages/afterLogin/trainer/courses/MultiCoursesList";
+import {useParams, useRouter} from "next/navigation";
+import {DogProfile} from "@/components/pages/afterLogin/trainer/dogInfo/DogProfile";
+import {DogBasicInfo} from "@/components/pages/afterLogin/trainer/dogInfo/DogBasicInfo";
+import {DogStatsCards} from "@/components/pages/afterLogin/trainer/dogInfo/DogStatsCards";
+import {CounselingRecords} from "@/components/pages/afterLogin/trainer/counseling/CounselingRecords";
+import {TrainingApplicationsList} from "@/components/pages/afterLogin/trainer/courses/TrainingApplicationsList";
+import {MultiCoursesList} from "@/components/pages/afterLogin/trainer/courses/MultiCoursesList";
+import useGetDogStats from "@/hooks/afterLogin/trainer/useGetDogStats";
 
 export default function DogStatsPage() {
   const router = useRouter();
   const params = useParams();
   const dogId = Number(params.dogId);
 
-  const {
-    data: statsData,
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ["dogStats", dogId],
-    queryFn: () => trainerUserApi.getDogStats(dogId),
-    enabled: !!dogId,
-  });
+  const {statsData, isLoading, error} = useGetDogStats({dogId});
 
   if (isLoading) {
     return (
@@ -47,7 +38,7 @@ export default function DogStatsPage() {
     );
   }
 
-  const { dog, counselings, stats, trainingApplications, multiCourses } =
+  const {dog, counselings, stats, trainingApplications, multiCourses} =
     statsData;
 
   return (

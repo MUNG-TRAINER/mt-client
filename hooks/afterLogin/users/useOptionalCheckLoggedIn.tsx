@@ -1,3 +1,4 @@
+"use client";
 import {loginApi} from "@/apis/login/loginApi";
 import {useQuery} from "@tanstack/react-query";
 const ACCESS_TOKEN_TIME = 1000 * 60 * 10;

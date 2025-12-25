@@ -9,6 +9,7 @@ export async function GET() {
     method: "GET",
     headers: {
       Cookie: cookie.toString(),
+      "Content-Type": "application/json",
     },
     cache: "no-cache",
   });
@@ -17,12 +18,11 @@ export async function GET() {
     const errorData = await res.json();
     return NextResponse.json(
       {
-        error: errorData.message || "ss 유저의 정보를 불러올 수 없습니다.",
-        code: errorData.code || res.status,
+        error: errorData.message ?? "유저의 정보를 불러올 수 없습니다.",
+        code: errorData.code ?? res.status,
       },
       {status: res.status},
     );
-    return NextResponse.json({...errorData});
   }
 
   const data = await res.json();

@@ -7,6 +7,7 @@ import {
   IResultResponse,
   IResultResponseData,
 } from "@/types/response/resultResponse";
+import {fetchWithAuth} from "../common/fetchWithAuth";
 
 export const loginApi = {
   login: async (data: ILoginDataType) => {
@@ -25,7 +26,7 @@ export const loginApi = {
     return result;
   },
   logout: async () => {
-    const res = await fetch(`/api/auth/logout`, {
+    const res = await fetchWithAuth(`/api/auth/logout`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -38,14 +39,18 @@ export const loginApi = {
     return data;
   },
   check: async () => {
-    const res = await fetch(`/api/auth/check`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
+    const res = await fetchWithAuth(
+      `/api/auth/check`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        cache: "no-store",
       },
-      credentials: "include",
-      cache: "no-store",
-    });
+      false,
+    );
     if (res.status === 401) {
       const data: IResultResponseData<IFailedCheckLoggedInType> =
         await res.json();
@@ -58,7 +63,7 @@ export const loginApi = {
     return data.data;
   },
   optionalCheck: async () => {
-    const res = await fetch("/api/auth/optionalCheck", {
+    const res = await fetchWithAuth("/api/auth/optionalCheck", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

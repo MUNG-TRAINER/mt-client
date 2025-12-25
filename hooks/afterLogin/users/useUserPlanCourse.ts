@@ -1,3 +1,4 @@
+"use client";
 import {useMemo, useState} from "react";
 import {UserCourseType} from "@/types/course/userCourse";
 import {userCourseApi} from "@/apis/users/userCourseApi";

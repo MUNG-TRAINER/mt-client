@@ -1,32 +1,22 @@
 "use client";
 
-import { useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { trainerUserApi } from "@/apis/trainer/trainerUserApi";
-import { ITrainerUserListResponse } from "@/types/trainer/trainerUserType";
-import { DogIcon } from "@/components/icons/dog";
-import { ChevronRightIcon } from "@/components/icons/chevron";
-import { useRouter } from "next/navigation";
+import {useEffect} from "react";
+import {ITrainerUserListResponse} from "@/types/trainer/trainerUserType";
+import {DogIcon} from "@/components/icons/dog";
+import {ChevronRightIcon} from "@/components/icons/chevron";
+import {useRouter} from "next/navigation";
 import Image from "next/image";
-import { getBackgroundColorStyle } from "@/util/color/generateColorFromId";
+import {getBackgroundColorStyle} from "@/util/color/generateColorFromId";
+import useGetUserDogs from "@/hooks/afterLogin/trainer/useGetUserDogs";
 
 interface IDogListModalProps {
   user: ITrainerUserListResponse;
   onClose: () => void;
 }
 
-export default function DogListModal({ user, onClose }: IDogListModalProps) {
+export default function DogListModal({user, onClose}: IDogListModalProps) {
   const router = useRouter();
-
-  const {
-    data: dogs = [],
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ["userDogs", user.userId],
-    queryFn: () => trainerUserApi.getUserDogs(user.userId),
-    enabled: !!user.userId,
-  });
+  const {dogs, isLoading, error} = useGetUserDogs({userId: user.userId});
 
   // Escape 키로 모달 닫기
   useEffect(() => {
@@ -133,7 +123,7 @@ export default function DogListModal({ user, onClose }: IDogListModalProps) {
                   }살, ${dog.breed} 상세정보 보기`}
                 >
                   {/* 프로필 이미지 */}
-                  <div className="overflow-hidden size-16 rounded-full relative flex-shrink-0">
+                  <div className="overflow-hidden size-16 rounded-full relative shrink-0">
                     {dog.profileImage && dog.profileImage.trim() ? (
                       <Image
                         src={dog.profileImage}
@@ -162,7 +152,7 @@ export default function DogListModal({ user, onClose }: IDogListModalProps) {
                     <div className="flex items-center gap-2 mt-1">
                       <span
                         className={`text-xs px-2 py-0.5 rounded-full font-medium ${getGenderBadgeColor(
-                          dog.gender
+                          dog.gender,
                         )}`}
                       >
                         {getGenderLabel(dog.gender)}
@@ -175,7 +165,7 @@ export default function DogListModal({ user, onClose }: IDogListModalProps) {
 
                   {/* 화살표 */}
                   <ChevronRightIcon
-                    className="size-5 text-gray-400 flex-shrink-0"
+                    className="size-5 text-gray-400 shrink-0"
                     aria-hidden="true"
                   />
                 </button>

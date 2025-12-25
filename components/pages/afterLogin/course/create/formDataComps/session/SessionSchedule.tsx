@@ -16,13 +16,19 @@ export default function SessionSchedule({
   const now = new Date();
   return (
     <CourseLabelBox>
-      <label htmlFor={`${id}_${index}_${labelId}`}>세부일자</label>
+      <label
+        htmlFor={`${id}_${index}_${labelId}`}
+        className="before:content-['*'] before:text-sm before:text-red-500 before:mr-1"
+      >
+        세부일자
+      </label>
       <CreateCourseInput
         id={`${id}_${index}_${labelId}`}
         name={inputName}
         type="date"
         {...props}
         max={`${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`}
+        required
       />
     </CourseLabelBox>
   );

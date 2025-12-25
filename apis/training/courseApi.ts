@@ -84,22 +84,12 @@ export const courseApi = {
     for (let i = 0; i < 3; i++) {
       const file = formData.get(`detailImage[${i}].detailImage`) as File;
       if (!file || file.size === 0) continue;
-      const response = await fetch("/api/s3/getPresignedUrl", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          category: "course-upload",
-          fileName: file.name,
-          contentType: file.type,
-        }),
+      const presignedURL = await presignedUrlApi.getPresignedUrl({
+        category: "course-upload",
+        fileName: file.name,
+        contentType: file.type,
       });
-      const presignedURL = await response.json();
-      const s3Key = await presignedUrlApi.uploadToS3(
-        presignedURL.presignedUrl,
-        file,
-      );
+      const s3Key = await presignedUrlApi.uploadToS3(presignedURL, file);
       detailImageUrl.push(s3Key);
     }
     formData.set("detailImgUrl", detailImageUrl.join(","));

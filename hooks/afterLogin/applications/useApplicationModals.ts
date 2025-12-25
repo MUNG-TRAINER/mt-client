@@ -1,5 +1,6 @@
-import { useState } from "react";
-import type { GroupedApplication } from "@/types/applications/applicationType";
+"use client";
+import {useState} from "react";
+import type {GroupedApplication} from "@/types/applications/applicationType";
 
 /**
  * 신청 관리 모달 상태 관리 훅

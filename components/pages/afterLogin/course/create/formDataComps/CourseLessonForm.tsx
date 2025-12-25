@@ -12,7 +12,9 @@ export default function CourseLessonForm() {
 
   return (
     <div className="flex flex-col gap-2">
-      <h5 className="font-bold">수업 형태</h5>
+      <h5 className="font-bold before:content-['*'] before:text-sm before:text-red-500 before:mr-1">
+        수업 형태
+      </h5>
       <div className="flex justify-between gap-3 [&>div]:w-full [&>div]:flex [&>div]:items-center [&>div]:gap-2">
         <CourseTypeBtn
           labelFor="walk"

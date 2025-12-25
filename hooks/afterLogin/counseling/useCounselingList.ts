@@ -1,5 +1,6 @@
-import { useQuery } from "@tanstack/react-query";
-import { counselingApi } from "@/apis/counseling/counselingApi";
+"use client";
+import {useQuery} from "@tanstack/react-query";
+import {counselingApi} from "@/apis/counseling/counselingApi";
 
 /**
  * 상담 리스트 조회 훅

@@ -2,16 +2,15 @@ import {NextRequest, NextResponse} from "next/server";
 import {NAME_ACCESS_TOKEN, NAME_REFRESH_TOKEN} from "./util/cookieExtractor";
 
 const publicRoute: Record<string, boolean> = {
-  "/": true,
   "/login": true,
   "/join": true,
-  "/introduce": true,
 };
+
 const isCourseDetailPage = (path: string) => {
   const courseDetailPage = /^\/course\/\d+$/;
   return courseDetailPage.test(path);
 };
-export async function proxy(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const REFRESH_TOKEN = request.cookies.get(NAME_REFRESH_TOKEN)?.value;
   const ACCESS_TOKEN = request.cookies.get(NAME_ACCESS_TOKEN)?.value;
   const {pathname} = request.nextUrl;
@@ -22,10 +21,22 @@ export async function proxy(request: NextRequest) {
   if (publicRoute[pathname]) {
     return NextResponse.next();
   }
+
+  if (ACCESS_TOKEN && REFRESH_TOKEN) {
+    if (publicRoute[pathname]) {
+      const home = new URL("/", request.url);
+      return NextResponse.redirect(home);
+    }
+  }
+
+  if (!REFRESH_TOKEN) {
+    const loginUrl = new URL("/login", request.url);
+    return NextResponse.redirect(loginUrl);
+  }
+
   if (!ACCESS_TOKEN && !REFRESH_TOKEN) {
     const loginUrl = new URL("/login", request.url);
-    NextResponse.redirect(loginUrl);
-    return NextResponse.next();
+    return NextResponse.redirect(loginUrl);
   }
 
   return NextResponse.next();

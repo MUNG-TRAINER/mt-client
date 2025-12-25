@@ -4,13 +4,19 @@ import CourseLabelBox from "@/components/pages/afterLogin/course/create/formData
 export default function EditCourseTitle({title}: {title: string}) {
   return (
     <CourseLabelBox>
-      <label htmlFor="title">훈련제목</label>
+      <label
+        htmlFor="title"
+        className="before:content-['*'] before:text-sm before:text-red-500 before:mr-1"
+      >
+        훈련제목
+      </label>
       <CreateCourseInput
         id="title"
         type="text"
         name="title"
         defaultValue={title}
         placeholder="훈련제목을 입력하세요"
+        required
       />
     </CourseLabelBox>
   );

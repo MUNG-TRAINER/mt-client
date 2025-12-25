@@ -7,7 +7,6 @@ export const usersApi = {
   me: async () => {
     const response = await fetchWithAuth("/api/users/me", {
       method: "GET",
-      credentials: "include",
     });
 
     if (!response?.ok) {

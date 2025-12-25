@@ -1,6 +1,7 @@
-import { useState, useRef } from "react";
-import { presignedUrlApi } from "@/apis/common/presignedUrl";
-import { imageFileSchema } from "@/schemas/fileSchema";
+"use client";
+import {useState, useRef} from "react";
+import {presignedUrlApi} from "@/apis/common/presignedUrl";
+import {imageFileSchema} from "@/schemas/fileSchema";
 
 export default function useDogImageUpload() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -61,7 +62,7 @@ export default function useDogImageUpload() {
 
       const uploadedImageKey = await presignedUrlApi.uploadToS3(
         presignedUrl,
-        selectedFile
+        selectedFile,
       );
 
       setIsUploading(false);

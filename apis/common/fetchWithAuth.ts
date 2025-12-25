@@ -28,6 +28,7 @@ export async function fetchWithAuth(
 
     if (res.status === 401) {
       const result = await res.json();
+      console.log(result);
       if (optional) {
         await loginApi.optionalCheck();
       } else {
@@ -37,8 +38,7 @@ export async function fetchWithAuth(
       if (result.code === TOKEN_EXPIRED) {
         if (optional) {
           await loginApi.optionalCheck();
-        }
-        if (!optional) {
+        } else {
           await revalidateRefreshToken();
         }
         res = await fetchData(input, init);
@@ -46,6 +46,7 @@ export async function fetchWithAuth(
       }
       if (result.code === REFRESH_EXPIRED || result.code === UNAUTHORIZED) {
         window.location.href = "/login";
+        await loginApi.logout();
         return res;
       }
       res = await fetchData(input, init);
@@ -57,20 +58,34 @@ export async function fetchWithAuth(
     return res;
   } catch (error) {
     console.error("Fetch error:", error);
+    await loginApi.logout();
     throw error;
   }
 }
-
+let refreshInFlight: Promise<void> | null = null;
 export async function revalidateRefreshToken() {
-  const resposne = await fetch(`/api/auth/refresh-token`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-  if (!resposne.ok) {
-    console.log(await resposne.text());
-    window.location.href = "/login";
-    throw new Error("로그인되어있지 않습니다. 로그인해주세요.");
+  if (refreshInFlight) {
+    return await refreshInFlight;
+  }
+
+  refreshInFlight = (async () => {
+    const resposne = await fetch(`/api/auth/refresh-token`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!resposne.ok) {
+      window.location.href = "/login";
+      await loginApi.logout();
+      throw new Error("로그인되어있지 않습니다. 로그인해주세요.");
+    }
+  })();
+
+  try {
+    await refreshInFlight;
+  } finally {
+    refreshInFlight = null;
   }
 }

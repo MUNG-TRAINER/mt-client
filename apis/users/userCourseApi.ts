@@ -11,7 +11,6 @@ export const userCourseApi = {
     });
 
     if (!res.ok) {
-      console.error(await res.text());
       throw new Error("훈련과정 내역을 불러오는데 실패했습니다.");
     }
 

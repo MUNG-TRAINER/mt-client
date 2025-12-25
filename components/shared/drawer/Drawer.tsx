@@ -15,7 +15,7 @@ export default function Drawer() {
     data && "role" in data
       ? data.role === "USER" && [
           {href: "/applications", label: "나의 신청내역 보기"},
-          {href: "/wishlist", label: "찜리스트"},
+          {href: "/counseling", label: "나의 상담"},
         ]
       : null;
 
@@ -24,7 +24,7 @@ export default function Drawer() {
     ...(publicAfterLink ? [...publicAfterLink] : []),
     ...(userLink ? [...userLink] : []),
     // {href: "/", label: "s"},
-    {href: "/introduce", label: "멍선생소개"},
+    {href: "/introduce", label: "멍스쿨소개"},
   ];
 
   return (

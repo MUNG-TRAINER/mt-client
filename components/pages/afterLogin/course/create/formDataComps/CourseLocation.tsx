@@ -12,12 +12,18 @@ export default function CourseLocation({
 }: ICourseLocation) {
   return (
     <CourseLabelBox>
-      <label htmlFor={inputName}>{labelTxt}</label>
+      <label
+        htmlFor={inputName}
+        className="before:content-['*'] before:text-sm before:text-red-500 before:mr-1"
+      >
+        {labelTxt}
+      </label>
       <CreateCourseInput
         id={inputName}
         name={inputName}
         type="text"
         placeholder={placeholder}
+        required
       />
     </CourseLabelBox>
   );

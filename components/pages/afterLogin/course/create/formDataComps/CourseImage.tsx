@@ -36,7 +36,9 @@ export default function CourseImage() {
   }, [mainImg, detailImgOne, detailImgTwo, detailImgThree]);
   return (
     <div className="flex flex-col gap-3">
-      <h3 className="font-bold">이미지 업로드</h3>
+      <h3 className="font-bold before:content-['*'] before:text-sm before:text-red-500 before:mr-1">
+        이미지 업로드
+      </h3>
       <div className="w-full h-full flex">
         <ImageLabel
           imgUrl={mainImg}
