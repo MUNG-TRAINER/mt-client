@@ -2,19 +2,25 @@
 
 import {CheckIcon} from "@/components/icons/check";
 import {IDogProfileType} from "@/types/dog/dogType";
+import { WishlistDogType } from "@/types/wishlist/wishlistType";
 import {randomColor} from "@/util/randomColor";
 import Image from "next/image";
 import Link from "next/link";
-import {useRouter} from "next/navigation";
-import {useState} from "react";
-import { useApplyWishlist } from "@/hooks/afterLogin/wishlist/useApplyWishlist";
+import { useMemo, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import {useCreateWishlist} from "@/hooks/afterLogin/wishlist/useCreateWishlist";
+import ConfirmModal from "@/components/pages/afterLogin/wishlist/ConfirmModal";
+import { useApplyCourse } from "@/hooks/afterLogin/applications/useApplyCourse";
+
 
 export default function CourseRegistModal({
   courseId,
   dogs,
+  wishlistDogs,
 }: {
   courseId: string;
   dogs: IDogProfileType[];
+  wishlistDogs: WishlistDogType[];
 }) {
   const [id, setId] = useState<number | null>();
   const router = useRouter();
@@ -23,6 +29,102 @@ export default function CourseRegistModal({
   const handleBack = () => {
     router.back();
   };
+  const searchParams = useSearchParams();
+  const mode = searchParams.get("mode"); // "apply" | "wishlist"
+  const {create} = useCreateWishlist();
+  const [confirmOpen, setConfirmOpen] = useState(false);
+const [confirmDesc, setConfirmDesc] = useState("");
+const [confirmResult, setConfirmResult] =
+  useState<"wishlist" | "apply" | null>(null);
+  type DogWithCounseling = IDogProfileType & {
+    hasCounseling: boolean;
+  };
+  
+
+  /** dog + 상담여부 */
+  const mergedDogs: DogWithCounseling[] = useMemo(() => {
+    return dogs.map((dog) => {
+      const w = wishlistDogs.find(
+        (wd) => wd.dogId === dog.dogId
+      );
+
+      return {
+        ...dog,
+        hasCounseling: w?.hasCounseling ?? false,
+      };
+    });
+  }, [dogs, wishlistDogs]);
+
+const { mutate: applyCourse } = useApplyCourse();
+  const handleApply = async () => {
+    if (!id) {
+      setConfirmDesc("반려견을 선택해주세요.");
+      setConfirmOpen(true);
+      return;
+    }
+  
+    // 찜하기
+    if (mode === "wishlist") {
+      try {
+        await create({
+          courseId: Number(courseId),
+          dogId: id,
+        });
+        setConfirmDesc("찜 목록에 추가되었습니다.");
+        setConfirmResult("wishlist");
+        setConfirmOpen(true);
+      } catch (e) {
+        console.error(e);
+        setConfirmDesc("찜 처리 중 오류가 발생했습니다.");
+        setConfirmOpen(true);
+      }
+      return;
+    }
+  
+    // 신청
+    const selectedDog = mergedDogs.find(
+      (dog) => dog.dogId === id
+    );
+    if (!selectedDog) return;
+  
+    // 상담 페이지로 넘어가기
+    if (!selectedDog.hasCounseling) {
+      router.push(
+        `/courses/${courseId}/counseling?dogId=${id}`
+      );
+      return;
+    }
+  
+  // 신청
+applyCourse(
+  {
+    courseId: Number(courseId),
+    data: { dogId: id },
+  },
+  {
+    onSuccess: () => {
+      setConfirmDesc("수강 신청이 완료되었습니다.");
+      setConfirmResult("apply");
+      setConfirmOpen(true);
+    },
+    onError: (e) => {
+      console.error(e);
+
+      if (e.message === "ALREADY_APPLIED") {
+        setConfirmDesc("이미 신청한 강의입니다.");
+      } else {
+        setConfirmDesc("신청 중 오류가 발생했습니다.");
+      }
+
+      setConfirmResult(null);
+      setConfirmOpen(true);
+    },
+  }
+);  
+  };
+  
+
+
 
   return (
     <div className="absolute left-0 top-0 bg-(--mt-black)/75 w-full h-full z-80 flex flex-col">
@@ -102,8 +204,8 @@ export default function CourseRegistModal({
                   >
                     취소하기
                   </button>
-                  <button className="bg-(--mt-blue) w-full py-4 rounded-md text-xl font-bold text-(--mt-white) mt-auto shadow">
-                    신청하기
+                  <button className="bg-(--mt-blue) w-full py-4 rounded-md text-xl font-bold text-(--mt-white) mt-auto shadow" type="button" onClick={handleApply}>
+                  {mode === "wishlist" ? "찜하기" : "신청하기"}
                   </button>
                 </div>
               </form>
@@ -119,6 +221,22 @@ export default function CourseRegistModal({
           </Link>
         )}
       </div>
+      <ConfirmModal
+  isOpen={confirmOpen}
+  description={confirmDesc}
+  onClose={() => {
+    setConfirmOpen(false);
+
+    if (confirmResult === "wishlist") {
+      router.push("/wishlist");
+    }
+
+    if (confirmResult === "apply") {
+      router.push("/application");
+    }
+    setConfirmResult(null);
+  }}
+/>
     </div>
   );
 }

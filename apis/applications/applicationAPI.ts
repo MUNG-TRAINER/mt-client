@@ -38,6 +38,33 @@ export const applicationAPI = {
     }>;
     return result;
   },
+
+  applyCourse: async (
+    courseId: number,
+    data: Partial<ApplicationType>
+  ): Promise<ApplicationType[]> => {
+    const res = await fetch(`/api/course/${courseId}/apply`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+  
+    if (!res.ok) {
+      const errorBody = await res.json();
+    
+      if (errorBody.code === "ALREADY_APPLIED") {
+        throw new Error("ALREADY_APPLIED");
+      }
+    
+      throw new Error("APPLY_FAILED");
+    }
+  
+    const result = (await res.json()) as IResultResponseData<ApplicationType[]>;
+    return result.data;
+  },
+
   // 훈련사용: 승인 대기 중인 신청 목록 조회
   getPendingApplications: async (): Promise<PendingApplication[]> => {
     const response = await fetch("/api/trainer/applications", {

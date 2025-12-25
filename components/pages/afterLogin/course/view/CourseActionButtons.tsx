@@ -59,7 +59,7 @@ export default function CourseActionButtons({
       {data && "role" in data && data.role === "USER" && (
         <div className="flex justify-center gap-3 *:flex *:items-center *:justify-center *:font-bold *:py-3 *:rounded-lg">
           <Link
-            href={isClose ? "#" : `/course/${courseId}/regist`}
+            href={isClose ? "#" : `/course/${courseId}/regist?mode=wishlist`}
             aria-disabled={isClose}
             tabIndex={isClose ? -1 : 0}
             onClick={(e) => {
@@ -75,7 +75,7 @@ export default function CourseActionButtons({
             찜하기
           </Link>
           <Link
-            href={isClose ? "#" : `/course/${courseId}/regist`}
+            href={isClose ? "#" : `/course/${courseId}/regist?mode=apply`}
             aria-disabled={isClose}
             tabIndex={isClose ? -1 : 0}
             onClick={(e) => {

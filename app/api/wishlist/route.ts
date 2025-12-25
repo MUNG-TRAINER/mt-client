@@ -25,24 +25,48 @@ export async function GET() {
 
 // /api/wishlist POST (생성)
 export async function POST(req: NextRequest) {
-  const body = await req.json(); // { courseId: number, dogId: number }
+  try {
+    const body = await req.json(); // { courseId: number, dogId: number }
 
-  const cookieStore = await cookies();
-  const res = await fetch(`${API_BASE_URL}/wishlist`, {
-    method: "POST",
-    headers: {
-      Cookie: cookieStore.toString(),
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(body),
-  });
+    const cookieStore = await cookies();
+    const res = await fetch(`${API_BASE_URL}/wishlist`, {
+      method: "POST",
+      headers: {
+        Cookie: cookieStore.toString(),
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
 
-  if (!res.ok) {
-    throw new Error("찜 항목 생성에 실패했습니다.");
+   
+    // 먼저 text로 읽기
+    const text = await res.text();
+
+    // JSON이면 파싱, 아니면 null
+    const data = text ? JSON.parse(text) : null;
+
+    if (!res.ok) {
+      return NextResponse.json(
+        {
+          code: data.code ?? "WISHLIST_FAILED",
+          message: data.message ?? "찜 항목 생성에 실패했습니다",
+        },
+        { status: res.status }
+      );
+    }
+
+    return NextResponse.json(
+      { message: "찜 항목 생성 완료" },
+      { status: 201 }
+    );
+  } catch (e: any) {
+    return NextResponse.json(
+      { code: "WISHLIST_FAILED", message: e.message },
+      { status: 500 }
+    );
   }
-
-  return NextResponse.json({message: "찜 항목 생성 완료"}, {status: 201});
 }
+
 
 // /api/wishlist DELETE (여러 개 삭제)
 export async function DELETE(req: NextRequest) {
