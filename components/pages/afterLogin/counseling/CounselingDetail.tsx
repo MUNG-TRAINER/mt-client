@@ -1,12 +1,12 @@
 "use client";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {useState} from "react";
+import {useRouter} from "next/navigation";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
 import Image from "next/image";
 import useCounselingDetail from "@/hooks/afterLogin/counseling/useCounselingDetail";
-import { counselingApi } from "@/apis/counseling/counselingApi";
-import { DogIcon } from "@/components/icons/dog";
-import { formatDateTime } from "@/util/time/formatDate";
+import {counselingApi} from "@/apis/counseling/counselingApi";
+import {DogIcon} from "@/components/icons/dog";
+import {formatDateTime} from "@/util/time/formatDate";
 import RoundboxColorBtn from "@/components/shared/buttons/RoundboxColorBtn";
 import AlertModal from "@/components/shared/modal/AlertModal";
 
@@ -34,7 +34,7 @@ export default function CounselingDetail({
     onSuccess: (data) => {
       if (data.success) {
         // 내 상담 목록과 현재 상담 상세 무효화
-        queryClient.invalidateQueries({ queryKey: ["counselings", "my"] });
+        queryClient.invalidateQueries({queryKey: ["counselings", "my"]});
         queryClient.invalidateQueries({
           queryKey: ["counseling", counselingId],
         });
@@ -90,7 +90,7 @@ export default function CounselingDetail({
 
       {/* 반려견 정보 카드 */}
       <div className="p-4 bg-gray-100 rounded-2xl flex items-center gap-4">
-        <div className="overflow-hidden size-20 rounded-full relative flex-shrink-0">
+        <div className="overflow-hidden size-20 rounded-full relative shrink-0">
           {counseling.dogImage && counseling.dogImage.trim() ? (
             <Image
               src={counseling.dogImage}

@@ -45,7 +45,7 @@ const CourseCard: React.FC<ApplicationInfoProps> = ({
   return (
     <div>
       <div className="flex gap-4 pb-2">
-        <div className="relative w-24 h-24 sm:w-40 sm:h-40 rounded-xl overflow-hidden flex-shrink-0">
+        <div className="relative w-24 h-24 sm:w-40 sm:h-40 rounded-xl overflow-hidden shrink-0">
           {mainImage && (
             <Image src={mainImage} alt={title} fill className="object-cover" />
           )}

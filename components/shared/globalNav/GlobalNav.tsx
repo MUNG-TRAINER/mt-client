@@ -7,7 +7,7 @@ import {UserIcon} from "@/components/icons/user";
 import useCheckLoggedIn from "@/hooks/afterLogin/users/useCheckLoggedIn";
 import Link from "next/link";
 import {usePathname} from "next/navigation";
-import {ReactNode, useEffect} from "react";
+import {ReactNode} from "react";
 
 interface IGlobalNavListProps {
   to: string;
