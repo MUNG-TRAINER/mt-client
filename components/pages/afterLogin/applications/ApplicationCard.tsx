@@ -7,9 +7,6 @@ import Image from "next/image";
 import {useApplicationState} from "@/stores/applicationsState";
 import {useRouter} from "next/navigation";
 import DogImage from "@/public/images/application/dog.jpg";
-import TypeImage from "@/public/images/application/repeat.jpg";
-import LessonformImage from "@/public/images/application/check.jpg";
-
 interface Props {
   app: ApplicationType;
   isSelected: boolean; //  선택 여부
@@ -29,8 +26,6 @@ const ApplicationCard: React.FC<Props> = ({app, isSelected}) => {
   const {setSelectedIndex} = useApplicationState();
   const statusText = statusTextMap[app.applicationStatus];
   const [isRejectModalOpen, setRejectModalOpen] = useState(false);
-  const tags = app.tags?.split(",") ?? [];
-
   const router = useRouter();
   const handleClick = (courseId: number) => {
     router.push(`/course/${courseId}`);
@@ -64,7 +59,8 @@ const ApplicationCard: React.FC<Props> = ({app, isSelected}) => {
       <CardList
         title={app.title}
         description={app.description}
-        tags={tags}
+        lessonForm={app.lessonForm}
+        type={app.type}
         mainImage={app.mainImage ?? undefined}
         sessionSchedule={app.sessionSchedule}
         location={app.location}
@@ -83,44 +79,16 @@ const ApplicationCard: React.FC<Props> = ({app, isSelected}) => {
             {app.dogName}
           </div>
         )}
-        <div className="flex gap-1 text-gray-700">
-          {app.type && (
-            <span className="flex gap-1 text-xs items-center leading-none px-1.5 py-0.5">
-              <Image
-                src={TypeImage}
-                placeholder="blur"
-                alt="타입"
-                width={13}
-                height={5}
-                className="w-3.5 h-3.75 items-center"
-              />
-              {app.type}
+        {app.price && (
+          <div className="flex justify-end items-baseline gap-1 mb-1">
+            <span className="text-sm text-gray-500">총 금액</span>
+            <span className="text-xl font-bold text-[var(--mt-blue-point)]">
+              {app.price.toLocaleString()}원
             </span>
-          )}
-
-          {app.lessonForm && (
-            <span className="flex gap-1 text-xs items-center leading-none">
-              <Image
-                src={LessonformImage}
-                placeholder="blur"
-                alt="lessonform"
-                width={13}
-                height={5}
-                className="w-3.5 h-3.75 items-center"
-              />
-              {app.lessonForm}
-            </span>
-          )}
-        </div>
+          </div>
+        )}
       </div>
-      {app.price && (
-        <div className="flex justify-end items-baseline gap-1 mt-5 mb-1">
-          <span className="text-sm text-gray-500">총 금액</span>
-          <span className="text-xl font-bold text-[var(--mt-blue-point)]">
-            {app.price.toLocaleString()}원
-          </span>
-        </div>
-      )}
+
       {/* 버튼 영역 */}
       <div className="flex gap-2 mt-2">
         {app.applicationStatus === "REJECTED" && (

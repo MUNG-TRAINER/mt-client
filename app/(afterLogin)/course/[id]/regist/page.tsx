@@ -19,6 +19,7 @@ async function getDogs(): Promise<IDogProfileType[]> {
   const result: IDogProfileType[] = await res.json();
   return result;
 }
+
 export default async function Page({params}: {params: Promise<{id: string}>}) {
   const param = await params;
   const dogs = await getDogs();

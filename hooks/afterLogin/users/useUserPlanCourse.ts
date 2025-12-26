@@ -2,7 +2,7 @@
 import {useMemo, useState} from "react";
 import {UserCourseType} from "@/types/course/userCourse";
 import {userCourseApi} from "@/apis/users/userCourseApi";
-import {useQuery} from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 
 export const useUserPlanCourses = () => {
   const [activeTab, setActiveTab] = useState<"scheduled" | "completed">(

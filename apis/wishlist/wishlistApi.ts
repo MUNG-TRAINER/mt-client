@@ -48,7 +48,17 @@ export const wishlistApi = {
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify(body),
     });
-    if (!res.ok) throw new Error("찜 항목 생성에 실패했습니다");
+    if (!res.ok) {
+      const errorBody = await res.json();
+      console.error("wishlist error:", errorBody, res.status);
+    
+      if (errorBody.code === "ALREADY_WISHLISTED") {
+        throw new Error("ALREADY_WISHLISTED");
+      }
+    
+      throw new Error("WISHLIST_FAILED");
+    }
+    
   },
 
   // 삭제 (여러 개)

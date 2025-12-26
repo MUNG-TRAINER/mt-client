@@ -21,7 +21,7 @@ const Applications = () => {
           <p className="text-gray-500 font-medium">신청 내역이 없습니다.</p>
         </div>
       ) : (
-        <ul className="flex-1 overflow-y-auto flex flex-col gap-4 p-4">
+        <ul className="flex-1 overflow-y-auto flex flex-col gap-4 p-5">
           {applicationsToShow.map((app) => (
             <ApplicationCard
               key={app.applicationId}
@@ -32,7 +32,7 @@ const Applications = () => {
         </ul>
       )}
 
-<ApplicationsActionButton applications={applicationsToShow} />
+      <ApplicationsActionButton applications={applicationsToShow} />
     </div>
   );
 };
