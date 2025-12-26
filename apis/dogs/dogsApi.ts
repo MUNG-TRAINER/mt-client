@@ -4,11 +4,12 @@ import {
   IDogProfileType,
   IDogUpdateRequestType,
 } from "@/types/dog/dogType";
+import {fetchWithAuth} from "../common/fetchWithAuth";
 
 export const dogsApi = {
   // GET /dogs - 내 반려견 프로필 리스트 조회
   getMyDogs: async (): Promise<IDogListType> => {
-    const response = await fetch("/api/dogs", {
+    const response = await fetchWithAuth("/api/dogs", {
       method: "GET",
     });
     if (!response?.ok) {
@@ -21,7 +22,7 @@ export const dogsApi = {
 
   // GET /users/{user_name}/dogs - 타인의 반려견 프로필 리스트 조회
   getUserDogs: async (userName: string): Promise<IDogListType> => {
-    const response = await fetch(`/api/users/${userName}/dogs`, {
+    const response = await fetchWithAuth(`/api/users/${userName}/dogs`, {
       method: "GET",
     });
 
@@ -35,7 +36,7 @@ export const dogsApi = {
 
   // GET /dogs/{dog_id} - 반려견 프로필 상세 조회
   getDogDetail: async (dogId: number): Promise<IDogProfileType> => {
-    const response = await fetch(`/api/dogs/${dogId}`, {
+    const response = await fetchWithAuth(`/api/dogs/${dogId}`, {
       method: "GET",
     });
 
@@ -49,7 +50,7 @@ export const dogsApi = {
 
   // POST /dogs - 반려견 프로필 등록
   createDog: async (dogData: IDogCreateRequestType): Promise<number> => {
-    const response = await fetch("/api/dogs", {
+    const response = await fetchWithAuth("/api/dogs", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -70,7 +71,7 @@ export const dogsApi = {
     dogId: number,
     dogData: IDogUpdateRequestType,
   ): Promise<void> => {
-    const response = await fetch(`/api/dogs/${dogId}`, {
+    const response = await fetchWithAuth(`/api/dogs/${dogId}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -85,7 +86,7 @@ export const dogsApi = {
 
   // DELETE /dogs/{dog_id} - 반려견 프로필 삭제
   deleteDog: async (dogId: number): Promise<void> => {
-    const response = await fetch(`/api/dogs/${dogId}`, {
+    const response = await fetchWithAuth(`/api/dogs/${dogId}`, {
       method: "DELETE",
     });
 
