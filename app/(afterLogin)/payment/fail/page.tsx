@@ -34,8 +34,8 @@ export default function PaymentFailPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8">
+    <div className="w-full h-full flex items-center justify-center">
+      <div className="bg-white rounded-lg shadow-lg p-8 w-full">
         <div className="text-center">
           {/* 에러 아이콘 */}
           <div className="text-red-600 mb-4">
@@ -60,7 +60,7 @@ export default function PaymentFailPage() {
           </h1>
 
           {/* 에러 메시지 */}
-          <p className="text-gray-600 mb-6">
+          <p className="text-gray-600 mb-4">
             {searchParams.get("message") ||
               "결제 중 오류가 발생했습니다. 다시 시도해주세요."}
           </p>
@@ -73,16 +73,16 @@ export default function PaymentFailPage() {
           )}
 
           {/* 버튼 그룹 */}
-          <div className="space-y-3">
+          <div className="flex flex-col gap-3">
             <button
               onClick={handleRetry}
-              className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+              className="inline-flex items-center justify-center rounded-md bg-blue-600 px-4 py-2 text-white font-semibold hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
             >
               다시 시도하기
             </button>
             <button
               onClick={handleGoHome}
-              className="w-full bg-gray-200 text-gray-700 py-3 px-4 rounded-lg hover:bg-gray-300 transition-colors font-medium"
+              className="inline-flex items-center justify-center rounded-md bg-gray-100 px-4 py-2 text-gray-800 font-semibold hover:bg-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2"
             >
               메인으로 돌아가기
             </button>

@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { useSearchParams, useRouter, usePathname } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { usePaymentConfirm } from "@/hooks/payment/usePaymentMutation";
 import toast from "react-hot-toast";
 
@@ -13,7 +13,6 @@ export default function PaymentSuccessPage() {
   const router = useRouter();
   const [isConfirming, setIsConfirming] = useState(true);
   const confirmMutation = usePaymentConfirm();
-  const path = usePathname();
   // 중복 승인 방지용 ref + sessionStorage 키
   const hasConfirmedRef = useRef(false);
 
@@ -26,17 +25,11 @@ export default function PaymentSuccessPage() {
       const merchantUid = searchParams.get("orderId");
       const amount = searchParams.get("amount");
       const amountNumber = amount ? Number(amount) : NaN;
-      console.log(path, "결제 승인 정보:", {
-        paymentKey,
-        merchantUid,
-        amount,
-      });
 
       // 0원 결제: 승인 API 호출 없이 즉시 성공 처리
       if (!isNaN(amountNumber) && amountNumber === 0) {
         toast.success("0원 결제가 완료되었습니다!");
         setIsConfirming(false);
-        setTimeout(() => router.push("/"), 1500);
         return;
       }
       // 필수 파라미터 검증
@@ -70,7 +63,6 @@ export default function PaymentSuccessPage() {
 
         toast.success("결제가 완료되었습니다!");
         setIsConfirming(false);
-        setTimeout(() => router.push("/"), 3000);
       } catch (error) {
         // 일부 중복/재승인 오류는 성공으로 간주 가능 (백엔드에서 이미 승인된 경우)
         const msg = error instanceof Error ? error.message : "승인 오류";
@@ -82,7 +74,6 @@ export default function PaymentSuccessPage() {
           }
           toast.success("이미 승인된 결제입니다.");
           setIsConfirming(false);
-          setTimeout(() => router.push("/"), 1500);
           return;
         }
 
@@ -102,8 +93,8 @@ export default function PaymentSuccessPage() {
   }, []);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8">
+    <div className="w-full h-full flex items-center justify-center">
+      <div className="bg-white rounded-lg shadow-lg p-8 w-full">
         {isConfirming ? (
           <div className="text-center">
             <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto mb-4"></div>
@@ -135,9 +126,13 @@ export default function PaymentSuccessPage() {
             <p className="text-gray-600 mb-4">
               주문이 정상적으로 처리되었습니다.
             </p>
-            <p className="text-sm text-gray-500">
-              잠시 후 메인 페이지로 이동합니다...
-            </p>
+            <button
+              type="button"
+              onClick={() => router.push("/")}
+              className="mt-2 inline-flex items-center justify-center rounded-md bg-blue-600 px-4 py-2 text-white font-semibold hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+            >
+              홈으로 돌아가기
+            </button>
           </div>
         )}
       </div>

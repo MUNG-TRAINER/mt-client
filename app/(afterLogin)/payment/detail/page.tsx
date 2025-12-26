@@ -16,37 +16,33 @@ interface PaymentItem {
 export default function PaymentDetailPage() {
   // useState의 lazy initialization으로 세션 스토리지에서 초기 데이터 로드
   const [items] = useState<PaymentItem[]>(() => {
-    // 세션 스토리지에서 INDEX를 먼저 읽어 개수 확인
-    const indexStr = sessionStorage.getItem("INDEX");
-    const index = indexStr ? Number(indexStr) : 0;
-
-    if (index <= 0) {
+    // 세션 스토리지에 JSON 배열 형태로 저장된 selectedApplications 읽기
+    const raw = sessionStorage.getItem("selectedApplications");
+    if (!raw) {
       return [];
     }
 
-    // INDEX 개수만큼 TITLE_n, PRICE_n, COURSEID_n을 읽어 객체 배열 생성
-    const loadedItems: PaymentItem[] = [];
-    for (let i = 1; i <= index; i++) {
-      const title = sessionStorage.getItem(`TITLE_${i}`) || "";
-      const priceStr = sessionStorage.getItem(`PRICE_${i}`) || "0";
-      const courseIdStr = sessionStorage.getItem(`COURSEID_${i}`) || "0";
+    try {
+      const parsed = JSON.parse(raw);
+      if (!Array.isArray(parsed)) {
+        return [];
+      }
 
-      const price = Number(priceStr);
-      const courseId = Number(courseIdStr);
+      const normalized = parsed
+        .map((it) => ({
+          title: typeof it?.title === "string" ? it.title : "",
+          price: Number(it?.price ?? 0),
+          courseId: Number(it?.courseId ?? 0),
+        }))
+        .filter((it) => it.title !== "" && !Number.isNaN(it.price));
 
-      loadedItems.push({ title, price, courseId });
+      return normalized;
+    } catch (e) {
+      return [];
+    } finally {
+      // 사용 후 세션 스토리지 정리
+      sessionStorage.removeItem("selectedApplications");
     }
-
-    // 세션 스토리지 정리: INDEX 제거
-    sessionStorage.removeItem("INDEX");
-    // TITLE_n, PRICE_n, COURSEID_n 제거
-    for (let i = 1; i <= index; i++) {
-      sessionStorage.removeItem(`TITLE_${i}`);
-      sessionStorage.removeItem(`PRICE_${i}`);
-      sessionStorage.removeItem(`COURSEID_${i}`);
-    }
-
-    return loadedItems;
   });
 
   const courseIds = items.map((it) => it.courseId);
