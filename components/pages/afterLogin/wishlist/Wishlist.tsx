@@ -34,8 +34,7 @@ const Wishlist = () => {
     <div className="relative flex flex-col w-full h-full">
       <div className="flex-1 overflow-y-auto flex flex-col gap-4">
         {wishlist.map((item) => (
-          <
-            WishlistCard
+          <WishlistCard
             key={item.wishlistItemId}
             {...item}
             isSelected={selectedIds.includes(item.wishlistItemId)}

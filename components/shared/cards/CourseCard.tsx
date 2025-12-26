@@ -49,7 +49,7 @@ const CourseCard: React.FC<ApplicationInfoProps> = ({
 
         <div className="flex-1 pr-10">
           <h2 className="text-[17px] font-semibold mb-1">{title}</h2>
-          <p className="text-[15px] text-gray-500 mb-2">{description}</p>
+          <p className="text-[13px] text-gray-500 mb-2">{description}</p>
 
           <div className="flex gap-1 flex-wrap mb-2">
             <span className="flex gap-1 text-xs items-center leading-none px-2 py-1 rounded-full bg-[#E7F5FF] text-[#4263EB]">

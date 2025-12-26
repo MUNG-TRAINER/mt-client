@@ -1,5 +1,5 @@
-import { ApplicationType } from "@/types/applications/applicationsType";
-import { IResultResponseData } from "@/types/response/resultResponse";
+import {ApplicationType} from "@/types/applications/applicationsType";
+import {IResultResponseData} from "@/types/response/resultResponse";
 import type {
   PendingApplication,
   ApplicationStatusUpdateRequest,
@@ -43,6 +43,7 @@ export const applicationAPI = {
     courseId: number,
     data: Partial<ApplicationType>
   ): Promise<ApplicationType[]> => {
+  
     const res = await fetch(`/api/course/${courseId}/apply`, {
       method: "POST",
       headers: {
@@ -50,17 +51,17 @@ export const applicationAPI = {
       },
       body: JSON.stringify(data),
     });
-  
+
     if (!res.ok) {
       const errorBody = await res.json();
-    
+
       if (errorBody.code === "ALREADY_APPLIED") {
         throw new Error("ALREADY_APPLIED");
       }
-    
+
       throw new Error("APPLY_FAILED");
     }
-  
+
     const result = (await res.json()) as IResultResponseData<ApplicationType[]>;
     return result.data;
   },
