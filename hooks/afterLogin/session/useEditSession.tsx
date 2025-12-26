@@ -1,3 +1,4 @@
+"use client";
 import {sessionApi} from "@/apis/session/sessionApi";
 import {useSessionState} from "@/stores/session/sessionState";
 import {useMutation} from "@tanstack/react-query";

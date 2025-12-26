@@ -10,7 +10,12 @@ export default function EditCourseMainImg({img}: {img: string}) {
   const mainImageRef = useRef<HTMLInputElement | null>(null);
   return (
     <CourseLabelBox classNames="relative">
-      <label htmlFor="mainImage">메인이미지</label>
+      <label
+        htmlFor="mainImage"
+        className="before:content-['*'] before:text-sm before:text-red-500 before:mr-1"
+      >
+        메인이미지
+      </label>
       <div
         className="relative w-full h-64"
         onClick={() => mainImageRef.current?.click()}
@@ -21,7 +26,6 @@ export default function EditCourseMainImg({img}: {img: string}) {
           <Image src={img} alt="메인이미지" fill />
         )}
       </div>
-
       <input
         ref={mainImageRef}
         id="mainImage"

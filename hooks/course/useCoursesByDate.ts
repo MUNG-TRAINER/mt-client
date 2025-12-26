@@ -1,6 +1,7 @@
-import { useQuery } from "@tanstack/react-query";
-import { courseAPI } from "@/apis/course/courseApi";
-import { CourseSearchResponse } from "@/types/course/courseType";
+"use client";
+import {useQuery} from "@tanstack/react-query";
+import {courseAPI} from "@/apis/course/courseApi";
+import {CourseSearchResponse} from "@/types/course/courseType";
 
 interface UseCoursesByDateParams {
   date: string | null;

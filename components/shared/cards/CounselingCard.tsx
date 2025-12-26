@@ -1,16 +1,16 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { IUserCounselingListItemType } from "@/types/counseling/counselingType";
-import { ChevronRightIcon } from "@/components/icons/chevron";
-import { DogIcon } from "@/components/icons/dog";
-import { formatDateTime } from "@/util/time/formatDate";
+import {IUserCounselingListItemType} from "@/types/counseling/counselingType";
+import {ChevronRightIcon} from "@/components/icons/chevron";
+import {DogIcon} from "@/components/icons/dog";
+import {formatDateTime} from "@/util/time/formatDate";
 
 interface ICounselingCardProps {
   counseling: IUserCounselingListItemType;
 }
 
-export default function CounselingCard({ counseling }: ICounselingCardProps) {
+export default function CounselingCard({counseling}: ICounselingCardProps) {
   return (
     <Link href={`/counseling/${counseling.counselingId}`}>
       <article className="p-4 bg-gray-100 rounded-2xl flex items-center gap-3 hover:bg-gray-200 transition-colors cursor-pointer">
@@ -66,7 +66,7 @@ export default function CounselingCard({ counseling }: ICounselingCardProps) {
         </div>
 
         {/* 화살표 아이콘 */}
-        <ChevronRightIcon className="size-6 text-(--mt-gray) flex-shrink-0" />
+        <ChevronRightIcon className="size-6 text-(--mt-gray) shrink-0" />
       </article>
     </Link>
   );

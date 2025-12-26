@@ -1,3 +1,4 @@
+"use client";
 import {joinApi} from "@/apis/join/joinApi";
 import {useQuery} from "@tanstack/react-query";
 

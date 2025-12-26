@@ -5,7 +5,7 @@ import {checkIsClose} from "@/util/course/checkIsClose";
 import {ICourseType} from "@/types/course/courseType";
 import {ITrainerInfoType} from "@/types/trainer/trainerType";
 import {ISessionType} from "@/types/course/sessionType";
-import useOptionalCheckLoggedIn from "@/hooks/afterLogin/users/useOptionalCheckLoggedIn";
+import useCheckLoggedIn from "@/hooks/afterLogin/users/useCheckLoggedIn";
 
 interface ICourseDetailPageProps {
   courseInfo: ICourseType;
@@ -21,7 +21,7 @@ export default function CourseDetailPage({
 }: ICourseDetailPageProps) {
   /* state */
   const isClose = checkIsClose(sessionList, courseInfo);
-  const {isError} = useOptionalCheckLoggedIn();
+  const {isError} = useCheckLoggedIn();
 
   if (!courseInfo) {
     return <div className="p-6 text-center">과정 정보를 찾을 수 없습니다.</div>;

@@ -127,9 +127,9 @@ export default function CourseRegistModal({
             </li>
           )}
           {dogs.length > 0 && (
-            <li className="w-full h-full">
-              <form className="w-full h-full">
-                <fieldset className="w-full h-full flex flex-col gap-3">
+            <li className="w-full h-full  ">
+              <form className="w-full h-full relative">
+                <fieldset className="w-full h-full flex flex-col gap-3 overflow-y-auto pb-10">
                   <legend>반려견 수강신청</legend>
                   {dogs.map((val, i) => (
                     <label
@@ -181,8 +181,9 @@ export default function CourseRegistModal({
                     </label>
                   ))}
                 </fieldset>
-                <div className="flex gap-3">
+                <div className="flex items-center gap-3 absolute w-full -bottom-10">
                   <button
+                    type="button"
                     onClick={handleBack}
                     className="bg-(--mt-white) w-full py-4 rounded-md text-xl font-bold text-(--mt-gray) mt-auto shadow text-center border-2 border-(--mt-gray-point)"
                   >

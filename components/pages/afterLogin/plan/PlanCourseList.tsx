@@ -51,11 +51,12 @@ export default function PlanCourseList({courses, isTrainer = false}: Props) {
               <CourseCard
                 title={course.title}
                 description={course.description}
-                tags={course.tags ? course.tags.split(",") : []}
+                lessonForm={course.lessonForm}
+                type={course.type}
                 mainImage={course.mainImage ?? ""}
                 location={course.location}
                 sessionSchedule={`${session.sessionDate} ${formatTime(
-                  session.startTime
+                  session.startTime,
                 )} ~ ${formatTime(session.endTime)}`}
               />
 
@@ -148,7 +149,7 @@ export default function PlanCourseList({courses, isTrainer = false}: Props) {
                 </div>
               )}
             </li>
-          ))
+          )),
         )}
       </ul>
       {/* 출석 모달 - 예정된 훈련은 편집 가능, 완료된 훈련은 읽기 전용 */}

@@ -1,4 +1,3 @@
-import {API_BASE_URL} from "@/util/env";
 import {fetchWithAuth} from "./fetchWithAuth";
 
 interface IPresignedUrlRequest {
@@ -10,7 +9,7 @@ interface IPresignedUrlRequest {
 export const presignedUrlApi = {
   // POST /presigned-url - S3 업로드용 Presigned URL 발급
   getPresignedUrl: async (data: IPresignedUrlRequest): Promise<string> => {
-    const response = await fetchWithAuth(`${API_BASE_URL}/presigned-url`, {
+    const response = await fetchWithAuth(`/api/s3/getPresignedUrl`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -30,7 +29,7 @@ export const presignedUrlApi = {
   // Presigned URL로 S3에 파일 업로드
   uploadToS3: async (
     presignedUrl: string | URL | undefined,
-    file: File
+    file: File,
   ): Promise<string> => {
     if (!presignedUrl) {
       throw new Error("[uploadToS3] presignedUrl이 없습니다.");

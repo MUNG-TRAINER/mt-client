@@ -1,5 +1,6 @@
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { courseAPI } from "@/apis/course/courseApi";
+"use client";
+import {useInfiniteQuery} from "@tanstack/react-query";
+import {courseAPI} from "@/apis/course/courseApi";
 
 interface UseCourseSearchParams {
   keyword?: string;
@@ -19,7 +20,7 @@ export const useCourseSearch = ({
 }: UseCourseSearchParams = {}) => {
   return useInfiniteQuery({
     queryKey: ["courses", "search", keyword, size, lessonForm],
-    queryFn: ({ pageParam }: { pageParam: number | undefined }) =>
+    queryFn: ({pageParam}: {pageParam: number | undefined}) =>
       courseAPI.searchCourses({
         keyword,
         lastCourseId: pageParam, // 커서로 사용

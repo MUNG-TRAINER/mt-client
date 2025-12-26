@@ -104,30 +104,27 @@ export default function TrainerEditForm({
 
     try {
       setSubmitting(true);
-
       let nextProfileImageKey = null;
       let nextCertImageKey = null;
-
       if (profileFile) {
-        const res = await trainerApi.getPresignedUrl(
-          "user-profile",
-          profileFile.name,
-          profileFile.type,
+        const uploadUrl = await presignedUrlApi.getPresignedUrl({
+          category: "user-profile",
+          fileName: profileFile.name,
+          contentType: profileFile.type,
+        });
+        const fileKey = await presignedUrlApi.uploadToS3(
+          uploadUrl,
+          profileFile,
         );
-        // const res  = await presignedUrlApi.getPresignedUrl({})
-        console.log("presignedUrl response:", res);
-        const {uploadUrl, fileKey} = res;
-        await trainerApi.fileUpload(uploadUrl, profileFile);
         nextProfileImageKey = fileKey;
       }
-
       if (certFile) {
-        const {uploadUrl, fileKey} = await trainerApi.getPresignedUrl(
-          "trainer-certification",
-          certFile.name,
-          certFile.type,
-        );
-        await trainerApi.fileUpload(uploadUrl, certFile);
+        const uploadUrl = await presignedUrlApi.getPresignedUrl({
+          category: "trainer-certification",
+          fileName: certFile.name,
+          contentType: certFile.type,
+        });
+        const fileKey = await presignedUrlApi.uploadToS3(uploadUrl, certFile);
         nextCertImageKey = fileKey;
       }
 
@@ -145,6 +142,7 @@ export default function TrainerEditForm({
       };
 
       await trainerApi.uploadProfile(payload);
+
       router.push(`/trainer/${trainerId}`);
     } catch (err) {
       console.error(err);

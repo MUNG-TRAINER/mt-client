@@ -8,9 +8,11 @@ export default function EditCourseIsFree({isFree}: {isFree: boolean}) {
   return (
     <>
       <div className="flex items-center gap-1">
-        <h5 className="font-bold">유료 / 무료</h5>
+        <h5 className="font-bold before:content-['*'] before:text-sm before:text-red-500 before:mr-1">
+          유료 / 무료
+        </h5>
         <small className="text-sm text-red-500">
-          (회차여부는 수정하실수 없습니다.)
+          (유료/무료는 수정하실수 없습니다.)
         </small>
       </div>
       <div className="w-full flex justify-around *:w-full">

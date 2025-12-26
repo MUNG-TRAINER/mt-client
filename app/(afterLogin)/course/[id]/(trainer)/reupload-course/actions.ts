@@ -1,8 +1,10 @@
 "use server";
 
+import {IFormResultType} from "@/types/formResultType";
 import {API_BASE_URL} from "@/util/env";
 import {cookies} from "next/headers";
-import {redirect} from "next/navigation";
+import {courseCreateSchema} from "@/schemas/courseUploadSchema";
+import {treeifyError} from "zod";
 
 interface SessionUploadRequest {
   sessionNo: number;
@@ -19,30 +21,12 @@ interface SessionUploadRequest {
 export async function reuploadCourseAction(
   courseId: string,
   sessionCount: number,
-  state: any,
+  state: IFormResultType<typeof courseCreateSchema>,
   formData: FormData,
-) {
+): Promise<IFormResultType<typeof courseCreateSchema>> {
+  const cookie = await cookies();
+
   try {
-    const cookie = await cookies();
-
-    const data = {
-      title: formData.get("title"),
-      location: formData.get("location"),
-      schedule: formData.get("schedule"),
-      isFree: formData.get("isFree"),
-      mainImage: formData.get("mainImage") as File | null,
-      mainImageKey: formData.get("mainImageKey") as string,
-      lessonForm: formData.get("lessonForm"),
-      difficulty: formData.get("difficulty"),
-      detailImageKey: formData.get("detailImageKey") as string,
-      dogSize: formData.get("dogSize"),
-      description: formData.get("description"),
-      type: formData.get("type"),
-      refundPolicy: formData.get("refundPolicy"),
-      items: formData.get("items"),
-    };
-
-    // 2. 세션 정보 추출
     const sessions: SessionUploadRequest[] = [];
     for (let i = 0; i < sessionCount; i++) {
       const sessionNo = formData.get(`session[${i}].sessionNo`)?.toString();
@@ -70,6 +54,35 @@ export async function reuploadCourseAction(
         content: content || "",
         locationDetail: locationDetail || "",
       });
+    }
+    const data = {
+      tags: formData.get("tags"),
+      trainerId: formData.get("trainerId"),
+      title: formData.get("title"),
+      location: formData.get("location"),
+      schedule: formData.get("schedule"),
+      isFree: formData.get("isFree"),
+      mainImage: formData.get("mainImage") as File | null,
+      mainImageKey: formData.get("mainImageKey") as string,
+      lessonForm: formData.get("lessonForm"),
+      difficulty: formData.get("difficulty"),
+      detailImageKey: formData.get("detailImageKey") as string,
+      dogSize: formData.get("dogSize"),
+      description: formData.get("description"),
+      type: formData.get("type"),
+      refundPolicy: formData.get("refundPolicy"),
+      items: formData.get("items"),
+      "detailImage[0].detailImage": formData.get("detailImage[0].detailImage"),
+      "detailImage[1].detailImage": formData.get("detailImage[1].detailImage"),
+      "detailImage[2].detailImage": formData.get("detailImage[2].detailImage"),
+      sessionUploadRequests: sessions,
+    };
+    const result = await courseCreateSchema.safeParseAsync(data);
+    if (!result.success) {
+      return {
+        errMsg: treeifyError(result.error),
+        resMsg: undefined,
+      };
     }
 
     let mainImageUrl = data.mainImageKey;
@@ -156,21 +169,23 @@ export async function reuploadCourseAction(
     }
 
     const reuploadData = {
-      title: data.title,
-      status: "SCHEDULED",
-      location: data.location,
+      tags: result.data.tags,
+      trainerId: result.data.trainerId,
+      title: result.data.title,
+      status: result.data.status,
+      location: result.data.location,
+      schedule: result.data.schedule,
+      isFree: result.data.isFree,
       mainImage: mainImageUrl,
+      lessonForm: result.data.lessonForm,
+      difficulty: result.data.difficulty,
       detailImage: detailImageUrls.join(","),
-      schedule: data.schedule,
-      isFree: data.isFree,
-      lessonForm: data.lessonForm,
-      difficulty: data.difficulty,
-      dogSize: data.dogSize,
-      description: data.description,
-      type: data.type,
-      refundPolicy: data.refundPolicy,
-      items: data.items,
-      sessionUploadRequests: sessions,
+      dogSize: result.data.dogSize,
+      description: result.data.description,
+      type: result.data.type,
+      refundPolicy: result.data.refundPolicy,
+      items: result.data.items,
+      sessionUploadRequests: result.data.sessionUploadRequests,
     };
     // 맞는지 확인해야해
     const reuploadResponse = await fetch(
@@ -187,17 +202,23 @@ export async function reuploadCourseAction(
 
     if (!reuploadResponse.ok) {
       const errorData = await reuploadResponse.json();
-      throw new Error(errorData.message || "훈련과정 재업로드에 실패했습니다.");
+      console.error(
+        "Error ::" + errorData.message || "훈련과정 재업로드에 실패했습니다.",
+      );
+      return {
+        errMsg: undefined,
+        resMsg: "훈련과정 재업로드에 실패했습니다.",
+      };
     }
-    redirect("/plan");
+    return {
+      errMsg: undefined,
+      resMsg: undefined,
+    };
   } catch (error) {
     console.error("Reupload course error:", error);
     return {
-      success: false,
-      message:
-        error instanceof Error
-          ? error.message
-          : "예상치 못한 오류가 발생했습니다.",
+      errMsg: undefined,
+      resMsg: "훈련과정 재업로드에 실패했습니다.",
     };
   }
 }

@@ -16,37 +16,62 @@ import Link from "next/link";
 import {useActionState, useEffect, useState} from "react";
 import useCheckLoggedIn from "@/hooks/afterLogin/users/useCheckLoggedIn";
 import {useRouter} from "next/navigation";
-import {editCoureAction} from "@/app/(afterLogin)/course/[id]/edit/actions";
+import {editCoureAction} from "@/app/(afterLogin)/course/[id]/(trainer)/edit/actions";
+import {SessionInfo} from "@/types/applications/applicationType";
+import {ISessionType} from "@/types/course/sessionType";
+import {IFormResultType} from "@/types/formResultType";
+import {courseEditSchema} from "@/schemas/courseEditSchema";
+import EditCourseStatus from "./form/items/EditCourseStatus";
 
 const initialState = {
   errMsg: undefined,
   resMsg: undefined,
 };
-
 export default function CourseInfoEditForm({
   courseInfo,
   courseId,
+  sessionList,
 }: {
   courseInfo: ICourseType;
   courseId: string;
+  sessionList: ISessionType[];
 }) {
   const router = useRouter();
-  const {data} = useCheckLoggedIn();
-  const [mainImageKey] = useState(() => courseInfo.mainImageKey);
-  const detailImageKey = courseInfo.detailImageKey.split(",");
+  const detailImageKey = courseInfo.detailImageKey;
   const items = courseInfo?.items.trim().split(", ");
-  // const [state, action] = useActionState(editCoureAction, initialState);
-  useEffect(() => {
-    if (data && "code" in data) {
-      router.push(`/coures/${courseId}}`);
-    }
-    if (data && "role" in data && data.role !== "TRAINER") {
-      router.push(`/coures/${courseId}}`);
-    }
-  }, [data, router, courseId]);
+  const [state, action] = useActionState(
+    async (
+      state: IFormResultType<typeof courseEditSchema>,
+      formData: FormData,
+    ): Promise<IFormResultType<typeof courseEditSchema>> => {
+      const lessonForm = formData.get("lessonForm");
+      formData.set("trainerId", courseInfo.trainerId + "");
+      formData.set("tags", courseInfo.tags);
+      formData.set("isFree", courseInfo.isFree + "");
+      formData.set("mainImageKey", courseInfo.mainImageKey + "");
+      formData.set("status", courseInfo.status);
+      formData.set(
+        "lessonForm",
+        lessonForm === null ? courseInfo.lessonForm + "" : lessonForm,
+      );
+      formData.set("detailImageKey", detailImageKey);
+      const result = await editCoureAction(
+        courseId,
+        sessionList,
+        state,
+        formData,
+      );
+      if (!result.errMsg && !result.resMsg) {
+        router.push("/plan");
+      }
+      return result;
+    },
+    initialState,
+  );
+
   return (
     <div className="bg-(--mt-white) w-full h-full p-6 rounded-md overflow-y-scroll">
-      <form>
+      <form action={action}>
         <fieldset className="flex flex-col gap-3">
           <legend>훈련수정</legend>
           {/* 메인이미지 */}
@@ -55,6 +80,7 @@ export default function CourseInfoEditForm({
           <EditCourseTitle title={courseInfo?.title + ""} />
           {/* 훈련장소 */}
           <EditCourseLocation location={courseInfo?.location + ""} />
+          <EditCourseStatus status={courseInfo.status} />
           <CourseSchedule
             labelId="schedule"
             inputName="schedule"

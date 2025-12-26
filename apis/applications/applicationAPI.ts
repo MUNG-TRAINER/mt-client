@@ -11,7 +11,7 @@ import {fetchWithAuth} from "../common/fetchWithAuth";
 
 export const applicationAPI = {
   getApplicationList: async () => {
-    const res = await fetchWithAuth("api/application/list", {
+    const res = await fetchWithAuth("/api/application/list", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

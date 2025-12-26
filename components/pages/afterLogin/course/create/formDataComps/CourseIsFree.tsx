@@ -20,7 +20,9 @@ export default function CourseIsFree() {
   }, [setFreeFalse, setPrice]);
   return (
     <div className="flex flex-col gap-2 justify-around *:flex *:gap-2">
-      <h5 className="font-bold">유료 / 무료</h5>
+      <h5 className="font-bold before:content-['*'] before:text-sm before:text-red-500 before:mr-1">
+        유료 / 무료
+      </h5>
       <div className="w-full flex justify-around *:w-full">
         <CourseTypeBtn
           labelFor={"free"}

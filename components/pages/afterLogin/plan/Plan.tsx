@@ -28,7 +28,7 @@ export default function Plan({
   setActiveTab,
   isTrainer,
 }: PlanProps) {
-  useCheckLoggedIn();
+  const {role} = useCheckLoggedIn();
 
   // 선택한 날짜 상태 (캘린더용)
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
@@ -40,7 +40,7 @@ export default function Plan({
           .map((course) => ({
             ...course,
             sessions: course.sessions.filter(
-              (s) => s.sessionDate === selectedDate
+              (s) => s.sessionDate === selectedDate,
             ),
           }))
           .filter((course) => course.sessions.length > 0)
@@ -48,7 +48,7 @@ export default function Plan({
           .map((course) => ({
             ...course,
             sessions: course.sessions.filter(
-              (s) => s.sessionDate === selectedDate
+              (s) => s.sessionDate === selectedDate,
             ),
           }))
           .filter((course) => course.sessions.length > 0)
@@ -134,7 +134,7 @@ export default function Plan({
                   </span>
                 </div>
               </div>
-            ))
+            )),
           )}
         </div>
       )}
@@ -143,7 +143,7 @@ export default function Plan({
       </div>
       <PlanTabs activeTab={activeTab} setActiveTab={setActiveTab} />
       <PlanCourseList courses={planCourses} isTrainer={isTrainer} />
-      <PlanFloatingBtn />
+      {(role === "TRAINER" || role === "USER") && <PlanFloatingBtn />}
     </div>
   );
 }

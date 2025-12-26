@@ -1,4 +1,6 @@
-import { useEffect, RefObject } from "react";
+"use client";
+
+import {useEffect, RefObject} from "react";
 
 interface UseFocusTrapProps {
   isOpen: boolean;
@@ -25,7 +27,7 @@ export function useFocusTrap({
 
       // 모달 내 포커스 가능한 모든 요소 찾기
       const focusableElements = modal.querySelectorAll<HTMLElement>(
-        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
       );
       const firstElement = focusableElements[0];
       const lastElement = focusableElements[focusableElements.length - 1];

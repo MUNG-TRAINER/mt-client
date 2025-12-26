@@ -1,3 +1,4 @@
+"use client";
 import {courseApi} from "@/apis/training/courseApi";
 import {ICourseType} from "@/types/course/courseType";
 import {useQuery} from "@tanstack/react-query";

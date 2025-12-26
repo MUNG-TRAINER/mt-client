@@ -4,30 +4,46 @@ import {courseEditSchema} from "@/schemas/courseEditSchema";
 import {IFormResultType} from "@/types/formResultType";
 import {cookies} from "next/headers";
 import {API_BASE_URL} from "@/util/env";
+import {ISessionType} from "@/types/course/sessionType";
+import {treeifyError} from "zod";
 
 export async function editCoureAction(
   courseId: string,
+  sessionList: ISessionType[],
   state: IFormResultType<typeof courseEditSchema>,
   formData: FormData,
 ): Promise<IFormResultType<typeof courseEditSchema>> {
-  try {
-    const data = {
-      title: formData.get("title"),
-      location: formData.get("location"),
-      schedule: formData.get("schedule"),
-      isFree: formData.get("isFree"),
-      mainImage: formData.get("mainImage") as File | null,
-      mainImageKey: formData.get("mainImageKey") as string,
-      lessonForm: formData.get("lessonForm"),
-      difficulty: formData.get("difficulty"),
-      detailImageKey: formData.get("detailImageKey") as string,
-      dogSize: formData.get("dogSize"),
-      description: formData.get("description"),
+  const data = {
+    title: formData.get("title"),
+    location: formData.get("location"),
+    schedule: formData.get("schedule"),
+    isFree: formData.get("isFree"),
+    mainImage: formData.get("mainImage") as File | null,
+    mainImageKey: formData.get("mainImageKey") as string,
+    trainerId: formData.get("trainerId"),
+    status: formData.get("status"),
+    tags: formData.get("tags"),
+    lessonForm: formData.get("lessonForm"),
+    items: formData.get("items"),
+    difficulty: formData.get("difficulty"),
+    dogSize: formData.get("dogSize"),
+    description: formData.get("description"),
+    detailImageKey: formData.get("detailImageKey") as string,
+    "detailImage[0].detailImage": formData.get(`detailImage[0].detailImage`),
+    "detailImage[1].detailImage": formData.get(`detailImage[1].detailImage`),
+    "detailImage[2].detailImage": formData.get(`detailImage[2].detailImage`),
+  };
+  const result = await courseEditSchema.safeParseAsync(data);
+  if (!result.success) {
+    return {
+      errMsg: treeifyError(result.error),
+      resMsg: undefined,
     };
+  }
+  try {
+    let mainImageUrl = result.data.mainImageKey;
 
-    let mainImageUrl = data.mainImageKey;
-
-    if (data.mainImage && data.mainImage.size > 0) {
+    if (result.data.mainImage && result.data.mainImage.size > 0) {
       const presignedResponse = await fetch(`${API_BASE_URL}/presigned-url`, {
         method: "POST",
         headers: {
@@ -36,8 +52,8 @@ export async function editCoureAction(
         },
         body: JSON.stringify({
           category: "course-upload",
-          fileName: data.mainImage.name,
-          contentType: data.mainImage.type,
+          fileName: result.data.mainImage.name,
+          contentType: result.data.mainImage.type,
         }),
       });
 
@@ -53,9 +69,9 @@ export async function editCoureAction(
       const uploadResponse = await fetch(uploadUrl, {
         method: "PUT",
         headers: {
-          "Content-Type": data.mainImage.type,
+          "Content-Type": result.data.mainImage.type,
         },
-        body: data.mainImage,
+        body: result.data.mainImage,
       });
 
       if (!uploadResponse.ok) {
@@ -69,8 +85,8 @@ export async function editCoureAction(
       mainImageUrl = url.pathname.substring(1);
     }
 
-    const detailImageKeys = data.detailImageKey
-      ? data.detailImageKey.split(",")
+    const detailImageKeys = result.data.detailImageKey
+      ? result.data.detailImageKey.split(",")
       : [];
     const detailImageUrls: string[] = [];
 
@@ -125,26 +141,34 @@ export async function editCoureAction(
     }
 
     const updateData = {
-      title: data.title,
-      location: data.location,
-      schedule: data.schedule,
-      isFree: data.isFree,
+      title: result.data.title,
+      location: result.data.location,
+      schedule: result.data.schedule,
+      isFree: result.data.isFree,
       mainImage: mainImageUrl,
       detailImage: detailImageUrls.join(","),
-      lessonForm: data.lessonForm,
-      difficulty: data.difficulty,
-      dogSize: data.dogSize,
-      description: data.description,
+      trainerId: result.data.trainerId,
+      tags: result.data.tags,
+      status: result.data.status,
+      lessonForm: result.data.lessonForm,
+      difficulty: result.data.difficulty,
+      dogSize: result.data.dogSize,
+      items: result.data.items,
+      description: result.data.description,
+      sessionUploadRequests: sessionList,
     };
 
-    const updateResponse = await fetch(`${API_BASE_URL}/course/${courseId}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Cookie: (await cookies()).toString(),
+    const updateResponse = await fetch(
+      `${API_BASE_URL}/trainer/course/${courseId}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: (await cookies()).toString(),
+        },
+        body: JSON.stringify(updateData),
       },
-      body: JSON.stringify(updateData),
-    });
+    );
 
     if (!updateResponse.ok) {
       return {
@@ -152,7 +176,6 @@ export async function editCoureAction(
         resMsg: "훈련과정 수정에 실패했습니다.",
       };
     }
-
     return {
       errMsg: undefined,
       resMsg: undefined,

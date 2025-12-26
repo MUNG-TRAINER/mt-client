@@ -1,29 +1,21 @@
 "use client";
 
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { trainerUserApi } from "@/apis/trainer/trainerUserApi";
-import { ITrainerUserListResponse } from "@/types/trainer/trainerUserType";
-import { UserIcon } from "@/components/icons/user";
-import { ChevronRightIcon } from "@/components/icons/chevron";
-import { PhoneIcon } from "@/components/icons/phone";
-import { EnvelopeIcon } from "@/components/icons/envelope";
+import {useState} from "react";
+import {ITrainerUserListResponse} from "@/types/trainer/trainerUserType";
+import {UserIcon} from "@/components/icons/user";
+import {ChevronRightIcon} from "@/components/icons/chevron";
+import {PhoneIcon} from "@/components/icons/phone";
+import {EnvelopeIcon} from "@/components/icons/envelope";
 import DogListModal from "@/components/pages/afterLogin/trainer/userManagement/DogListModal";
 import Image from "next/image";
+import useManageUsers from "@/hooks/afterLogin/trainer/useManageUsers";
 
 export default function UserManagementPage() {
   const [selectedUser, setSelectedUser] =
     useState<ITrainerUserListResponse | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const {
-    data: users = [],
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ["trainerUsers"],
-    queryFn: trainerUserApi.getTrainerUsers,
-  });
+  const {users, isLoading, error} = useManageUsers();
 
   const handleUserClick = (user: ITrainerUserListResponse) => {
     setSelectedUser(user);
@@ -71,7 +63,7 @@ export default function UserManagementPage() {
               className="p-4 bg-gray-100 rounded-2xl flex items-center gap-3 hover:bg-gray-200 transition-colors cursor-pointer"
             >
               {/* 프로필 이미지 */}
-              <div className="overflow-hidden size-16 rounded-full relative flex-shrink-0">
+              <div className="overflow-hidden size-16 rounded-full relative shrink-0">
                 {user.profileImage && user.profileImage.trim() ? (
                   <Image
                     src={user.profileImage}
@@ -104,7 +96,7 @@ export default function UserManagementPage() {
               </div>
 
               {/* 화살표 */}
-              <ChevronRightIcon className="size-5 text-gray-400 flex-shrink-0" />
+              <ChevronRightIcon className="size-5 text-gray-400 shrink-0" />
             </button>
           ))}
         </div>
