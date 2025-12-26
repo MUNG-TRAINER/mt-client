@@ -41,7 +41,7 @@ export default function PaymentDetailPage() {
       return [];
     } finally {
       // 사용 후 세션 스토리지 정리
-      sessionStorage.removeItem("PAYMENT_ITEMS");
+      sessionStorage.removeItem("selectedApplications");
     }
   });
 
