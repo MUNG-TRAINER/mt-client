@@ -1,8 +1,8 @@
-import { API_BASE_URL } from "@/util/env";
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
+import {API_BASE_URL} from "@/util/env";
+import {cookies} from "next/headers";
+import {redirect} from "next/navigation";
 import TrainerEditForm from "@/components/pages/afterLogin/trainer/trainerEdit/TrainerEditForm";
-import { ITrainerInfoType } from "@/types/trainer/trainerType";
+import {ITrainerInfoType} from "@/types/trainer/trainerType";
 
 async function getTrainerInfo(id: string) {
   const res = await fetch(`${API_BASE_URL}/users/trainer/${id}`, {
@@ -19,13 +19,21 @@ async function getTrainerInfo(id: string) {
   return data;
 }
 
-export default async function Page({
+export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{id: string}>;
 }) {
+  const {id} = await params;
+  const trainer: ITrainerInfoType = await getTrainerInfo(id);
+  return {
+    title: trainer.name,
+  };
+}
+export default async function Page({params}: {params: Promise<{id: string}>}) {
   const param = await params;
   const trainerData: ITrainerInfoType = await getTrainerInfo(param.id);
+  console.log(trainerData);
 
   return (
     <div className="w-full h-full bg-white m-auto p-6 rounded-md overflow-y-auto">
