@@ -1,8 +1,8 @@
 import {API_BASE_URL} from "@/util/env";
 import {cookies} from "next/headers";
-import {NextResponse} from "next/server";
+import {NextRequest} from "next/server";
 
-export async function PATCH(req: NextResponse) {
+export async function PATCH(req: NextRequest) {
   const cookie = await cookies();
   const reqBody = req.json();
   const res = await fetch(`${API_BASE_URL}/trainer/me`, {
