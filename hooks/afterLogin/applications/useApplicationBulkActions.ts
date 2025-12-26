@@ -1,3 +1,4 @@
+"use client";
 import useBulkUpdateStatus from "./useBulkUpdateStatus";
 
 /**
@@ -5,20 +6,20 @@ import useBulkUpdateStatus from "./useBulkUpdateStatus";
  */
 interface BulkActionResult {
   succeeded: string[]; // 성공한 항목의 key 배열
-  failed: Array<{ key: string; error: unknown }>; // 실패한 항목 정보
+  failed: Array<{key: string; error: unknown}>; // 실패한 항목 정보
 }
 
 /**
  * 신청 일괄 처리 로직 훅
  */
 export function useApplicationBulkActions() {
-  const { mutate: bulkUpdateStatus } = useBulkUpdateStatus();
+  const {mutate: bulkUpdateStatus} = useBulkUpdateStatus();
 
   const handleBulkApprove = async (
-    selectedItems: Set<string>
+    selectedItems: Set<string>,
   ): Promise<BulkActionResult> => {
     const succeeded: string[] = [];
-    const failed: Array<{ key: string; error: unknown }> = [];
+    const failed: Array<{key: string; error: unknown}> = [];
 
     await Promise.allSettled(
       Array.from(selectedItems).map((key) => {
@@ -28,7 +29,7 @@ export function useApplicationBulkActions() {
             {
               courseId,
               dogId,
-              data: { status: "ACCEPT" },
+              data: {status: "ACCEPT"},
             },
             {
               onSuccess: () => {
@@ -36,24 +37,24 @@ export function useApplicationBulkActions() {
                 resolve();
               },
               onError: (error) => {
-                failed.push({ key, error });
+                failed.push({key, error});
                 reject(error);
               },
-            }
+            },
           );
         });
-      })
+      }),
     );
 
-    return { succeeded, failed };
+    return {succeeded, failed};
   };
 
   const handleBulkReject = async (
     selectedItems: Set<string>,
-    reason: string
+    reason: string,
   ): Promise<BulkActionResult> => {
     const succeeded: string[] = [];
-    const failed: Array<{ key: string; error: unknown }> = [];
+    const failed: Array<{key: string; error: unknown}> = [];
 
     await Promise.allSettled(
       Array.from(selectedItems).map((key) => {
@@ -63,7 +64,7 @@ export function useApplicationBulkActions() {
             {
               courseId,
               dogId,
-              data: { status: "REJECTED", rejectReason: reason },
+              data: {status: "REJECTED", rejectReason: reason},
             },
             {
               onSuccess: () => {
@@ -71,16 +72,16 @@ export function useApplicationBulkActions() {
                 resolve();
               },
               onError: (error) => {
-                failed.push({ key, error });
+                failed.push({key, error});
                 reject(error);
               },
-            }
+            },
           );
         });
-      })
+      }),
     );
 
-    return { succeeded, failed };
+    return {succeeded, failed};
   };
 
   return {

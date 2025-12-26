@@ -97,7 +97,8 @@ const WishlistCard: React.FC<WishlistItemProps> = ({
       <CourseCard
         title={title}
         description={description}
-        tags={tags ? tags.split(",") : []}
+        type={type}
+        lessonForm={lessonForm}
         location={location}
         sessionSchedule={schedule}
         mainImage={mainImage}
@@ -105,25 +106,34 @@ const WishlistCard: React.FC<WishlistItemProps> = ({
 
       {/* 강아지 정보 + 수정 버튼 */}
       <div className="flex justify-between items-center mb-2 pl-1 pr-1">
-        <div className="flex items-center text-xs font-medium text-gray-700 gap-1">
-          <Image
-            src={DogImage}
-            placeholder="blur"
-            alt="강아지"
-            width={19}
-            height={19}
-          />
-          <p className="text-sm text-gray-500">{dogName}</p>
-          {currentDog && !currentDog.hasCounseling && (
-            <button
-              className="text-xs text-orange-700 flex items-center rounded-lg px-3 py-1 ml-1 
+        <div className="flex justify-between w-full">
+          <div className="flex items-center text-xs font-medium text-gray-700 gap-1">
+            <Image
+              src={DogImage}
+              placeholder="blur"
+              alt="강아지"
+              width={19}
+              height={19}
+            />
+            <p className="text-sm text-gray-500">{dogName}</p>
+            {currentDog && !currentDog.hasCounseling && (
+              <button
+                className="text-xs text-orange-700 flex items-center rounded-lg px-3 py-1 ml-1 
                  border border-orange-700 hover:bg-orange-100 hover:border-orange-100"
-              onClick={() => setIsCounselModalOpen(true)}
-            >
-              상담하기
-            </button>
-          )}
+                onClick={() => setIsCounselModalOpen(true)}
+              >
+                상담하기
+              </button>
+            )}
+          </div>
+          <div className="flex justify-end items-center pt-2 gap-2">
+            <span className="text-sm text-gray-500">총 금액</span>
+            <span className="text-xl font-bold text-[var(--mt-blue-point)]">
+              {price.toLocaleString()}원
+            </span>
+          </div>
         </div>
+
         {/* 상담 모달 */}
         {isCounselModalOpen && (
           <Modal onClose={() => setIsCounselModalOpen(false)}>
@@ -151,37 +161,6 @@ const WishlistCard: React.FC<WishlistItemProps> = ({
             </div>
           </Modal>
         )}
-        {/* 타입 + 레슨폼 */}
-        <div className="flex justify-end items-end gap-2 text-gray-700">
-          <span className="flex gap-1 text-xs items-center leading-none px-1.5 py-0.5 rounded-full">
-            <Image
-              src={TypeImage}
-              alt="타입"
-              width={13}
-              height={5}
-              className="w-3.5 h-3.75"
-            />
-            {type}
-          </span>
-          <span className="flex gap-1 text-xs items-center leading-none px-1.5 py-0.5 rounded-full">
-            <Image
-              src={LessonformImage}
-              alt="lessonform"
-              width={13}
-              height={5}
-              className="w-3.5 h-3.75"
-            />
-            {lessonForm}
-          </span>
-        </div>
-      </div>
-      <div className="flex justify-end pt-2">
-        <div>
-          <span className="text-sm text-gray-500">총 금액</span>
-          <span className="text-xl font-bold text-[var(--mt-blue-point)]">
-            {price.toLocaleString()}원
-          </span>
-        </div>
       </div>
       <button
         className="flex-1 flex items-center justify-center gap-2 py-2 text-sm mt-3 text-sm font-semibold rounded-lg text-[var(--mt-blue-point)]"

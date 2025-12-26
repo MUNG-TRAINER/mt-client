@@ -1,12 +1,13 @@
-import { applicationAPI } from "@/apis/applications/applicationAPI";
-import type { DogDetailResponse } from "@/types/applications/applicationType";
-import { useQuery } from "@tanstack/react-query";
+"use client";
+import {applicationAPI} from "@/apis/applications/applicationAPI";
+import type {DogDetailResponse} from "@/types/applications/applicationType";
+import {useQuery} from "@tanstack/react-query";
 
 export default function useDogDetailByApplication(
   applicationId: number | null,
-  options?: { enabled?: boolean }
+  options?: {enabled?: boolean},
 ) {
-  const { data, isPending, isError } = useQuery<DogDetailResponse>({
+  const {data, isPending, isError} = useQuery<DogDetailResponse>({
     queryKey: ["dogDetailByApplication", applicationId],
     queryFn: () => {
       if (!applicationId) throw new Error("applicationId가 필요합니다.");
@@ -15,5 +16,5 @@ export default function useDogDetailByApplication(
     enabled: options?.enabled && !!applicationId,
   });
 
-  return { data, isPending, isError };
+  return {data, isPending, isError};
 }

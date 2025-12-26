@@ -1,4 +1,5 @@
-import { useState } from "react";
+"use client";
+import {useState} from "react";
 
 /**
  * 신청 항목 선택 상태 관리 훅

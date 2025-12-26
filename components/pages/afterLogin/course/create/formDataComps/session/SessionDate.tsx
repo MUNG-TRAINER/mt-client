@@ -7,6 +7,8 @@ interface ISessionDateProps {
   endLabelTxt: string;
   startName: string;
   endName: string;
+  startTime?: string;
+  endTime?: string;
 }
 export default function SessionDate({
   index,
@@ -14,24 +16,40 @@ export default function SessionDate({
   endLabelTxt,
   startName,
   endName,
+  startTime = "",
+  endTime = "",
 }: ISessionDateProps) {
   const id = useId();
   return (
     <div className="flex items-center gap-3 [&>div>label]:font-bold">
       <div>
-        <label htmlFor={`${id}_${index}_start`}>{startLabelTxt}</label>
+        <label
+          htmlFor={`${id}_${index}_start`}
+          className="before:content-['*'] before:text-sm before:text-red-500 before:mr-1"
+        >
+          {startLabelTxt}
+        </label>
         <CreateCourseInput
           id={`${id}_${index}_start`}
           name={startName}
           type="time"
+          required
+          defaultValue={startTime}
         />
       </div>
       <div>
-        <label htmlFor={`${id}_${index}_end`}>{endLabelTxt}</label>
+        <label
+          htmlFor={`${id}_${index}_end`}
+          className="before:content-['*'] before:text-sm before:text-red-500 before:mr-1"
+        >
+          {endLabelTxt}
+        </label>
         <CreateCourseInput
           id={`${id}_${index}_end`}
           name={endName}
           type="time"
+          required
+          defaultValue={endTime}
         />
       </div>
     </div>

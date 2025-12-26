@@ -21,9 +21,11 @@ export default function LoginForm() {
   const handleFormAction = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
+    // console.log(fcmToken);
     const data = {
       userName: formData.get("userName"),
       password: formData.get("password"),
+      // fcm_token: fcmToken,
     };
     const result = await loginSchema.safeParseAsync(data);
     if (!result.success) {

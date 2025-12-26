@@ -32,9 +32,10 @@ export const courseAPI = {
     }
 
     const queryString = queryParams.toString();
+    console.log(queryString);
     const url = queryString
-      ? `${API_BASE_URL}/course/search?${queryString}`
-      : `${API_BASE_URL}/course/search`;
+      ? `/api/course/search?${queryString}`
+      : `/api/course/search`;
 
     const response = await fetchWithAuth(url);
 
@@ -46,7 +47,7 @@ export const courseAPI = {
   },
 
   getCourseDetail: async (courseId: string) => {
-    const res = await fetch(`/api/training/course/${courseId}`, {
+    const res = await fetchWithAuth(`/api/training/course/${courseId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -59,12 +60,15 @@ export const courseAPI = {
   },
 
   getSessionList: async (courseId: string) => {
-    const res = await fetch(`/api/training/course/${courseId}/sessions`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
+    const res = await fetchWithAuth(
+      `/api/training/course/${courseId}/sessions`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
       },
-    });
+    );
     if (!res.ok) {
       throw new Error("세션 목록을 불러오는데 실패했습니다.");
     }
@@ -93,7 +97,7 @@ export const courseAPI = {
     }
 
     const response = await fetchWithAuth(
-      `${API_BASE_URL}/course/calendar?${queryParams.toString()}`,
+      `/api/course/calendar?${queryParams.toString()}`,
     );
 
     if (!response.ok) {
@@ -123,7 +127,7 @@ export const courseAPI = {
     }
 
     const response = await fetchWithAuth(
-      `${API_BASE_URL}/course/calendar/courses?${queryParams.toString()}`,
+      `/api/course/calendar/courses?${queryParams.toString()}`,
     );
 
     if (!response.ok) {

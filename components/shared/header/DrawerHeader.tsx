@@ -9,7 +9,7 @@ export default function DrawerHeader() {
   const router = useRouter();
   const {offToggle} = useDrawer();
   const {data: check, resetUserCheck} = useCheckLoggedIn();
-  const {refetch} = useLogout();
+  const {mutate} = useLogout();
   // functions
   /* 로그인페이지 이동 */
   const goToLogin = () => {
@@ -17,7 +17,7 @@ export default function DrawerHeader() {
     router.push("/login");
   };
   const handleLogout = async () => {
-    await refetch();
+    mutate();
     resetUserCheck();
     offToggle();
     router.push("/");

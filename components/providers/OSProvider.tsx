@@ -8,5 +8,6 @@ export default function OSProvider() {
     const os = getOS();
     document.body.dataset.os = os;
   }, []);
+
   return null;
 }

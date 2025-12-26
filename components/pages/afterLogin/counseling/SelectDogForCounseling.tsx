@@ -2,11 +2,11 @@
 import useMyDogs from "@/hooks/afterLogin/dogs/useMyDogs";
 import Image from "next/image";
 import Link from "next/link";
-import { DogIcon } from "@/components/icons/dog";
-import { ChevronRightIcon } from "@/components/icons/chevron";
+import {DogIcon} from "@/components/icons/dog";
+import {ChevronRightIcon} from "@/components/icons/chevron";
 
 export default function SelectDogForCounseling() {
-  const { data: dogs, isPending, isError } = useMyDogs();
+  const {data: dogs, isPending, isError} = useMyDogs();
 
   if (isPending) {
     return (
@@ -41,7 +41,7 @@ export default function SelectDogForCounseling() {
             <Link key={dog.dogId} href={`/counseling/create/${dog.dogId}`}>
               <article className="p-4 bg-gray-100 rounded-2xl flex items-center gap-3 hover:bg-gray-200 transition-colors cursor-pointer">
                 {/* 프로필 이미지 */}
-                <div className="overflow-hidden size-16 rounded-full relative flex-shrink-0">
+                <div className="overflow-hidden size-16 rounded-full relative shrink-0">
                   {dog.profileImage && dog.profileImage.trim() ? (
                     <Image
                       src={dog.profileImage}
@@ -87,7 +87,7 @@ export default function SelectDogForCounseling() {
                 </div>
 
                 {/* 화살표 아이콘 */}
-                <ChevronRightIcon className="size-6 text-(--mt-gray) flex-shrink-0" />
+                <ChevronRightIcon className="size-6 text-(--mt-gray) shrink-0" />
               </article>
             </Link>
           ))}

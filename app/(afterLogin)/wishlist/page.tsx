@@ -2,6 +2,7 @@
 
 import {useUserWishlist} from "@/hooks/afterLogin/wishlist/useWishlist";
 import Wishlist from "@/components/pages/afterLogin/wishlist/Wishlist";
+
 const WishlistPage = () => {
   const {loading} = useUserWishlist();
 

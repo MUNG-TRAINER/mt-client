@@ -9,22 +9,18 @@ import CalendarImage from "@/public/images/application/calendar.jpg";
 interface ApplicationInfoProps {
   title: string;
   description: string;
-  tags?: string[];
+  lessonForm: string;
+  type: string;
   mainImage?: string;
   location?: string;
   sessionSchedule?: string;
 }
 
-const tagStyleMap = [
-  {bg: "#E7F5FF", text: "#4263EB"},
-  {bg: "#FFF3BF", text: "#F59F00"},
-  {bg: "#E5DBFF", text: "#7950F2"},
-];
-
 const CourseCard: React.FC<ApplicationInfoProps> = ({
   title,
   description,
-  tags = [],
+  type,
+  lessonForm,
   mainImage,
   location,
   sessionSchedule,
@@ -45,29 +41,23 @@ const CourseCard: React.FC<ApplicationInfoProps> = ({
   return (
     <div>
       <div className="flex gap-4 pb-2">
-        <div className="relative w-24 h-24 sm:w-40 sm:h-40 rounded-xl overflow-hidden flex-shrink-0">
+        <div className="relative w-24 h-24 sm:w-40 sm:h-40 rounded-xl overflow-hidden shrink-0">
           {mainImage && (
             <Image src={mainImage} alt={title} fill className="object-cover" />
           )}
         </div>
 
         <div className="flex-1 pr-10">
-          <h2 className="text-[16px] font-semibold mb-1">{title}</h2>
-          <p className="text-xs text-gray-500 mb-2">{description}</p>
+          <h2 className="text-[17px] font-semibold mb-1">{title}</h2>
+          <p className="text-[13px] text-gray-500 mb-2">{description}</p>
 
           <div className="flex gap-1 flex-wrap mb-2">
-            {tags.map((tag, idx) => {
-              const style = tagStyleMap[idx % tagStyleMap.length];
-              return (
-                <span
-                  key={`${tag}-${idx}`}
-                  className="text-xs px-2 py-0.5 rounded-full"
-                  style={{backgroundColor: style.bg, color: style.text}}
-                >
-                  {tag}
-                </span>
-              );
-            })}
+            <span className="flex gap-1 text-xs items-center leading-none px-2 py-1 rounded-full bg-[#E7F5FF] text-[#4263EB]">
+              {type}
+            </span>
+            <span className="flex gap-1 text-xs items-center leading-none px-2 py-1 rounded-full bg-[#FFF3BF] text-[#F59F00]">
+              {lessonForm}
+            </span>
           </div>
         </div>
       </div>

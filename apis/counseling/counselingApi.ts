@@ -72,9 +72,12 @@ export const counselingApi = {
   getDogForCounseling: async (
     dogId: number,
   ): Promise<IDogForCounselingType> => {
-    const response = await fetch(`/api/users/counseling/dogs/${dogId}`, {
-      method: "GET",
-    });
+    const response = await fetchWithAuth(
+      `/api/users/counseling/dogs/${dogId}`,
+      {
+        method: "GET",
+      },
+    );
 
     if (!response?.ok) {
       throw new Error("반려견 정보를 불러올 수 없습니다.");
@@ -91,7 +94,7 @@ export const counselingApi = {
   createCounseling: async (
     requestData: ICreateCounselingRequestType,
   ): Promise<ICreateCounselingResponseType> => {
-    const response = await fetch("/api/users/counseling", {
+    const response = await fetchWithAuth("/api/users/counseling", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -112,7 +115,7 @@ export const counselingApi = {
    * 내 상담 목록 조회
    */
   getMyCounselings: async (): Promise<IUserCounselingListType> => {
-    const response = await fetch("/api/users/counseling", {
+    const response = await fetchWithAuth("/api/users/counseling", {
       method: "GET",
     });
 
@@ -121,6 +124,7 @@ export const counselingApi = {
     }
 
     const data: IUserCounselingListType = await response.json();
+    console.log(data);
     return data;
   },
 
@@ -131,9 +135,12 @@ export const counselingApi = {
   getCounselingDetail: async (
     counselingId: number,
   ): Promise<IUserCounselingDetailType> => {
-    const response = await fetch(`/api/users/counseling/${counselingId}`, {
-      method: "GET",
-    });
+    const response = await fetchWithAuth(
+      `/api/users/counseling/${counselingId}`,
+      {
+        method: "GET",
+      },
+    );
 
     if (!response?.ok) {
       throw new Error("상담 정보를 불러올 수 없습니다.");
@@ -150,9 +157,12 @@ export const counselingApi = {
   cancelCounseling: async (
     counselingId: number,
   ): Promise<ICancelCounselingResponseType> => {
-    const response = await fetch(`/api/users/counseling/${counselingId}`, {
-      method: "DELETE",
-    });
+    const response = await fetchWithAuth(
+      `/api/users/counseling/${counselingId}`,
+      {
+        method: "DELETE",
+      },
+    );
 
     if (!response?.ok) {
       throw new Error("상담 취소에 실패했습니다.");

@@ -5,11 +5,12 @@ import {
   IFailedCheckLoggedInType,
 } from "@/types/login/loginDataType";
 import {useQuery, useQueryClient} from "@tanstack/react-query";
-import {usePathname, useRouter} from "next/navigation";
-import {useEffect} from "react";
-
+import {useCallback} from "react";
+const ACCESS_TOKEN_TIME = 1000 * 60 * 10;
 export default function useCheckLoggedIn() {
   const queryClient = useQueryClient();
+  const authState = queryClient.getQueryData<{loggedOut?: boolean}>(["auth"]);
+  const isLoggedOut = authState?.loggedOut === true;
   const {data, isPending, isError} = useQuery<
     ICheckLoggedInType | IFailedCheckLoggedInType
   >({
@@ -21,23 +22,25 @@ export default function useCheckLoggedIn() {
       }
       return res as ICheckLoggedInType;
     },
-    staleTime: 0,
-    gcTime: 0,
-    refetchOnMount: "always",
-    refetchOnWindowFocus: true,
+    staleTime: ACCESS_TOKEN_TIME - 30_000,
+    gcTime: ACCESS_TOKEN_TIME * 2,
+    enabled: !isLoggedOut,
+    refetchInterval: isLoggedOut ? false : ACCESS_TOKEN_TIME - 30_000,
     retry: false,
   });
 
-  const refreshUserCheck = async () => {
+  const refreshUserCheck = useCallback(async () => {
     await queryClient.invalidateQueries({queryKey: ["loggedIn"]});
-  };
-  const resetUserCheck = () => {
+  }, [queryClient]);
+
+  const resetUserCheck = useCallback(() => {
     queryClient.removeQueries({queryKey: ["loggedIn"]});
-  };
-  const forceRefresh = async () => {
+  }, [queryClient]);
+
+  const forceRefresh = useCallback(async () => {
     // 강제 refetch
     await queryClient.refetchQueries({queryKey: ["loggedIn"]});
-  };
+  }, [queryClient]);
   const checkIsOwner = (targetId: number | string) => {
     return (
       !!targetId &&
@@ -46,22 +49,12 @@ export default function useCheckLoggedIn() {
       Number(data.userId) === Number(targetId)
     );
   };
-  const path = usePathname();
-  const router = useRouter();
-  useEffect(() => {
-    if (data && "role" in data && data.role === "USER") {
-    }
-    if (data && "role" in data && data.role === "TRAINER") {
-      if (path === "/applications") {
-        router.back();
-      }
-    }
-  }, [data, path, router]);
-
+  const role = isLoggedOut ? null : data && "role" in data ? data.role : null;
   return {
     data,
     isPending,
     isError,
+    role,
     refreshUserCheck,
     resetUserCheck,
     forceRefresh,

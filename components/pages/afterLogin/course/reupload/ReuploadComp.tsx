@@ -15,7 +15,11 @@ import EditCourseLessonForm from "../edit/form/items/EditCourseLessonForm";
 import EditCourseIsFree from "../edit/form/items/EditCourseIsFree";
 import EditCourseSessionCount from "../edit/form/items/EditCourseSessionCount";
 import EditCourseSessionComp from "../edit/form/items/EditCourseSessionComp";
-import {useState} from "react";
+import {useActionState} from "react";
+import {reuploadCourseAction} from "@/app/(afterLogin)/course/[id]/(trainer)/reupload-course/actions";
+import {courseCreateSchema} from "@/schemas/courseUploadSchema";
+import {IFormResultType} from "@/types/formResultType";
+import {useRouter} from "next/navigation";
 
 interface IReuploadCourseProps {
   courseId: string;
@@ -31,13 +35,41 @@ export default function ReuploadComp({
   course,
   sessionList,
 }: IReuploadCourseProps) {
-  const [id] = useState(() => courseId);
-  const [tags] = useState(() => course.tags);
-  const [mainImageKey] = useState(() => course.mainImageKey);
-  const detailImageKey = course.detailImageKey.split(",");
+  const router = useRouter();
   const items = course.items.split(", ");
+  const [state, action] = useActionState(
+    async (
+      state: IFormResultType<typeof courseCreateSchema>,
+      formData: FormData,
+    ): Promise<IFormResultType<typeof courseCreateSchema>> => {
+      formData.set("schedule", course.schedule);
+      formData.set("mainImageKey", course.mainImageKey);
+      formData.set("detailImageKey", course.detailImageKey);
+      formData.set("tags", course.tags);
+      formData.set("trainerId", course.trainerId + "");
+      formData.set("refundPolicy", course.refundPolicy);
+      formData.set("lessonForm", course.lessonForm);
+      formData.set("isFree", course.isFree + "");
+      const result = await reuploadCourseAction(
+        courseId,
+        sessionList.length,
+        state,
+        formData,
+      );
+      if (!result.errMsg && !result.resMsg) {
+        router.push("/plan");
+      }
+      console.log(result.errMsg);
+      console.log(result.resMsg);
+      return result;
+    },
+    initialData,
+  );
   return (
-    <form className="w-full h-full overflow-y-scroll p-5 bg-(--mt-white) rounded-md">
+    <form
+      action={action}
+      className="w-full h-full overflow-y-scroll p-5 bg-(--mt-white) rounded-md"
+    >
       <fieldset className="flex flex-col gap-5">
         <legend>수업재업로드하기</legend>
         <EditCourseMainImg img={course.mainImage} />
@@ -80,10 +112,7 @@ export default function ReuploadComp({
           />
         </div>
         <div className="flex gap-2">
-          <button
-            type="button"
-            className="w-full py-2 bg-(--mt-blue) rounded-md font-bold text-(--mt-white)"
-          >
+          <button className="w-full py-2 bg-(--mt-blue) rounded-md font-bold text-(--mt-white)">
             수정하기
           </button>
           <Link
