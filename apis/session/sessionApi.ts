@@ -1,3 +1,5 @@
+import {fetchWithAuth} from "../common/fetchWithAuth";
+
 export const sessionApi = {
   editSession: async ({
     courseId,
@@ -16,7 +18,7 @@ export const sessionApi = {
       locationDetail: formData.get("locationDetail"),
       maxStudents: formData.get("maxStudents"),
     };
-    const res = await fetch(
+    const res = await fetchWithAuth(
       `/api/training/course/${courseId}/sessions/${sessionId}`,
       {
         method: "PATCH",

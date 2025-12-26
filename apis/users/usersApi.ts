@@ -1,10 +1,11 @@
 import {IMyPageTypes} from "@/types/mypage/myPageType";
 import {UpdateUserInfoType} from "@/schemas/mypageSchema";
 import {ChangePasswordType} from "@/schemas/passwordSchema";
+import {fetchWithAuth} from "../common/fetchWithAuth";
 
 export const usersApi = {
   me: async () => {
-    const response = await fetch("/api/users/me", {
+    const response = await fetchWithAuth("/api/users/me", {
       method: "GET",
       credentials: "include",
     });
@@ -12,13 +13,12 @@ export const usersApi = {
     if (!response?.ok) {
       throw new Error("유저의 정보를 불러올 수 없습니다.");
     }
-
     const data: IMyPageTypes = await response.json();
     return data;
   },
 
   updateUserInfo: async (data: UpdateUserInfoType) => {
-    const response = await fetch("/api/users/me", {
+    const response = await fetchWithAuth("/api/users/me", {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -36,7 +36,7 @@ export const usersApi = {
   },
 
   changePassword: async (data: ChangePasswordType) => {
-    const response = await fetch("/api/auth/password", {
+    const response = await fetchWithAuth("/api/auth/password", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -54,7 +54,7 @@ export const usersApi = {
   },
 
   updatePublicStatus: async (isPublic: boolean) => {
-    const response = await fetch("/api/users/me/public-status", {
+    const response = await fetchWithAuth("/api/users/me/public-status", {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
