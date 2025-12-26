@@ -7,6 +7,7 @@ import HeaderNav from "@/components/shared/header/HeaderNav";
 import Wallpapaer from "@/components/shared/wallpaper/Wallpaper";
 import QueryProvider from "@/components/providers/queryProvider/QueryProvider";
 import OSProvider from "@/components/providers/OSProvider";
+import FirebaseProvider from "@/components/providers/firebaseProvider/FirebaseProvider";
 
 const nanumGothicFont = Nanum_Gothic({
   variable: "--font-nanum-gothic",
@@ -24,6 +25,7 @@ export const metadata: Metadata = {
     template: "%s | 멍스쿨",
     default: "멍스쿨 | 멍스쿨",
   },
+  // manifest: "/manifest.webmanifest",
 };
 
 export default function RootLayout({
@@ -40,20 +42,22 @@ export default function RootLayout({
       >
         <OSProvider />
         <QueryProvider>
-          <Wallpapaer>
-            <section className="relative flex flex-col justify-between max-w-[500px] h-full mx-auto md:mr-32 bg-(--mt-blue-smoke)">
-              <HeaderBar className="bg-(--mt-blue)">
-                <HeaderNav />
-              </HeaderBar>
-              <main
-                className={`flex items-center h-full [body[data-os=android]_&]:h-[750px] [body[data-os=ios]_&]:h-[750px] p-6 overflow-y-auto`}
-              >
-                {children}
-              </main>
-              {modal}
-              <GlobalNav />
-            </section>
-          </Wallpapaer>
+          <FirebaseProvider>
+            <Wallpapaer>
+              <section className="relative flex flex-col justify-between max-w-[500px] h-full mx-auto md:mr-32 bg-(--mt-blue-smoke)">
+                <HeaderBar className="bg-(--mt-blue)">
+                  <HeaderNav />
+                </HeaderBar>
+                <main
+                  className={`flex items-center h-full [body[data-os=android]_&]:h-[750px] [body[data-os=ios]_&]:h-[750px] p-6 overflow-y-auto`}
+                >
+                  {children}
+                </main>
+                {modal}
+                <GlobalNav />
+              </section>
+            </Wallpapaer>
+          </FirebaseProvider>
         </QueryProvider>
       </body>
     </html>

@@ -4,11 +4,13 @@ interface ICourseLocation {
   labelTxt: string;
   inputName: string;
   placeholder: string;
+  defaultVal?: string;
 }
 export default function CourseLocation({
   inputName,
   labelTxt,
   placeholder,
+  defaultVal,
 }: ICourseLocation) {
   return (
     <CourseLabelBox>
@@ -23,6 +25,7 @@ export default function CourseLocation({
         name={inputName}
         type="text"
         placeholder={placeholder}
+        defaultValue={defaultVal}
         required
       />
     </CourseLabelBox>

@@ -7,6 +7,8 @@ interface ISessionDateProps {
   endLabelTxt: string;
   startName: string;
   endName: string;
+  startTime?: string;
+  endTime?: string;
 }
 export default function SessionDate({
   index,
@@ -14,6 +16,8 @@ export default function SessionDate({
   endLabelTxt,
   startName,
   endName,
+  startTime = "",
+  endTime = "",
 }: ISessionDateProps) {
   const id = useId();
   return (
@@ -30,6 +34,7 @@ export default function SessionDate({
           name={startName}
           type="time"
           required
+          defaultValue={startTime}
         />
       </div>
       <div>
@@ -44,6 +49,7 @@ export default function SessionDate({
           name={endName}
           type="time"
           required
+          defaultValue={endTime}
         />
       </div>
     </div>

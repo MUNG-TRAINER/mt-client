@@ -11,8 +11,9 @@ export default function EditCourseSessionComp({
       {session.map((val, index, array) => (
         <EditSessionItems
           key={Number(val.sessionNo)}
+          val={val}
           index={index}
-          val={array}
+          list={array}
         />
       ))}
     </div>

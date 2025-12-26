@@ -2,10 +2,14 @@ import {NextRequest, NextResponse} from "next/server";
 import {NAME_ACCESS_TOKEN, NAME_REFRESH_TOKEN} from "./util/cookieExtractor";
 
 const publicRoute: Record<string, boolean> = {
+  "/": true,
   "/login": true,
   "/join": true,
 };
-
+const authRoute: Record<string, boolean> = {
+  "/login": true,
+  "/join": true,
+};
 const isCourseDetailPage = (path: string) => {
   const courseDetailPage = /^\/course\/\d+$/;
   return courseDetailPage.test(path);
@@ -23,7 +27,7 @@ export function proxy(request: NextRequest) {
   }
 
   if (ACCESS_TOKEN && REFRESH_TOKEN) {
-    if (publicRoute[pathname]) {
+    if (authRoute[pathname]) {
       const home = new URL("/", request.url);
       return NextResponse.redirect(home);
     }
@@ -45,6 +49,6 @@ export function proxy(request: NextRequest) {
 export const config = {
   matcher: [
     // Exclude API routes, static files, image optimizations, and .png files
-    "/((?!api|_next/static|_next/image|.*\\.png$).*)",
+    "/((?!api|_next/static|manifest.ts|manifest.webmanifest|service-worker.js|_next/image|.*\\.png$).*)",
   ],
 };

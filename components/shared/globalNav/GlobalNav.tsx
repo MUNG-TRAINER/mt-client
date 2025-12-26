@@ -7,7 +7,7 @@ import {UserIcon} from "@/components/icons/user";
 import useCheckLoggedIn from "@/hooks/afterLogin/users/useCheckLoggedIn";
 import Link from "next/link";
 import {usePathname} from "next/navigation";
-import {ReactNode} from "react";
+import {ReactNode, useEffect} from "react";
 
 interface IGlobalNavListProps {
   to: string;
@@ -30,9 +30,16 @@ function GlobalNavList({to, txt, icon}: IGlobalNavListProps) {
 }
 
 export default function GlobalNav() {
-  const {role} = useCheckLoggedIn();
+  const pathname = usePathname();
+  const {role, forceRefresh} = useCheckLoggedIn();
   const isTrainer = role === "TRAINER";
   const isUser = role === "USER";
+
+  useEffect(() => {
+    if (role === null) {
+      forceRefresh();
+    }
+  }, [forceRefresh, pathname, role]);
 
   return (
     <nav className="p-5 bg-white shadow-[0px_1px_20px_rgba(0,0,0,0.2)]">

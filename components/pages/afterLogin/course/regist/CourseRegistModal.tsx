@@ -20,7 +20,7 @@ export default function CourseRegistModal({
   const [dogColors] = useState(() => randomColor(dogs));
 
   const handleBack = () => {
-    router.push(`/course/${courseId}`);
+    router.back();
   };
 
   return (

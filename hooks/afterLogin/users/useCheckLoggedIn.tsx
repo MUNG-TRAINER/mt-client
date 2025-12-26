@@ -5,6 +5,7 @@ import {
   IFailedCheckLoggedInType,
 } from "@/types/login/loginDataType";
 import {useQuery, useQueryClient} from "@tanstack/react-query";
+import {useCallback} from "react";
 const ACCESS_TOKEN_TIME = 1000 * 60 * 10;
 export default function useCheckLoggedIn() {
   const queryClient = useQueryClient();
@@ -28,16 +29,18 @@ export default function useCheckLoggedIn() {
     retry: false,
   });
 
-  const refreshUserCheck = async () => {
+  const refreshUserCheck = useCallback(async () => {
     await queryClient.invalidateQueries({queryKey: ["loggedIn"]});
-  };
-  const resetUserCheck = () => {
+  }, [queryClient]);
+
+  const resetUserCheck = useCallback(() => {
     queryClient.removeQueries({queryKey: ["loggedIn"]});
-  };
-  const forceRefresh = async () => {
+  }, [queryClient]);
+
+  const forceRefresh = useCallback(async () => {
     // 강제 refetch
     await queryClient.refetchQueries({queryKey: ["loggedIn"]});
-  };
+  }, [queryClient]);
   const checkIsOwner = (targetId: number | string) => {
     return (
       !!targetId &&
