@@ -4,11 +4,19 @@ import React, {useMemo} from "react"; // useMemo 추가
 import useDeleteApplication from "@/hooks/afterLogin/applications/useDeleteApplication";
 import {useApplicationState} from "@/stores/applicationsState";
 import {ApplicationType} from "@/types/applications/applicationsType"; // ApplicationType 추가
+import {useRouter} from "next/navigation";
 
 interface Props {
   applications: ApplicationType[];
 }
+interface SelectedApplication {
+  title: string;
+  price: number;
+  courseId: number;
+}
+
 const ApplicationsActionButton: React.FC<Props> = ({applications = []}) => {
+  const router = useRouter();
   const {activeTab, selectedIndex} = useApplicationState();
   const {mutate} = useDeleteApplication();
 
@@ -29,7 +37,23 @@ const ApplicationsActionButton: React.FC<Props> = ({applications = []}) => {
   }, [activeTab, selectedIndex, applications]);
 
   const handleOnClick = () => {
-    return activeTab === "pending" ? mutate(selectedIndex) : () => {};
+    if (activeTab === "pending") {
+      mutate(selectedIndex);
+      return;
+    }
+
+    // sessionStorage에서 선택된 항목 가져오기
+    const selected = sessionStorage.getItem("selectedApplications");
+    const selectedApplications: SelectedApplication[] = selected
+      ? JSON.parse(selected)
+      : [];
+
+    if (selectedApplications.length === 0) {
+      throw new Error("선택된 항목이 없습니다.");
+    }
+
+    const query = encodeURIComponent(JSON.stringify(selectedApplications));
+    router.push(`/payment/detail?selectedApplications=${query}`);
   };
   return (
     <div className="sticky bottom-0 w-full p-4 bg-white border-t border-gray-300">

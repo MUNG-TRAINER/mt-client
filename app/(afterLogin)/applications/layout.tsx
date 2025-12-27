@@ -5,5 +5,5 @@ export default async function UserApplicationsLayout({
 }: {
   children: ReactNode;
 }) {
-  return <RoleGuard allowedRoles={["TRAINER"]}>{children}</RoleGuard>;
+  return <RoleGuard allowedRoles={["USER"]}>{children}</RoleGuard>;
 }

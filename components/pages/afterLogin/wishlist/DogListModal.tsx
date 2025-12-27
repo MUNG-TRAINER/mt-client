@@ -8,6 +8,7 @@ interface DogListModalProps {
   onSelect?: (dogId: number) => void; // 최종 선택된 반려견 Id 전달
   onClose?: () => void; // 모달 닫기
   onChangeDog?: (wishlistItemId: number, dogId: number) => void;
+  containerClassName?: string;
 }
 
 const DogListModal: React.FC<DogListModalProps> = ({onSelect, onClose}) => {
@@ -37,7 +38,9 @@ const DogListModal: React.FC<DogListModalProps> = ({onSelect, onClose}) => {
       {dogs.map((dog) => (
         <label
           key={dog.dogId}
-          className={`flex items-center justify-between border rounded-lg p-4 cursor-pointer hover:bg-gray-50 ${
+          className={`flex items-center justify-bet
+            
+            ween border rounded-lg p-4 cursor-pointer hover:bg-gray-50 ${
             selectedDogId === dog.dogId
               ? "border-blue-500 bg-blue-50"
               : "border-gray-300"

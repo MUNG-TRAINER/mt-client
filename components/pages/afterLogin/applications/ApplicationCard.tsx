@@ -11,6 +11,11 @@ interface Props {
   app: ApplicationType;
   isSelected: boolean; //  선택 여부
 }
+interface SelectedApplication {
+  title: string;
+  price: number;
+  courseId: number;
+}
 
 const statusTextMap: Record<ApplicationType["applicationStatus"], string> = {
   APPLIED: "승인 대기중",
@@ -30,6 +35,41 @@ const ApplicationCard: React.FC<Props> = ({app, isSelected}) => {
   const handleClick = (courseId: number) => {
     router.push(`/course/${courseId}`);
   };
+
+  // 체크박스 변경 시 세션스토리지 업데이트
+  const handleCheckboxChange = (checked: boolean) => {
+    const stored = sessionStorage.getItem("selectedApplications");
+    const currentSelections: SelectedApplication[] = stored
+      ? JSON.parse(stored)
+      : [];
+
+    if (checked) {
+      // 중복 체크 후 추가
+      const exists = currentSelections.some(
+        (item) => item.courseId === app.courseId
+      );
+      if (!exists) {
+        currentSelections.push({
+          title: app.title,
+          price: app.price,
+          courseId: app.courseId,
+        });
+      }
+    } else {
+      // 체크 해제 시 제거
+      const updated = currentSelections.filter(
+        (item) => item.courseId !== app.courseId
+      );
+      sessionStorage.setItem("selectedApplications", JSON.stringify(updated));
+      return;
+    }
+
+    sessionStorage.setItem(
+      "selectedApplications",
+      JSON.stringify(currentSelections)
+    );
+  };
+
   return (
     <li
       className="relative cursor-pointer flex flex-col rounded-2xl shadow-md bg-white p-4"
@@ -53,6 +93,7 @@ const ApplicationCard: React.FC<Props> = ({app, isSelected}) => {
           onChange={(e) => {
             e.stopPropagation();
             setSelectedIndex(app.courseId, e.target.checked);
+            handleCheckboxChange(e.target.checked);
           }}
         />
       </div>
@@ -126,7 +167,37 @@ const ApplicationCard: React.FC<Props> = ({app, isSelected}) => {
               className="flex-1 flex items-center justify-center gap-2 py-2 text-sm font-semibold rounded-lg bg-blue-100 text-(--mt-blue-point)"
               onClick={(e) => {
                 e.stopPropagation();
-                console.log("결제하기 클릭");
+                const query = encodeURIComponent(
+                  JSON.stringify([
+                    {
+                      title: app.title,
+                      price: app.price,
+                      courseId: app.courseId,
+                    },
+                  ])
+                );
+
+                // 세션스토리지에도 중복 없이 저장
+                const stored = sessionStorage.getItem("selectedApplications");
+                const currentSelections: SelectedApplication[] = stored
+                  ? JSON.parse(stored)
+                  : [];
+                const exists = currentSelections.some(
+                  (item) => item.courseId === app.courseId
+                );
+                if (!exists) {
+                  currentSelections.push({
+                    title: app.title,
+                    price: app.price,
+                    courseId: app.courseId,
+                  });
+                  sessionStorage.setItem(
+                    "selectedApplications",
+                    JSON.stringify(currentSelections)
+                  );
+                }
+
+                router.push(`/payment/detail?selected=${query}`);
               }}
             >
               결제하기
