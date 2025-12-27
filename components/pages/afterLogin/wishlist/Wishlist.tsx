@@ -4,6 +4,8 @@ import WishlistActions from "./WishlistActionButton";
 import LoadingSpinner from "@/components/shared/feedback/LoadingSpinner";
 import ConfirmModal from "./ConfirmModal";
 import {useWishlistHandler} from "@/hooks/afterLogin/wishlist/useWishlistHandler";
+import {useCounselingModal} from "@/stores/wishlist/counselingModal";
+import CounselingModal from "./modal/CounselingModal";
 
 const Wishlist = () => {
   const {
@@ -18,7 +20,7 @@ const Wishlist = () => {
     handleApplyWithDog,
     setModalContent,
   } = useWishlistHandler();
-
+  const {counselModalOpen} = useCounselingModal();
   if (loading)
     return (
       <div className="flex justify-center items-center mx-auto">
@@ -43,6 +45,7 @@ const Wishlist = () => {
             setModalContent={setModalContent}
           />
         ))}
+        {counselModalOpen && <CounselingModal />}
       </div>
       <div className="sticky bottom-0 left-0 w-full bg-white p-4 z-20">
         <WishlistActions
