@@ -1,30 +1,39 @@
 "use client";
-import {useDrawer} from "@/stores/drawerState";
+import { useDrawer } from "@/stores/drawerState";
 import DrawerHeader from "../header/DrawerHeader";
 import HeaderBar from "../header/HeaderBar";
 import Link from "next/link";
 import useCheckLoggedIn from "@/hooks/afterLogin/users/useCheckLoggedIn";
 
 export default function Drawer() {
-  const {toggle, offToggle} = useDrawer();
-  const {data} = useCheckLoggedIn();
+  const { toggle, offToggle } = useDrawer();
+  const { data } = useCheckLoggedIn();
 
   const publicAfterLink = data &&
-    "role" in data && [{href: "/mypage", label: "마이페이지"}];
+    "role" in data && [{ href: "/mypage", label: "마이페이지" }];
   const userLink =
     data && "role" in data
-      ? data.role === "USER" && [
-          {href: "/applications", label: "나의 신청내역 보기"},
-          {href: "/counseling", label: "나의 상담"},
-        ]
-      : null;
+      ? data.role === "USER"
+        ? [
+            { href: "/counseling", label: "나의 상담 보기" },
+            { href: "/applications", label: "나의 신청 보기" },
+            { href: "/payment/logs", label: "나의 결제 보기" },
+          ]
+        : data.role === "TRAINER"
+          ? [
+              { href: "/trainer/counseling", label: "상담 관리" },
+              { href: "/trainer/applications", label: "훈련 신청 관리" },
+              { href: "/trainer/user-management", label: "회원 관리" },
+            ]
+          : []
+      : [];
 
   const link = [
-    {href: "/", label: "홈"},
+    { href: "/", label: "홈" },
     ...(publicAfterLink ? [...publicAfterLink] : []),
     ...(userLink ? [...userLink] : []),
     // {href: "/", label: "s"},
-    {href: "/introduce", label: "멍스쿨소개"},
+    { href: "/introduce", label: "멍스쿨소개" },
   ];
 
   return (

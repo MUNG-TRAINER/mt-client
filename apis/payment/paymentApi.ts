@@ -6,6 +6,7 @@ import type {
   PaymentConfirmResponse,
   PaymentCancelRequest,
   PaymentCancelResponse,
+  PaymentLogResponse,
 } from "@/types/payment";
 
 /**
@@ -69,6 +70,25 @@ export async function cancelPayment(
   if (!response.ok) {
     const error = await response.json();
     throw new Error(error.error || "결제 취소 중 오류가 발생했습니다.");
+  }
+
+  return response.json();
+}
+
+/**
+ * 결제 내역 조회
+ */
+export async function getPaymentLogs(): Promise<PaymentLogResponse[]> {
+  const response = await fetch("/api/payment/logs", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error || "결제 내역 조회 중 오류가 발생했습니다.");
   }
 
   return response.json();
