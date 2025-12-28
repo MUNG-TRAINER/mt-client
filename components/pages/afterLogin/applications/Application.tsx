@@ -1,14 +1,14 @@
 "use client";
 
-import React, {useState} from "react";
+import React, { useState } from "react";
 import ApplicationCard from "./ApplicationCard";
 import ApplicationsTabs from "./ApplicationTabs";
 import ApplicationsActionButton from "./ActionButton";
-import {useApplications} from "@/hooks/afterLogin/applications/useApplications";
+import { useApplications } from "@/hooks/afterLogin/applications/useApplications";
 import LoadingSpinner from "@/components/shared/feedback/LoadingSpinner";
 
 const Applications = () => {
-  const {applicationsToShow, selectedIndex, isPending} = useApplications();
+  const { applicationsToShow, selectedIndex, isPending } = useApplications();
   const [rejectModalOpen, setRejectModalOpen] = useState(false);
   const [rejectReason, setRejectReason] = useState<string | null>(null);
 
@@ -34,7 +34,7 @@ const Applications = () => {
             <ApplicationCard
               key={app.applicationId}
               app={app}
-              isSelected={selectedIndex.includes(app.courseId)}
+              isSelected={selectedIndex.includes(app.applicationId)}
               onOpenRejectModal={openRejectModal}
             />
           ))}

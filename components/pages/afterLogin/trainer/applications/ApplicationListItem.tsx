@@ -40,6 +40,29 @@ export const ApplicationListItem = ({
   const formattedTime =
     firstSession?.startTime != null ? firstSession.startTime.slice(0, 5) : "";
 
+  // 대기 상태 배지 설정
+  const getBadgeConfig = () => {
+    if (!firstSession) return null;
+
+    if (!firstSession.isWaiting) {
+      return { color: "bg-blue-100 text-blue-700", text: "승인 대기" };
+    }
+
+    if (firstSession.isPreApproved) {
+      return {
+        color: "bg-green-100 text-green-700",
+        text: `승인 예정 (대기 ${firstSession.waitingOrder}번)`,
+      };
+    }
+
+    return {
+      color: "bg-yellow-100 text-yellow-700",
+      text: `대기 중 (${firstSession.waitingOrder}번)`,
+    };
+  };
+
+  const badgeConfig = getBadgeConfig();
+
   return (
     <div className="bg-white rounded-lg overflow-hidden">
       {/* 메인 카드 */}
@@ -54,6 +77,13 @@ export const ApplicationListItem = ({
             <span className="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs font-medium rounded">
               {totalSessions}회차
             </span>
+            {badgeConfig && (
+              <span
+                className={`px-2 py-0.5 text-xs font-medium rounded ${badgeConfig.color}`}
+              >
+                {badgeConfig.text}
+              </span>
+            )}
           </div>
           <div className="text-sm text-gray-700">{courseTitle}</div>
           <div className="flex items-center gap-1 text-sm text-gray-500">
@@ -106,14 +136,34 @@ export const ApplicationListItem = ({
           {sessions.map((session) => {
             const sessionDate = formatDateWithDay(session.sessionDate);
             const sessionTime = formatTime(session.startTime);
+
+            // 회차별 대기 상태 배지
+            let sessionBadge = null;
+            if (session.isWaiting && session.isPreApproved) {
+              sessionBadge = (
+                <span className="px-2 py-0.5 bg-green-100 text-green-700 text-xs font-medium rounded">
+                  승인 예정 ({session.waitingOrder}번)
+                </span>
+              );
+            } else if (session.isWaiting) {
+              sessionBadge = (
+                <span className="px-2 py-0.5 bg-yellow-100 text-yellow-700 text-xs font-medium rounded">
+                  대기 {session.waitingOrder}번
+                </span>
+              );
+            }
+
             return (
               <div
                 key={session.sessionId}
                 className="flex items-center justify-between text-sm py-1.5 px-2 bg-white rounded"
               >
-                <span className="text-gray-700 font-medium">
-                  {session.sessionNo}회차
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className="text-gray-700 font-medium">
+                    {session.sessionNo}회차
+                  </span>
+                  {sessionBadge}
+                </div>
                 <div className="flex items-center gap-2 text-gray-600">
                   <CalendarIcon className="w-3.5 h-3.5" />
                   <span>{sessionDate}</span>

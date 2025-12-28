@@ -1,12 +1,12 @@
-import {create} from "zustand";
+import { create } from "zustand";
 
 interface IApplicationStateType {
   activeTab: "pending" | "completed";
-  selectedIndex: number[];
+  selectedIndex: number[]; // applicationId 배열
 }
 interface IApplicationSetStateType {
   setActiveTab: (tab: "pending" | "completed") => void;
-  setSelectedIndex: (id: number, checked: boolean) => void;
+  setSelectedIndex: (applicationId: number, checked: boolean) => void;
   resetSelectedIndex: () => void;
 }
 
@@ -15,12 +15,12 @@ type ApplicationStateType = IApplicationSetStateType & IApplicationStateType;
 export const useApplicationState = create<ApplicationStateType>((set) => ({
   activeTab: "pending",
   selectedIndex: [],
-  setActiveTab: (tab) => set(() => ({activeTab: tab})),
-  setSelectedIndex: (id, checked) =>
-    set(({selectedIndex}) => ({
+  setActiveTab: (tab) => set(() => ({ activeTab: tab })),
+  setSelectedIndex: (applicationId, checked) =>
+    set(({ selectedIndex }) => ({
       selectedIndex: checked
-        ? [...selectedIndex, id]
-        : selectedIndex.filter((x) => x !== id),
+        ? [...selectedIndex, applicationId]
+        : selectedIndex.filter((x) => x !== applicationId),
     })),
-  resetSelectedIndex: () => set(() => ({selectedIndex: []})),
+  resetSelectedIndex: () => set(() => ({ selectedIndex: [] })),
 }));
