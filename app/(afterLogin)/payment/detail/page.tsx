@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import PaymentCheckoutSection from "@/components/shared/payment/PaymentCheckoutSection";
+import type { PaymentRequestItem } from "@/types/payment";
 
 /**
  * 결제 상세 페이지
@@ -11,6 +12,7 @@ interface PaymentItem {
   title: string;
   price: number;
   courseId: number;
+  applicationId: number;
 }
 
 export default function PaymentDetailPage() {
@@ -33,6 +35,7 @@ export default function PaymentDetailPage() {
           title: typeof it?.title === "string" ? it.title : "",
           price: Number(it?.price ?? 0),
           courseId: Number(it?.courseId ?? 0),
+          applicationId: Number(it?.applicationId ?? 0),
         }))
         .filter((it) => it.title !== "" && !Number.isNaN(it.price));
 
@@ -44,8 +47,10 @@ export default function PaymentDetailPage() {
       sessionStorage.removeItem("selectedApplications");
     }
   });
-
-  const courseIds = items.map((it) => it.courseId);
+  const paymentRequestItems: PaymentRequestItem[] = items.map((it) => ({ 
+    courseId: it.courseId, 
+    applicationId: it.applicationId 
+  }));
   const totalAmount = items.reduce((sum, it) => sum + it.price, 0);
 
   // 주문명: 단건은 그대로, 다건은 "첫상품 외 N건"
@@ -91,7 +96,7 @@ export default function PaymentDetailPage() {
 
           <PaymentCheckoutSection
             orderName={orderName}
-            courseIds={courseIds}
+            paymentRequestItems={paymentRequestItems}
             totalAmount={totalAmount}
           />
 

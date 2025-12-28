@@ -1,6 +1,10 @@
 // 결제 준비 요청
+export interface PaymentRequestItem {
+  courseId: number;
+  applicationId: number;
+}
 export interface PaymentPrepareRequest {
-  courseIds: number[];
+  paymentRequestItems: PaymentRequestItem[];
 }
 
 // 결제 준비 응답

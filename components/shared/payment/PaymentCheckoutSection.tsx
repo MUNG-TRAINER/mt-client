@@ -1,10 +1,11 @@
 "use client";
 import PaymentButton from "@/components/shared/payment/PaymentButton";
 import useMe from "@/hooks/afterLogin/users/useMe";
+import { PaymentRequestItem } from "@/types/payment";
 
 interface PaymentCheckoutSectionProps {
   orderName: string;
-  courseIds: number[];
+  paymentRequestItems: PaymentRequestItem[];
   totalAmount: number;
   fallbackCustomerName?: string;
   fallbackCustomerEmail?: string;
@@ -12,7 +13,7 @@ interface PaymentCheckoutSectionProps {
 
 export default function PaymentCheckoutSection({
   orderName,
-  courseIds,
+  paymentRequestItems,
   totalAmount,
   fallbackCustomerName,
   fallbackCustomerEmail,
@@ -59,7 +60,7 @@ export default function PaymentCheckoutSection({
 
       {/* 결제 버튼 */}
       <PaymentButton
-        courseIds={courseIds}
+        paymentRequestItems={paymentRequestItems}
         orderName={orderName}
         customerName={customerName}
         customerEmail={customerEmail}
