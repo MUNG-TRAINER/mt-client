@@ -178,7 +178,13 @@ const ApplicationCard: React.FC<Props> = ({
                 if (stored) {
                   try {
                     currentSelections = JSON.parse(stored);
-                  } catch {}
+                  } catch (error) {
+                    console.error(
+                      "세션스토리지의 selectedApplications 파싱 중 오류가 발생했습니다.",
+                      error
+                    );
+                    currentSelections = [];
+                  }
                 }
                 // 현재 카드가 없으면 추가
                 const exists = currentSelections.some(
@@ -218,7 +224,6 @@ const ApplicationCard: React.FC<Props> = ({
           </button>
         )}
       </div>
-      {/* 모달은 상위 컴포넌트에서 렌더링합니다. */}
     </li>
   );
 };

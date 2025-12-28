@@ -38,13 +38,11 @@ const DogListModal: React.FC<DogListModalProps> = ({onSelect, onClose}) => {
       {dogs.map((dog) => (
         <label
           key={dog.dogId}
-          className={`flex items-center justify-bet
-            
-            ween border rounded-lg p-4 cursor-pointer hover:bg-gray-50 ${
-              selectedDogId === dog.dogId
-                ? "border-blue-500 bg-blue-50"
-                : "border-gray-300"
-            }`}
+          className={`flex items-center justify-between border rounded-lg p-4 cursor-pointer hover:bg-gray-50 ${
+            selectedDogId === dog.dogId
+              ? "border-blue-500 bg-blue-50"
+              : "border-gray-300"
+          }`}
         >
           <div className="flex flex-col">
             <div className="flex gap-2">

@@ -145,7 +145,7 @@ export default function CourseRegistModal({
       return;
     }
 
-    // 신청`
+    // 신청
     const selectedDog = dogs && dogs.find((dog) => dog.dogId === id);
     if (!selectedDog) return;
 
@@ -164,7 +164,7 @@ export default function CourseRegistModal({
       }, 1500);
       return;
     }
-    // // // 신청
+    // 신청
     applyCourse(
       {
         courseId: Number(courseId),
