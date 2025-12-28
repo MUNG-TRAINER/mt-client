@@ -1,11 +1,11 @@
 "use client";
 
 import React from "react";
-import {ApplicationType} from "@/types/applications/applicationsType";
+import { ApplicationType } from "@/types/applications/applicationsType";
 import CardList from "../../../shared/cards/CourseCard";
 import Image from "next/image";
-import {useApplicationState} from "@/stores/applicationsState";
-import {useRouter} from "next/navigation";
+import { useApplicationState } from "@/stores/applicationsState";
+import { useRouter } from "next/navigation";
 import DogImage from "@/public/images/application/dog.jpg";
 interface Props {
   app: ApplicationType;
@@ -16,6 +16,7 @@ interface SelectedApplication {
   title: string;
   price: number;
   courseId: number;
+  applicationId: number;
 }
 
 const statusTextMap: Record<ApplicationType["applicationStatus"], string> = {
@@ -33,7 +34,7 @@ const ApplicationCard: React.FC<Props> = ({
   isSelected,
   onOpenRejectModal,
 }) => {
-  const {setSelectedIndex} = useApplicationState();
+  const { setSelectedIndex } = useApplicationState();
   const statusText = statusTextMap[app.applicationStatus];
 
   const router = useRouter();
@@ -51,19 +52,20 @@ const ApplicationCard: React.FC<Props> = ({
     if (checked) {
       // 중복 체크 후 추가
       const exists = currentSelections.some(
-        (item) => item.courseId === app.courseId
+        (item) => item.applicationId === app.applicationId
       );
       if (!exists) {
         currentSelections.push({
           title: app.title,
           price: app.price,
           courseId: app.courseId,
+          applicationId: app.applicationId,
         });
       }
     } else {
       // 체크 해제 시 제거
       const updated = currentSelections.filter(
-        (item) => item.courseId !== app.courseId
+        (item) => item.applicationId !== app.applicationId
       );
       sessionStorage.setItem("selectedApplications", JSON.stringify(updated));
       return;
@@ -78,7 +80,7 @@ const ApplicationCard: React.FC<Props> = ({
   return (
     <li
       className="relative cursor-pointer flex flex-col rounded-2xl shadow-md bg-white p-4"
-      style={{border: "1px solid #E9ECEF"}}
+      style={{ border: "1px solid #E9ECEF" }}
       onClick={() => handleClick(app.courseId)}
     >
       {/* 체크박스 */}
@@ -88,7 +90,7 @@ const ApplicationCard: React.FC<Props> = ({
       >
         <input
           type="checkbox"
-          style={{accentColor: "var(--mt-blue-point)"}}
+          style={{ accentColor: "var(--mt-blue-point)" }}
           className="w-6 h-6 cursor-pointer"
           checked={isSelected} // 상위 상태 반영
           disabled={["CANCELLED", "EXPIRED", "REJECTED"].includes(
@@ -97,7 +99,7 @@ const ApplicationCard: React.FC<Props> = ({
           onClick={(e) => e.stopPropagation()}
           onChange={(e) => {
             e.stopPropagation();
-            setSelectedIndex(app.courseId, e.target.checked);
+            setSelectedIndex(app.applicationId, e.target.checked);
             handleCheckboxChange(e.target.checked);
           }}
         />
@@ -141,13 +143,13 @@ const ApplicationCard: React.FC<Props> = ({
           <>
             <button
               className="flex-1 flex items-center justify-center gap-2 py-2 text-sm font-semibold rounded-lg"
-              style={{border: "1px solid #C5C5C5", color: "#374151"}}
+              style={{ border: "1px solid #C5C5C5", color: "#374151" }}
             >
               승인 거절
             </button>
             <button
               className="flex-1 flex items-center justify-center gap-2 py-2 text-sm font-semibold rounded-lg"
-              style={{border: "1px solid #C5C5C5", color: "#EF4444"}}
+              style={{ border: "1px solid #C5C5C5", color: "#EF4444" }}
               onClick={(e) => {
                 e.stopPropagation();
                 app.rejectReason
@@ -164,7 +166,7 @@ const ApplicationCard: React.FC<Props> = ({
           <>
             <button
               className="flex-1 flex items-center justify-center gap-2 py-2 text-sm font-semibold rounded-lg"
-              style={{border: "1px solid #C5C5C5", color: "#374151"}}
+              style={{ border: "1px solid #C5C5C5", color: "#374151" }}
             >
               승인 완료
             </button>
@@ -188,13 +190,14 @@ const ApplicationCard: React.FC<Props> = ({
                 }
                 // 현재 카드가 없으면 추가
                 const exists = currentSelections.some(
-                  (item) => item.courseId === app.courseId
+                  (item) => item.applicationId === app.applicationId
                 );
                 if (!exists) {
                   currentSelections.push({
                     title: app.title,
                     price: app.price,
                     courseId: app.courseId,
+                    applicationId: app.applicationId,
                   });
                   sessionStorage.setItem(
                     "selectedApplications",
@@ -218,7 +221,7 @@ const ApplicationCard: React.FC<Props> = ({
         ].includes(app.applicationStatus) && (
           <button
             className="flex-1 flex items-center justify-center gap-2 py-2 text-sm font-semibold rounded-lg"
-            style={{border: "1px solid #C5C5C5", color: "#374151"}}
+            style={{ border: "1px solid #C5C5C5", color: "#374151" }}
           >
             {statusText}
           </button>

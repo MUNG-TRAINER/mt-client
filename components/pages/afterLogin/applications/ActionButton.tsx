@@ -1,10 +1,10 @@
 "use client";
 
-import React, {useMemo} from "react"; // useMemo 추가
+import React, { useMemo } from "react"; // useMemo 추가
 import useDeleteApplication from "@/hooks/afterLogin/applications/useDeleteApplication";
-import {useApplicationState} from "@/stores/applicationsState";
-import {ApplicationType} from "@/types/applications/applicationsType"; // ApplicationType 추가
-import {useRouter} from "next/navigation";
+import { useApplicationState } from "@/stores/applicationsState";
+import { ApplicationType } from "@/types/applications/applicationsType"; // ApplicationType 추가
+import { useRouter } from "next/navigation";
 
 interface Props {
   applications: ApplicationType[];
@@ -13,12 +13,13 @@ interface SelectedApplication {
   title: string;
   price: number;
   courseId: number;
+  applicationId: number;
 }
 
-const ApplicationsActionButton: React.FC<Props> = ({applications = []}) => {
+const ApplicationsActionButton: React.FC<Props> = ({ applications = [] }) => {
   const router = useRouter();
-  const {activeTab, selectedIndex} = useApplicationState();
-  const {mutate} = useDeleteApplication();
+  const { activeTab, selectedIndex } = useApplicationState();
+  const { mutate } = useDeleteApplication();
 
   // 선택된 앱들의 총합 계산
   const buttonText = useMemo(() => {
@@ -26,7 +27,7 @@ const ApplicationsActionButton: React.FC<Props> = ({applications = []}) => {
 
     // 결제 탭에서는 'ACCEPT' 상태만 결제 가능
     const selectedAcceptApps = selectedIndex
-      .map((id) => applications.find((app) => app.courseId === id))
+      .map((id) => applications.find((app) => app.applicationId === id))
       .filter((app) => app && app.applicationStatus === "ACCEPT");
 
     if (selectedAcceptApps.length === 0) return "결제하기";
@@ -52,7 +53,9 @@ const ApplicationsActionButton: React.FC<Props> = ({applications = []}) => {
 
     // 'ACCEPT' 상태만 결제 가능하도록 필터링
     selectedApplications = selectedApplications.filter((sel) => {
-      const app = applications.find((a) => a.courseId === sel.courseId);
+      const app = applications.find(
+        (a) => a.applicationId === sel.applicationId
+      );
       return app && app.applicationStatus === "ACCEPT";
     });
 
@@ -72,7 +75,9 @@ const ApplicationsActionButton: React.FC<Props> = ({applications = []}) => {
           activeTab === "pending"
             ? selectedIndex.length === 0
             : selectedIndex
-                .map((id) => applications.find((app) => app.courseId === id))
+                .map((id) =>
+                  applications.find((app) => app.applicationId === id)
+                )
                 .filter((app) => app && app.applicationStatus === "ACCEPT")
                 .length === 0
         }
@@ -83,7 +88,7 @@ const ApplicationsActionButton: React.FC<Props> = ({applications = []}) => {
         activeTab === "pending"
           ? selectedIndex.length === 0
           : selectedIndex
-              .map((id) => applications.find((app) => app.courseId === id))
+              .map((id) => applications.find((app) => app.applicationId === id))
               .filter((app) => app && app.applicationStatus === "ACCEPT")
               .length === 0
       )
