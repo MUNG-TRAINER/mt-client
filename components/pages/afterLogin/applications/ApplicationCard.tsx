@@ -172,21 +172,15 @@ const ApplicationCard: React.FC<Props> = ({
               className="flex-1 flex items-center justify-center gap-2 py-2 text-sm font-semibold rounded-lg bg-blue-100 text-(--mt-blue-point)"
               onClick={(e) => {
                 e.stopPropagation();
-                const query = encodeURIComponent(
-                  JSON.stringify([
-                    {
-                      title: app.title,
-                      price: app.price,
-                      courseId: app.courseId,
-                    },
-                  ])
-                );
-
-                // 세션스토리지에도 중복 없이 저장
+                // 세션스토리지에 값이 없으면 현재 카드만 저장
+                let currentSelections: SelectedApplication[] = [];
                 const stored = sessionStorage.getItem("selectedApplications");
-                const currentSelections: SelectedApplication[] = stored
-                  ? JSON.parse(stored)
-                  : [];
+                if (stored) {
+                  try {
+                    currentSelections = JSON.parse(stored);
+                  } catch {}
+                }
+                // 현재 카드가 없으면 추가
                 const exists = currentSelections.some(
                   (item) => item.courseId === app.courseId
                 );
@@ -201,8 +195,7 @@ const ApplicationCard: React.FC<Props> = ({
                     JSON.stringify(currentSelections)
                   );
                 }
-
-                router.push(`/payment/detail?selected=${query}`);
+                router.push(`/payment/detail`);
               }}
             >
               결제하기
@@ -212,10 +205,10 @@ const ApplicationCard: React.FC<Props> = ({
 
         {[
           "APPLIED",
-          "CANCELLED",
           "WAITING",
-          "COUNSELING_REQUIRED",
+          "CANCELLED",
           "EXPIRED",
+          "COUNSELING_REQUIRED",
         ].includes(app.applicationStatus) && (
           <button
             className="flex-1 flex items-center justify-center gap-2 py-2 text-sm font-semibold rounded-lg"

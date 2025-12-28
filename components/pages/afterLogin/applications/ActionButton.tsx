@@ -24,15 +24,17 @@ const ApplicationsActionButton: React.FC<Props> = ({applications = []}) => {
   const buttonText = useMemo(() => {
     if (activeTab === "pending") return "취소하기";
 
-    // 체크된 항목 없으면 그냥 "결제하기"
-    if (selectedIndex.length === 0) return "결제하기";
+    // 결제 탭에서는 'ACCEPT' 상태만 결제 가능
+    const selectedAcceptApps = selectedIndex
+      .map((id) => applications.find((app) => app.courseId === id))
+      .filter((app) => app && app.applicationStatus === "ACCEPT");
 
-    // 선택된 항목 총합
-    const totalPrice = selectedIndex.reduce((sum, id) => {
-      const app = applications.find((app) => app.courseId === id);
-      return sum + (app?.price ?? 0);
-    }, 0);
+    if (selectedAcceptApps.length === 0) return "결제하기";
 
+    const totalPrice = selectedAcceptApps.reduce(
+      (sum, app) => sum + (app?.price ?? 0),
+      0
+    );
     return `${totalPrice.toLocaleString()}원 결제하기`;
   }, [activeTab, selectedIndex, applications]);
 
@@ -44,12 +46,18 @@ const ApplicationsActionButton: React.FC<Props> = ({applications = []}) => {
 
     // sessionStorage에서 선택된 항목 가져오기
     const selected = sessionStorage.getItem("selectedApplications");
-    const selectedApplications: SelectedApplication[] = selected
+    let selectedApplications: SelectedApplication[] = selected
       ? JSON.parse(selected)
       : [];
 
+    // 'ACCEPT' 상태만 결제 가능하도록 필터링
+    selectedApplications = selectedApplications.filter((sel) => {
+      const app = applications.find((a) => a.courseId === sel.courseId);
+      return app && app.applicationStatus === "ACCEPT";
+    });
+
     if (selectedApplications.length === 0) {
-      throw new Error("선택된 항목이 없습니다.");
+      throw new Error("결제 가능한 항목이 없습니다.");
     }
 
     const query = encodeURIComponent(JSON.stringify(selectedApplications));
@@ -59,14 +67,29 @@ const ApplicationsActionButton: React.FC<Props> = ({applications = []}) => {
     <div className="sticky bottom-0 w-full p-4 bg-white border-t border-gray-300">
       <button
         onClick={handleOnClick}
-        disabled={selectedIndex.length === 0} // 선택 없으면 비활성화
+        // 결제탭에서는 'ACCEPT' 상태의 선택된 항목이 없으면 비활성화
+        disabled={
+          activeTab === "pending"
+            ? selectedIndex.length === 0
+            : selectedIndex
+                .map((id) => applications.find((app) => app.courseId === id))
+                .filter((app) => app && app.applicationStatus === "ACCEPT")
+                .length === 0
+        }
         className={`
     w-full py-3 rounded-lg font-semibold transition-colors
     ${
-      selectedIndex.length === 0
-        ? "bg-(--mt-gray) text-gray-200 cursor-not-allowed" // 비활성화 스타일
+      (
+        activeTab === "pending"
+          ? selectedIndex.length === 0
+          : selectedIndex
+              .map((id) => applications.find((app) => app.courseId === id))
+              .filter((app) => app && app.applicationStatus === "ACCEPT")
+              .length === 0
+      )
+        ? "bg-(--mt-gray) text-gray-200 cursor-not-allowed"
         : "bg-(--mt-blue-point) text-white"
-    } // 활성화 스타일
+    }
   `}
       >
         {buttonText}
