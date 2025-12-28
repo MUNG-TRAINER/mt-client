@@ -54,12 +54,12 @@ export default function useDogImageUpload() {
     setIsUploading(true);
 
     try {
-      const presignedUrl = await presignedUrlApi.getPresignedUrl({
+      const response = await presignedUrlApi.getPresignedUrl({
         category: "dog-profile",
         fileName: selectedFile.name,
         contentType: selectedFile.type,
       });
-
+      const presignedUrl = response.presignedUrl;
       const uploadedImageKey = await presignedUrlApi.uploadToS3(
         presignedUrl,
         selectedFile,

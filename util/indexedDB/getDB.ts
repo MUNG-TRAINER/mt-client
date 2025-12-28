@@ -1,4 +1,4 @@
-import {ALERT, initDB, INotiData, NOTIFICATION} from "./initDB";
+import {ALERT, IAlertTypes, initDB, INotiData, NOTIFICATION} from "./initDB";
 
 export const getNoticeDB = async (ver: number): Promise<INotiData[]> => {
   const db = await initDB(ver);
@@ -15,7 +15,7 @@ export const getNoticeDB = async (ver: number): Promise<INotiData[]> => {
   });
 };
 
-export const getAlertDB = async (ver: number) => {
+export const getAlertDB = async (ver: number): Promise<IAlertTypes> => {
   const db = await initDB(ver);
   return new Promise((resolve, reject) => {
     const transaction = db.transaction(ALERT, "readonly");

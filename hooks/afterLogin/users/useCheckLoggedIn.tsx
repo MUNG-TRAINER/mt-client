@@ -50,6 +50,7 @@ export default function useCheckLoggedIn() {
     );
   };
   const role = isLoggedOut ? null : data && "role" in data ? data.role : null;
+  const myId = data && "userId" in data && data.userId;
   return {
     data,
     isPending,
@@ -59,5 +60,6 @@ export default function useCheckLoggedIn() {
     resetUserCheck,
     forceRefresh,
     checkIsOwner,
+    myId,
   };
 }

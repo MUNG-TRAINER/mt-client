@@ -76,6 +76,7 @@ export default function FirebaseProvider({children}: {children: ReactNode}) {
           noti.onclick = () => {
             window.open(
               `https://mungschool.kro.kr/${data.url ? data.url : ""}`,
+              // `http://localhost:3000/${data.url ? data.url : ""}`,
             );
           };
         });

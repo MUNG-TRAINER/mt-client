@@ -86,7 +86,7 @@ export default function CourseRegistModal({
           // ... 기타 필요한 필드
         }
         const isDuplicate = (wishlist as WishlistType[]).some(
-          (w) => w.courseId === Number(courseId) && w.dogId === id
+          (w) => w.courseId === Number(courseId) && w.dogId === id,
         );
         if (isDuplicate) {
           setConfirmDesc("이미 찜한 강의입니다.");
@@ -136,8 +136,8 @@ export default function CourseRegistModal({
         app.courseId === Number(courseId) &&
         app.dogId === id &&
         ["APPLIED", "WAITING", "ACCEPT", "PAID"].includes(
-          String(app.applicationStatus)
-        )
+          String(app.applicationStatus),
+        ),
     );
     if (isAlreadyApplied) {
       setConfirmDesc("이미 신청한 강의입니다.");
@@ -189,12 +189,12 @@ export default function CourseRegistModal({
           setConfirmResult(null);
           setConfirmOpen(true);
         },
-      }
+      },
     );
   };
 
   return (
-    <div className="absolute inset-0 z-70 flex items-center justify-center">
+    <div className="absolute inset-0 z-70">
       {/* overlay */}
       <div
         onClick={handleBack}
@@ -205,7 +205,7 @@ export default function CourseRegistModal({
       />
       {/* 중앙 모달 */}
       <div
-        className={`relative z-10 bg-white rounded-2xl shadow-2xl pt-10 px-8 pb-6 flex flex-col items-center gap-6 w-[400px] min-h-[250px] max-h-[500px] m-6 transition-transform duration-300 ease-in-out ${
+        className={`show_modal absolute bottom-0 z-10 bg-white rounded-t-2xl shadow-2xl pt-10 px-8 pb-6 flex flex-col items-center gap-6 w-full h-56 transition-transform duration-300 ease-in-out ${
           open
             ? "opacity-100 scale-100"
             : "opacity-0 scale-95 pointer-events-none"
