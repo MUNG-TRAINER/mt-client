@@ -25,34 +25,21 @@ export async function fetchWithAuth(
     if (res.status === 400) {
       return res;
     }
-
     if (res.status === 401) {
       const result = await res.json();
-      console.log(result);
-      if (optional) {
-        await loginApi.optionalCheck();
-      } else {
-        await revalidateRefreshToken();
-      }
-
       if (result.code === TOKEN_EXPIRED) {
-        if (optional) {
-          await loginApi.optionalCheck();
-        } else {
-          await revalidateRefreshToken();
-        }
+        await revalidateRefreshToken();
         res = await fetchData(input, init);
         return res;
       }
       if (result.code === REFRESH_EXPIRED || result.code === UNAUTHORIZED) {
         window.location.href = "/login";
         await loginApi.logout();
-        return res;
+        console.error("fetchWithAuth :: 인증 만료");
       }
       res = await fetchData(input, init);
       return res;
     }
-
     // 그 외 에러는 콘솔에 로그만 남기고 응답 반환
     console.error("API Error:", res.status, res.statusText);
     return res;
@@ -77,8 +64,8 @@ export async function revalidateRefreshToken() {
     });
 
     if (!resposne.ok) {
-      window.location.href = "/login";
       await loginApi.logout();
+      window.location.href = "/login";
       throw new Error("로그인되어있지 않습니다. 로그인해주세요.");
     }
   })();

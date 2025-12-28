@@ -24,8 +24,8 @@ export default function useCheckLoggedIn() {
     },
     staleTime: ACCESS_TOKEN_TIME - 30_000,
     gcTime: ACCESS_TOKEN_TIME * 2,
+    refetchInterval: isLoggedOut ? false : ACCESS_TOKEN_TIME + 5000,
     enabled: !isLoggedOut,
-    refetchInterval: isLoggedOut ? false : ACCESS_TOKEN_TIME - 30_000,
     retry: false,
   });
 

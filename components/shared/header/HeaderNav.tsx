@@ -5,6 +5,8 @@ import Link from "next/link";
 import {useDrawer} from "@/stores/drawerState";
 import {usePathname, useRouter} from "next/navigation";
 import {ChevronLeftIcon} from "@/components/icons/chevron";
+import HeaderAlert from "./headerAlert/HeaderAlert";
+import {useState} from "react";
 
 const notAllowBackBtn: {[key: string]: boolean} = {
   "/": true,
@@ -13,6 +15,7 @@ const notAllowBackBtn: {[key: string]: boolean} = {
 };
 
 export default function HeaderNav() {
+  const [alert, setAlert] = useState(false);
   const {onToggle} = useDrawer();
   const path = usePathname();
   const router = useRouter();
@@ -30,10 +33,12 @@ export default function HeaderNav() {
           <h3 className="font-dohyeon text-(--mt-white)">MUNG&apos;s COOL</h3>
         </Link>
       </li>
-      <li className="ml-auto">
-        <i>
-          <BellIcon className="size-6 text-white" />
-        </i>
+      <li className="ml-auto hover:bg-blue-400 rounded-full p-2">
+        <button onClick={() => setAlert((prev) => !prev)}>
+          <i>
+            <BellIcon className="size-6 text-white" />
+          </i>
+        </button>
       </li>
       <li>
         <button onClick={onToggle}>
@@ -42,6 +47,7 @@ export default function HeaderNav() {
           </i>
         </button>
       </li>
+      <HeaderAlert state={alert} />
     </>
   );
 }

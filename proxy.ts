@@ -49,6 +49,6 @@ export function proxy(request: NextRequest) {
 export const config = {
   matcher: [
     // Exclude API routes, static files, image optimizations, and .png files
-    "/((?!api|_next/static|manifest.ts|manifest.webmanifest|service-worker.js|_next/image|.*\\.png$).*)",
+    "/((?!api|_next/static|manifest.ts|manifest.webmanifest|service-worker.js|firebase-messaging-sw.js|_next/image|.*\\.png$).*)",
   ],
 };

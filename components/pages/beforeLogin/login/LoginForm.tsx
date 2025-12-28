@@ -3,6 +3,7 @@
 import {EyeIcon, EyeSlashIcon} from "@/components/icons/eye";
 import {LockClosedIcon} from "@/components/icons/lock";
 import {UserIcon} from "@/components/icons/user";
+import {useFCM} from "@/components/providers/firebaseProvider/FirebaseProvider";
 import AuthInput from "@/components/shared/inputs/AuthInput";
 import useLogin from "@/hooks/beforeLogin/login/useLogin";
 import {loginSchema} from "@/schemas/loginSchema";
@@ -16,16 +17,16 @@ export default function LoginForm() {
     useState<ZodErrorTree<typeof loginSchema>>();
   /* Custom Hook */
   const {mutate, isPending, isError, reset} = useLogin();
+  const {token} = useFCM();
   /* fn */
   // 로그인
   const handleFormAction = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    // console.log(fcmToken);
     const data = {
       userName: formData.get("userName"),
       password: formData.get("password"),
-      // fcm_token: fcmToken,
+      fcmToken: token,
     };
     const result = await loginSchema.safeParseAsync(data);
     if (!result.success) {

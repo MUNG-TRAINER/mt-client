@@ -1,54 +1,102 @@
 "use client";
+import {fcmApi} from "@/apis/fcm/fcmApi";
+import useIndexedDB from "@/hooks/indexedDB/useIndexedDB";
 import {IFirebaseMsgTypes} from "@/types/firebaseMsg/IFirebaseMsgTypes";
-import {onMessage} from "firebase/messaging";
-import {ReactNode, useEffect} from "react";
+import {app} from "@/util/firebase/initFirebase";
+import {getMessaging, getToken, onMessage} from "firebase/messaging";
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+
+interface IFCMContextTypes {
+  token: string | null;
+  ready: boolean;
+}
+const FCMContext = createContext<IFCMContextTypes>({ready: false, token: null});
+export const useFCM = () => useContext(FCMContext);
 
 export default function FirebaseProvider({children}: {children: ReactNode}) {
-  const requestNotification = () => {
-    if (Notification.permission === "default") {
-      Notification.requestPermission();
-    }
-  };
-
+  // states
+  const [token, setTotken] = useState<string | null>(null);
+  const [ready, setReady] = useState(false);
+  // custom hook
+  const {addNotification, editAlertState} = useIndexedDB();
   useEffect(() => {
     if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("/service-worker.js", {scope: "/"}).then(
-        (regist) => {
-          console.log("서비스워커가 등록되었습니다. :: ", regist);
-          regist.addEventListener("updatefound", () => {
-            regist.update();
-            console.log("서비스워커가 업데이트 되었습니다.");
-          });
-        },
-        (err) => {
-          console.log("서비스워커가 등록 실패했습니다. :: ", err);
-        },
-      );
+      navigator.serviceWorker
+        .register("/firebase-messaging-sw.js", {scope: "/"})
+        .then(
+          (regist) => {
+            console.log("서비스워커가 등록되었습니다.");
+            regist.addEventListener("updatefound", () => {
+              regist.update();
+              console.log("서비스워커가 업데이트 되었습니다.");
+            });
+          },
+          (err) => {
+            console.log("서비스워커가 등록 실패했습니다. :: ", err);
+          },
+        );
     } else {
       console.error("서비스워커가 지원되지 않습니다.");
     }
   }, []);
-  // useEffect(() => {
-  //   // 알림 요청
-  //   requestNotification();
-  //   // 알림 허용 후
-  //   if (Notification.permission === "granted") {
-  //     const subscribe = onMessage(messaging, async (payload) => {
-  //       const payLoadTitle = payload.notification?.title;
-  //       const payLoadOption: NotificationOptions = {
-  //         icon: payload.notification?.icon,
-  //         body: payload.notification?.body,
-  //         data: payload.data,
-  //       };
-  //       const noti = new Notification(payLoadTitle + "", payLoadOption);
-  //       const data: IFirebaseMsgTypes = noti.data;
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (Notification.permission === "denied") return;
+    let msgUnSubscribe: (() => void) | undefined;
+    const init = async () => {
+      const notification = await Notification.requestPermission();
+      const messaging = getMessaging(app);
+      if (notification === "granted") {
+        const fcmToken = await getToken(messaging, {
+          vapidKey:
+            "BDvAfhYQkGZBR6_A_NLM2jMamkTgaHVlIlU3NjkN_6d1JSKexIcf5n9TKfSfOnVTfW6PqDXn9h4_OkCs\_\_JSdiE",
+        });
+        setTotken(fcmToken);
+        setReady(true);
+        msgUnSubscribe = onMessage(messaging, (payload) => {
+          console.log("foreground :: ", payload);
+          const payLoadTitle = payload.notification?.title;
+          const payLoadOption: NotificationOptions = {
+            icon: payload.notification?.icon,
+            body: payload.notification?.body,
+            data: payload.data,
+          };
+          const noti = new Notification(payLoadTitle + "", payLoadOption);
+          const data: IFirebaseMsgTypes = noti.data;
+          // 여기에 db에 noti저장하는 함수 만들 수 있음
+          addNotification({ver: 1, data});
+          editAlertState(true);
+          noti.onclick = () => {
+            window.open(
+              `https://mungschool.kro.kr/${data.url ? data.url : ""}`,
+            );
+          };
+        });
+      }
+    };
+    init();
+    return () => {
+      if (msgUnSubscribe) {
+        msgUnSubscribe();
+      }
+    };
+  }, [addNotification, editAlertState]);
 
-  //       noti.onclick = () => {
-  //         window.open(`https://mungschool.kro.kr/${data.url}`);
-  //       };
-  //     });
-  //     return () => subscribe();
-  //   }
-  // }, []);
-  return <>{children}</>;
+  useEffect(() => {
+    if (!token) return;
+    const updateFcmToken = async () => {
+      await fcmApi.updateFcmToken(token);
+    };
+    updateFcmToken();
+  }, [token]);
+
+  const value = useMemo(() => ({token, ready}), [token, ready]);
+  return <FCMContext.Provider value={value}>{children}</FCMContext.Provider>;
 }

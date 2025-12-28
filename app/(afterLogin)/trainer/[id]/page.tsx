@@ -23,6 +23,7 @@ async function getTrainerInfo(id: string) {
 export default async function Page({params}: {params: Promise<{id: string}>}) {
   const param = await params;
   const trainerData: ITrainerInfoType = await getTrainerInfo(param.id);
+  console.log(trainerData);
   return (
     <div className="w-full h-full bg-white m-auto p-6 rounded-md flex flex-col gap-6 overflow-y-auto">
       <UserInfoCard user={trainerData}></UserInfoCard>
