@@ -74,7 +74,6 @@ const WishlistCard: React.FC<WishlistItemProps> = ({
   const {dogs} = useWishlistDogs();
   const {setCounselModalOpen, setDogId} = useCounselingModal();
   const currentDog = dogs.find((dog) => dog.name === dogName);
-  const [isCounselModalOpen, setIsCounselModalOpen] = React.useState(false);
   const handleOpenCounselingModal = (dogId: number) => {
     setDogId(dogId);
     setCounselModalOpen();

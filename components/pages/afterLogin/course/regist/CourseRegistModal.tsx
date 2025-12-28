@@ -5,15 +5,7 @@ import {IDogListType} from "@/types/dog/dogType";
 import {randomColor} from "@/util/randomColor";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  Dispatch,
-  FormEvent,
-  FormEventHandler,
-  MouseEvent,
-  SetStateAction,
-  useEffect,
-  useState,
-} from "react";
+import {Dispatch, FormEvent, SetStateAction, useEffect, useState} from "react";
 import {useRouter} from "next/navigation";
 import {useCreateWishlist} from "@/hooks/afterLogin/wishlist/useCreateWishlist";
 import ConfirmModal from "@/components/pages/afterLogin/wishlist/ConfirmModal";
@@ -70,9 +62,37 @@ export default function CourseRegistModal({
       return;
     }
 
-    // // 찜하기
+    // 중복 체크: 찜내역
     if (mode === "wishlist") {
       try {
+        // 찜내역 가져오기
+        let wishlist = [];
+        try {
+          const res = await fetch("/api/wishlist", {
+            method: "GET",
+            headers: {"Content-Type": "application/json"},
+          });
+          if (res.ok) {
+            const json = await res.json();
+            wishlist = Array.isArray(json.data)
+              ? json.data
+              : json.data?.data || [];
+          }
+        } catch {}
+        // 타입 명시: WishlistType
+        interface WishlistType {
+          courseId: number;
+          dogId: number;
+          // ... 기타 필요한 필드
+        }
+        const isDuplicate = (wishlist as WishlistType[]).some(
+          (w) => w.courseId === Number(courseId) && w.dogId === id
+        );
+        if (isDuplicate) {
+          setConfirmDesc("이미 찜한 강의입니다.");
+          setConfirmOpen(true);
+          return;
+        }
         await create({
           courseId: Number(courseId),
           dogId: id,
@@ -86,6 +106,42 @@ export default function CourseRegistModal({
         setConfirmDesc("이미 찜한 강의입니다.");
         setConfirmOpen(true);
       }
+      return;
+    }
+
+    // 신청내역 중복 체크
+    let applications = [];
+    try {
+      const res = await fetch("/api/application/list", {
+        method: "GET",
+        headers: {"Content-Type": "application/json"},
+      });
+      if (res.ok) {
+        const json = await res.json();
+        applications = Array.isArray(json.data)
+          ? json.data
+          : json.data?.data || [];
+      }
+    } catch {}
+    console.log("신청내역:", applications);
+    // 타입 명시: ApplicationType
+    interface ApplicationType {
+      courseId: number;
+      dogId: number;
+      applicationStatus: string;
+      // ... 기타 필요한 필드
+    }
+    const isAlreadyApplied = (applications as ApplicationType[]).some(
+      (app) =>
+        app.courseId === Number(courseId) &&
+        app.dogId === id &&
+        ["APPLIED", "WAITING", "ACCEPT", "PAID"].includes(
+          String(app.applicationStatus)
+        )
+    );
+    if (isAlreadyApplied) {
+      setConfirmDesc("이미 신청한 강의입니다.");
+      setConfirmOpen(true);
       return;
     }
 
