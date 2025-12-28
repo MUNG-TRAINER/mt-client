@@ -59,7 +59,7 @@ export default function CounselingManagementClient() {
   };
 
   return (
-    <div className="w-full h-full flex flex-col">
+    <div className="relative w-full h-full flex flex-col">
       {/* 탭 */}
       <Tabs
         activeTab={activeTab}
