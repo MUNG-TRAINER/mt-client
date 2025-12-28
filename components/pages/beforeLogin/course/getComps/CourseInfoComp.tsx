@@ -33,7 +33,7 @@ export default function CourseInfoComp({
     : 0;
 
   return (
-    <>
+    <div className="relative">
       <CourseHero
         courseInfo={courseInfo}
         durationMinutes={durationMinutes}
@@ -62,6 +62,6 @@ export default function CourseInfoComp({
         courseId={courseId}
         trainerId={courseInfo?.trainerId}
       />
-    </>
+    </div>
   );
 }
