@@ -83,7 +83,7 @@ export default function CourseRegistModal({
         router.push("/wishlist");
       } catch (e) {
         console.error(e);
-        setConfirmDesc("찜 처리 중 오류가 발생했습니다.");
+        setConfirmDesc("이미 찜한 강의입니다.");
         setConfirmOpen(true);
       }
       return;
@@ -99,8 +99,13 @@ export default function CourseRegistModal({
     const hasCounseling = selectedWishlistDog?.hasCounseling === true;
 
     if (!hasCounseling) {
-      // 상담 안 된 강아지는 상담 페이지로 이동
-      router.push(`/courses/${courseId}/counseling?dogId=${id}`);
+      // 상담 안 된 강아지는 상담 안내 모달 띄우고 이동
+      setConfirmDesc("상담이 안된 반려견입니다. 상담페이지로 이동합니다.");
+      setConfirmOpen(true);
+      setTimeout(() => {
+        setConfirmOpen(false);
+        router.push(`/counseling/create/${id}`);
+      }, 1500);
       return;
     }
     // // // 신청
@@ -133,140 +138,143 @@ export default function CourseRegistModal({
   };
 
   return (
-    <>
+    <div className="absolute inset-0 z-70 flex items-center justify-center">
       {/* overlay */}
       <div
         onClick={handleBack}
-        className={`absolute z-70 left-0 top-0 w-full h-full bg-(--mt-black)/75 transition-opacity duration-300 ${
+        className={`absolute inset-0 bg-(--mt-black)/75 transition-opacity duration-300 ${
           open ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
+        style={{zIndex: 1}}
       />
-      <div className="absolute w-full h-full z-80 flex flex-col justify-center items-center overflow-hidden">
-        {/* bottom sheet */}
-        <div
-          className={`absolute bg-(--mt-blue) w-full rounded-t-2xl pt-10 px-5 pb-20 flex flex-col items-center gap-5 transform transition-transform duration-300 ease-in-out ${
-            open ? "translate-y-0" : "translate-y-full"
-          }`}
-          role="dialog"
-          aria-modal="true"
-        >
-          <button
-            className="w-20 h-1 bg-(--mt-gray) rounded-lg"
-            onClick={handleBack}
-          />
-          <h3 className="text-center font-bold text-xl">수강할 반려견 선택</h3>
-          <ul className="w-full h-96 mb-5 p-2">
-            {dogs && dogs.length < 1 && (
-              <li>
-                <span className="text-red-500 text-center block">
-                  등록된 반려견 정보가 없습니다.
-                </span>
-              </li>
-            )}
-            {dogs && dogs.length > 0 && (
-              <li className="w-full h-full  ">
-                <form onSubmit={handleApply} className="w-full h-full relative">
-                  <fieldset className="w-full h-full flex flex-col gap-3 overflow-y-auto pb-10">
-                    <legend>반려견 수강신청</legend>
-                    {dogs &&
-                      dogs.map((val, i) => (
-                        <label
-                          htmlFor={`${val.dogId}_${val.name}`}
-                          key={val.dogId}
-                          className="flex items-center gap-5 p-3 rounded-xl bg-(--mt-gray-smoke) shadow"
-                        >
-                          {val.profileImage ? (
-                            <div className="relative size-24 rounded-full overflow-hidden">
-                              <Image
-                                src={val.profileImage + ""}
-                                alt={`${val.name}_프로필사진`}
-                                fill
-                              />
-                            </div>
-                          ) : (
-                            <div
-                              className={`size-24 rounded-full ${
-                                dogColors![i]
-                              }`}
-                            />
-                          )}
-                          <div>
-                            <h4 className="font-bold">{val.name}</h4>
-                            <span>{val.age} 살</span>
-                          </div>
-                          <div className="ml-auto">
-                            <button
-                              type="button"
-                              className={`size-10 rounded-full ${
-                                id === val.dogId
-                                  ? "bg-(--mt-blue)"
-                                  : "border-3 border-(--mt-gray-point)"
-                              }`}
-                              onClick={() => setId(val.dogId)}
-                            >
-                              {id === val.dogId && (
-                                <CheckIcon className="text-(--mt-white)" />
-                              )}
-                            </button>
-                            <input
-                              id={`${val.dogId}_${val.name}`}
-                              type="checkbox"
-                              value={val.dogId}
-                              name="dogId"
-                              defaultChecked={id === val.dogId}
-                              hidden
-                            />
-                          </div>
-                        </label>
-                      ))}
-                  </fieldset>
-                  <div className="flex items-center gap-3 w-full">
-                    <button
-                      type="button"
-                      onClick={handleBack}
-                      className="bg-(--mt-white) w-full py-4 rounded-md text-xl font-bold text-(--mt-gray) mt-auto shadow text-center border-2 border-(--mt-gray-point)"
-                    >
-                      취소하기
-                    </button>
-                    <button
-                      className="bg-(--mt-blue) w-full py-4 rounded-md text-xl font-bold text-(--mt-white) mt-auto shadow"
-                      type="submit"
-                    >
-                      {mode === "wishlist" ? "찜하기" : "신청하기"}
-                    </button>
-                  </div>
-                </form>
-              </li>
-            )}
-          </ul>
-          {dogs && dogs.length < 1 && (
-            <Link
-              href={`/mydogs/create`}
-              className="text-center  text-(--mt-white) text-lg font-bold bg-(--mt-blue) rounded-md py-4 shadow"
-            >
-              반려견 등록하기
-            </Link>
-          )}
-        </div>
-        <ConfirmModal
-          isOpen={confirmOpen}
-          description={confirmDesc}
-          onClose={() => {
-            setConfirmOpen(false);
-
-            if (confirmResult === "wishlist") {
-              // 모달 닫고 이동
-              setTimeout(() => router.push("/wishlist"), 0);
-            }
-
-            if (confirmResult === "apply") {
-              setTimeout(() => router.push("/applications"), 0);
-            }
-
-            setConfirmResult(null);
-          }}
+      {/* 중앙 모달 */}
+      <div
+        className={`relative z-10 bg-white rounded-2xl shadow-2xl pt-10 px-8 pb-6 flex flex-col items-center gap-6 w-[400px] min-h-[250px] max-h-[500px] m-6 transition-transform duration-300 ease-in-out ${
+          open
+            ? "opacity-100 scale-100"
+            : "opacity-0 scale-95 pointer-events-none"
+        }`}
+        role="dialog"
+        aria-modal="true"
+        style={{height: "auto"}}
+      >
+        <button
+          className="w-20 h-1 bg-(--mt-gray) rounded-lg"
+          onClick={handleBack}
         />
+        <h3 className="text-center font-bold text-xl">수강할 반려견 선택</h3>
+        <ul className="w-full flex-1 mb-5 p-2 overflow-y-auto">
+          {dogs && dogs.length < 1 && (
+            <li>
+              <span className="text-red-500 text-center block">
+                등록된 반려견 정보가 없습니다.
+              </span>
+            </li>
+          )}
+          {dogs && dogs.length > 0 && (
+            <li className="w-full h-full  ">
+              <form
+                onSubmit={handleApply}
+                className="w-full h-full flex flex-col"
+              >
+                <fieldset className="w-full flex-1 flex flex-col gap-3 overflow-y-auto pb-4">
+                  <legend>반려견 수강신청</legend>
+                  {dogs &&
+                    dogs.map((val, i) => (
+                      <label
+                        htmlFor={`${val.dogId}_${val.name}`}
+                        key={val.dogId}
+                        className="flex items-center gap-5 p-3 rounded-xl bg-(--mt-gray-smoke) shadow"
+                      >
+                        {val.profileImage ? (
+                          <div className="relative size-24 rounded-full overflow-hidden">
+                            <Image
+                              src={val.profileImage + ""}
+                              alt={`${val.name}_프로필사진`}
+                              fill
+                            />
+                          </div>
+                        ) : (
+                          <div
+                            className={`size-24 rounded-full ${dogColors![i]}`}
+                          />
+                        )}
+                        <div>
+                          <h4 className="font-bold">{val.name}</h4>
+                          <span>{val.age} 살</span>
+                        </div>
+                        <div className="ml-auto">
+                          <button
+                            type="button"
+                            className={`size-10 rounded-full ${
+                              id === val.dogId
+                                ? "bg-(--mt-blue)"
+                                : "border-3 border-(--mt-gray-point)"
+                            }`}
+                            onClick={() => setId(val.dogId)}
+                          >
+                            {id === val.dogId && (
+                              <CheckIcon className="text-(--mt-white)" />
+                            )}
+                          </button>
+                          <input
+                            id={`${val.dogId}_${val.name}`}
+                            type="checkbox"
+                            value={val.dogId}
+                            name="dogId"
+                            defaultChecked={id === val.dogId}
+                            hidden
+                          />
+                        </div>
+                      </label>
+                    ))}
+                </fieldset>
+                <div className="flex items-center gap-3 w-full flex-shrink-0 mt-2">
+                  <button
+                    type="button"
+                    onClick={handleBack}
+                    className="bg-(--mt-white) w-full py-4 rounded-md text-xl font-bold text-(--mt-gray) mt-auto shadow text-center border-2 border-(--mt-gray-point)"
+                  >
+                    취소하기
+                  </button>
+                  <button
+                    className="bg-(--mt-blue) w-full py-4 rounded-md text-xl font-bold text-(--mt-white) mt-auto shadow"
+                    type="submit"
+                  >
+                    {mode === "wishlist" ? "찜하기" : "신청하기"}
+                  </button>
+                </div>
+              </form>
+            </li>
+          )}
+        </ul>
+        {dogs && dogs.length < 1 && (
+          <Link
+            href={`/mydogs/create`}
+            className="text-center  text-(--mt-white) text-lg font-bold bg-(--mt-blue) rounded-md py-4 shadow"
+          >
+            반려견 등록하기
+          </Link>
+        )}
       </div>
-    </>
+      <ConfirmModal
+        isOpen={confirmOpen}
+        description={confirmDesc}
+        onClose={() => {
+          setConfirmOpen(false);
+
+          if (confirmResult === "wishlist") {
+            // 모달 닫고 이동
+            setTimeout(() => router.push("/wishlist"), 0);
+          }
+
+          if (confirmResult === "apply") {
+            setTimeout(() => router.push("/applications"), 0);
+          }
+
+          setConfirmResult(null);
+        }}
+      />
+    </div>
   );
 }

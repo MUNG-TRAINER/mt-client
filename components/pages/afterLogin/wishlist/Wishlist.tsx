@@ -60,7 +60,7 @@ const Wishlist = () => {
           onClose={() => setModalContent(null)}
           title={modalContent?.title ?? ""}
           description={modalContent?.description ?? ""}
-          containerClassName="absolute inset-0 flex items-center justify-center"
+          containerClassName="absolute z-80 inset-0 flex items-center justify-center bg-black/50"
         />
       )}
     </div>

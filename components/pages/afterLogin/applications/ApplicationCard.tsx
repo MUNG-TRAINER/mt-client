@@ -1,6 +1,6 @@
 "use client";
 
-import React, {useState} from "react";
+import React from "react";
 import {ApplicationType} from "@/types/applications/applicationsType";
 import CardList from "../../../shared/cards/CourseCard";
 import Image from "next/image";
@@ -10,6 +10,7 @@ import DogImage from "@/public/images/application/dog.jpg";
 interface Props {
   app: ApplicationType;
   isSelected: boolean; //  선택 여부
+  onOpenRejectModal?: (reason?: string | null) => void;
 }
 interface SelectedApplication {
   title: string;
@@ -27,10 +28,14 @@ const statusTextMap: Record<ApplicationType["applicationStatus"], string> = {
   EXPIRED: "만료됨",
 };
 
-const ApplicationCard: React.FC<Props> = ({app, isSelected}) => {
+const ApplicationCard: React.FC<Props> = ({
+  app,
+  isSelected,
+  onOpenRejectModal,
+}) => {
   const {setSelectedIndex} = useApplicationState();
   const statusText = statusTextMap[app.applicationStatus];
-  const [isRejectModalOpen, setRejectModalOpen] = useState(false);
+
   const router = useRouter();
   const handleClick = (courseId: number) => {
     router.push(`/course/${courseId}`);
@@ -120,7 +125,7 @@ const ApplicationCard: React.FC<Props> = ({app, isSelected}) => {
             {app.dogName}
           </div>
         )}
-        {app.price && (
+        {typeof app.price === "number" && (
           <div className="flex justify-end items-baseline gap-1 mb-1">
             <span className="text-sm text-gray-500">총 금액</span>
             <span className="text-xl font-bold text-[var(--mt-blue-point)]">
@@ -146,7 +151,7 @@ const ApplicationCard: React.FC<Props> = ({app, isSelected}) => {
               onClick={(e) => {
                 e.stopPropagation();
                 app.rejectReason
-                  ? setRejectModalOpen(true)
+                  ? onOpenRejectModal?.(app.rejectReason)
                   : alert("거절 사유가 없습니다.");
               }}
             >
@@ -220,29 +225,7 @@ const ApplicationCard: React.FC<Props> = ({app, isSelected}) => {
           </button>
         )}
       </div>
-      {/* 거절사유 모달 */}
-      {isRejectModalOpen && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
-          onClick={() => setRejectModalOpen(false)}
-        >
-          <div
-            className="bg-white rounded-xl p-6 w-80 relative"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h3 className="text-lg font-semibold mb-2">거절 사유</h3>
-            <p className="text-sm text-gray-700 bg-blue-100 p-4">
-              {app.rejectReason?.trim() || "사유 없음"}
-            </p>
-            <button
-              className="absolute top-2 right-4 text-gray-500 hover:text-gray-700"
-              onClick={() => setRejectModalOpen(false)}
-            >
-              ✕
-            </button>
-          </div>
-        </div>
-      )}
+      {/* 모달은 상위 컴포넌트에서 렌더링합니다. */}
     </li>
   );
 };
