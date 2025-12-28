@@ -9,6 +9,7 @@ interface ConfirmModalProps {
   description: string;
   onConfirm?: () => void;
   confirmText?: string;
+  containerClassName?: string;
 }
 
 const ConfirmModal: React.FC<ConfirmModalProps> = ({
@@ -18,12 +19,16 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   description,
   onConfirm,
   confirmText = "확인",
+  containerClassName,
 }) => {
   if (!isOpen) return null;
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+      className={
+        containerClassName ??
+        "absolute inset-0 z-50 flex items-center justify-center bg-black/50"
+      }
       onClick={onClose}
     >
       <div
@@ -37,7 +42,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
             className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
             onClick={onClose}
           >
-            취소
+            확인
           </button>
           {onConfirm && (
             <button

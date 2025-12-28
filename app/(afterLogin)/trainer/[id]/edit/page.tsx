@@ -33,7 +33,6 @@ export async function generateMetadata({
 export default async function Page({params}: {params: Promise<{id: string}>}) {
   const param = await params;
   const trainerData: ITrainerInfoType = await getTrainerInfo(param.id);
-  console.log(trainerData);
 
   return (
     <div className="w-full h-full bg-white m-auto p-6 rounded-md overflow-y-auto">

@@ -1,6 +1,6 @@
 "use client";
 
-import React, {useState} from "react";
+import React from "react";
 import {ApplicationType} from "@/types/applications/applicationsType";
 import CardList from "../../../shared/cards/CourseCard";
 import Image from "next/image";
@@ -10,6 +10,12 @@ import DogImage from "@/public/images/application/dog.jpg";
 interface Props {
   app: ApplicationType;
   isSelected: boolean; //  선택 여부
+  onOpenRejectModal?: (reason?: string | null) => void;
+}
+interface SelectedApplication {
+  title: string;
+  price: number;
+  courseId: number;
 }
 
 const statusTextMap: Record<ApplicationType["applicationStatus"], string> = {
@@ -22,14 +28,53 @@ const statusTextMap: Record<ApplicationType["applicationStatus"], string> = {
   EXPIRED: "만료됨",
 };
 
-const ApplicationCard: React.FC<Props> = ({app, isSelected}) => {
+const ApplicationCard: React.FC<Props> = ({
+  app,
+  isSelected,
+  onOpenRejectModal,
+}) => {
   const {setSelectedIndex} = useApplicationState();
   const statusText = statusTextMap[app.applicationStatus];
-  const [isRejectModalOpen, setRejectModalOpen] = useState(false);
+
   const router = useRouter();
   const handleClick = (courseId: number) => {
     router.push(`/course/${courseId}`);
   };
+
+  // 체크박스 변경 시 세션스토리지 업데이트
+  const handleCheckboxChange = (checked: boolean) => {
+    const stored = sessionStorage.getItem("selectedApplications");
+    const currentSelections: SelectedApplication[] = stored
+      ? JSON.parse(stored)
+      : [];
+
+    if (checked) {
+      // 중복 체크 후 추가
+      const exists = currentSelections.some(
+        (item) => item.courseId === app.courseId
+      );
+      if (!exists) {
+        currentSelections.push({
+          title: app.title,
+          price: app.price,
+          courseId: app.courseId,
+        });
+      }
+    } else {
+      // 체크 해제 시 제거
+      const updated = currentSelections.filter(
+        (item) => item.courseId !== app.courseId
+      );
+      sessionStorage.setItem("selectedApplications", JSON.stringify(updated));
+      return;
+    }
+
+    sessionStorage.setItem(
+      "selectedApplications",
+      JSON.stringify(currentSelections)
+    );
+  };
+
   return (
     <li
       className="relative cursor-pointer flex flex-col rounded-2xl shadow-md bg-white p-4"
@@ -53,6 +98,7 @@ const ApplicationCard: React.FC<Props> = ({app, isSelected}) => {
           onChange={(e) => {
             e.stopPropagation();
             setSelectedIndex(app.courseId, e.target.checked);
+            handleCheckboxChange(e.target.checked);
           }}
         />
       </div>
@@ -79,7 +125,7 @@ const ApplicationCard: React.FC<Props> = ({app, isSelected}) => {
             {app.dogName}
           </div>
         )}
-        {app.price && (
+        {typeof app.price === "number" && (
           <div className="flex justify-end items-baseline gap-1 mb-1">
             <span className="text-sm text-gray-500">총 금액</span>
             <span className="text-xl font-bold text-[var(--mt-blue-point)]">
@@ -105,7 +151,7 @@ const ApplicationCard: React.FC<Props> = ({app, isSelected}) => {
               onClick={(e) => {
                 e.stopPropagation();
                 app.rejectReason
-                  ? setRejectModalOpen(true)
+                  ? onOpenRejectModal?.(app.rejectReason)
                   : alert("거절 사유가 없습니다.");
               }}
             >
@@ -126,7 +172,36 @@ const ApplicationCard: React.FC<Props> = ({app, isSelected}) => {
               className="flex-1 flex items-center justify-center gap-2 py-2 text-sm font-semibold rounded-lg bg-blue-100 text-(--mt-blue-point)"
               onClick={(e) => {
                 e.stopPropagation();
-                console.log("결제하기 클릭");
+                // 세션스토리지에 값이 없으면 현재 카드만 저장
+                let currentSelections: SelectedApplication[] = [];
+                const stored = sessionStorage.getItem("selectedApplications");
+                if (stored) {
+                  try {
+                    currentSelections = JSON.parse(stored);
+                  } catch (error) {
+                    console.error(
+                      "세션스토리지의 selectedApplications 파싱 중 오류가 발생했습니다.",
+                      error
+                    );
+                    currentSelections = [];
+                  }
+                }
+                // 현재 카드가 없으면 추가
+                const exists = currentSelections.some(
+                  (item) => item.courseId === app.courseId
+                );
+                if (!exists) {
+                  currentSelections.push({
+                    title: app.title,
+                    price: app.price,
+                    courseId: app.courseId,
+                  });
+                  sessionStorage.setItem(
+                    "selectedApplications",
+                    JSON.stringify(currentSelections)
+                  );
+                }
+                router.push(`/payment/detail`);
               }}
             >
               결제하기
@@ -136,10 +211,10 @@ const ApplicationCard: React.FC<Props> = ({app, isSelected}) => {
 
         {[
           "APPLIED",
-          "CANCELLED",
           "WAITING",
-          "COUNSELING_REQUIRED",
+          "CANCELLED",
           "EXPIRED",
+          "COUNSELING_REQUIRED",
         ].includes(app.applicationStatus) && (
           <button
             className="flex-1 flex items-center justify-center gap-2 py-2 text-sm font-semibold rounded-lg"
@@ -149,29 +224,6 @@ const ApplicationCard: React.FC<Props> = ({app, isSelected}) => {
           </button>
         )}
       </div>
-      {/* 거절사유 모달 */}
-      {isRejectModalOpen && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
-          onClick={() => setRejectModalOpen(false)}
-        >
-          <div
-            className="bg-white rounded-xl p-6 w-80 relative"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h3 className="text-lg font-semibold mb-2">거절 사유</h3>
-            <p className="text-sm text-gray-700 bg-blue-100 p-4">
-              {app.rejectReason?.trim() || "사유 없음"}
-            </p>
-            <button
-              className="absolute top-2 right-4 text-gray-500 hover:text-gray-700"
-              onClick={() => setRejectModalOpen(false)}
-            >
-              ✕
-            </button>
-          </div>
-        </div>
-      )}
     </li>
   );
 };
