@@ -285,7 +285,7 @@ export default function CourseRegistModal({
                       </label>
                     ))}
                 </fieldset>
-                <div className="flex items-center gap-3 w-full flex-shrink-0 mt-2">
+                <div className="flex items-center gap-3 w-full shrink-0 mt-2">
                   <button
                     type="button"
                     onClick={handleBack}

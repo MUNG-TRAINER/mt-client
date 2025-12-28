@@ -1,28 +1,46 @@
+export const runtime = "nodejs";
+import {IFirebaseSendMsgTypes} from "@/types/firebaseMsg/IFirebaseMsgTypes";
 import {credential, initializeApp} from "firebase-admin";
 import {getApps} from "firebase-admin/app";
 import {getMessaging, Message} from "firebase-admin/messaging";
 import {NextRequest, NextResponse} from "next/server";
 
+function getFirebaseApp() {
+  if (getApps().length > 0) {
+    return getApps()[0];
+  }
+  return initializeApp({
+    credential: credential.cert({
+      projectId: process.env.FIREBASE_ADMIN_PROJECTID,
+      privateKey: process.env.FIREBASE_ADMIN_PRIVATEKEY?.replace(/\\n/g, "\n"),
+      clientEmail: process.env.FIREBASE_ADMIN_CLIENTEMAIL,
+    }),
+  });
+}
 // 런타임 환경변수 주입
-const app =
-  getApps().length === 0
-    ? initializeApp({
-        credential: credential.cert({
-          projectId: process.env.FIREBAE_ADMIN_PROJECTID,
-          privateKey: process.env.FIREBAE_ADMIN_PRIVATEKEY?.replace(
-            /\\n/g,
-            "\n",
-          ),
-          clientEmail: process.env.FIREBAE_ADMIN_CLIENTEMAIL,
-        }),
-      })
-    : getApps()[0];
 
 export async function POST(req: NextRequest) {
-  const requestBody = await req.json();
+  const app = getFirebaseApp();
+  const requestBody: IFirebaseSendMsgTypes = await req.json();
 
   const message: Message = {
-    //작업중..
+    notification: {
+      title: requestBody.title,
+      body: requestBody.msgBody,
+    },
+    webpush: {
+      notification: {
+        title: requestBody.title,
+        body: requestBody.msgBody,
+        icon: "./favicon.png",
+      },
+    },
+    data: {
+      title: requestBody.title,
+      desc: requestBody.desc,
+      userId: requestBody.userId + "",
+      url: requestBody.url,
+    },
     token: requestBody.token,
   };
   const sendMsg = await getMessaging(app).send(message);

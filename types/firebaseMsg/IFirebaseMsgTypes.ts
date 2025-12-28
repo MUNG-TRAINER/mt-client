@@ -4,3 +4,11 @@ export interface IFirebaseMsgTypes {
   desc: string;
   url: string;
 }
+export interface IFirebaseSendMsgTypes extends IFirebaseMsgTypes {
+  msgBody: string;
+  token: string;
+}
+export interface IFirebaseSendMsgHookTypes extends IFirebaseMsgTypes {
+  msgBody: string;
+  targetId: number;
+}

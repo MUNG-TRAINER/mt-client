@@ -1,3 +1,4 @@
+import {IFirebaseSendMsgTypes} from "@/types/firebaseMsg/IFirebaseMsgTypes";
 import {fetchWithAuth} from "../common/fetchWithAuth";
 
 export const fcmApi = {
@@ -10,8 +11,22 @@ export const fcmApi = {
       body: JSON.stringify({fcmToken: token}),
     });
     if (!res.ok) {
-      return;
+      throw new Error("FCM 토큰을 불러오는데 에러가 발생했습니다.");
     }
-    return;
+    return {success: true};
+  },
+  sendFCMMsg: async (data: IFirebaseSendMsgTypes) => {
+    const res = await fetchWithAuth(`/api/fcm`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) {
+      const data = await res.json();
+      throw new Error(data.message);
+    }
+    return await res.json();
   },
 };

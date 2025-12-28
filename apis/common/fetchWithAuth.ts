@@ -14,7 +14,6 @@ async function fetchData(input: RequestInfo, init: RequestInit = {}) {
 export async function fetchWithAuth(
   input: RequestInfo,
   init: RequestInit = {},
-  optional: boolean | undefined = false,
 ) {
   try {
     let res = await fetchData(input, init);

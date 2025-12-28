@@ -59,6 +59,7 @@ export default function FirebaseProvider({children}: {children: ReactNode}) {
             "BDvAfhYQkGZBR6_A_NLM2jMamkTgaHVlIlU3NjkN_6d1JSKexIcf5n9TKfSfOnVTfW6PqDXn9h4_OkCs\_\_JSdiE",
         });
         setTotken(fcmToken);
+
         setReady(true);
         msgUnSubscribe = onMessage(messaging, (payload) => {
           console.log("foreground :: ", payload);
@@ -84,9 +85,7 @@ export default function FirebaseProvider({children}: {children: ReactNode}) {
     };
     init();
     return () => {
-      if (msgUnSubscribe) {
-        msgUnSubscribe();
-      }
+      if (msgUnSubscribe) msgUnSubscribe();
     };
   }, [addNotification, editAlertState]);
 
