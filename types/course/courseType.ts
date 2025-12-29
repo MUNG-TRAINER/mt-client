@@ -26,7 +26,7 @@ export interface CourseItem {
   lessonForm: "WALK" | "GROUP" | "PRIVATE";
   difficulty: string; // "초급", "중급", "고급" 등
   isFree: boolean; // 무료 여부
-  status: string; // 과정 상태: "SCHEDULED" | "CANCELLED" | "DONE"
+  status: string; // 과정 상태: "SCHEDULED" | "IN_PROGRESS" | "CANCELLED" | "DONE"
   location: string; // 시/도 단위
   schedule: string; // 일정 정보
   dogSize: string; // 대상 강아지 크기

@@ -54,9 +54,9 @@ export const CourseCard = ({ course, onReserve }: CourseCardProps) => {
 
     if (course.status === "DONE") {
       return (
-        <div className="absolute top-3 right-3 px-3 py-1.5 bg-green-500 text-white text-xs font-bold rounded-lg shadow-lg flex items-center gap-1">
+        <div className="absolute top-3 right-3 px-3 py-1.5 bg-gray-500 text-white text-xs font-bold rounded-lg shadow-lg flex items-center gap-1">
           <CheckIcon className="size-3.5" />
-          마감
+          종료
         </div>
       );
     }
@@ -70,9 +70,18 @@ export const CourseCard = ({ course, onReserve }: CourseCardProps) => {
       );
     }
 
-    if (course.status === "SCHEDULED" && course.session) {
+    if (course.status === "IN_PROGRESS") {
       return (
         <div className="absolute top-3 right-3 px-3 py-1.5 bg-blue-500 text-white text-xs font-bold rounded-lg shadow-lg flex items-center gap-1">
+          <ClockIcon className="size-3.5" />
+          진행중
+        </div>
+      );
+    }
+
+    if (course.status === "SCHEDULED" && course.session) {
+      return (
+        <div className="absolute top-3 right-3 px-3 py-1.5 bg-green-500 text-white text-xs font-bold rounded-lg shadow-lg flex items-center gap-1">
           <UserIcon className="size-3.5" />
           모집중
         </div>
@@ -211,6 +220,7 @@ export const CourseCard = ({ course, onReserve }: CourseCardProps) => {
           )}
           {course.status === "CANCELLED" ||
           course.status === "DONE" ||
+          course.status === "IN_PROGRESS" ||
           !course.session ? (
             <button
               onClick={handleButtonClick}
