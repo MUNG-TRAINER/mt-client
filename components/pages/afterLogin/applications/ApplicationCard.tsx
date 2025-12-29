@@ -17,6 +17,7 @@ interface SelectedApplication {
   price: number;
   courseId: number;
   applicationId: number;
+  dogId: number;
 }
 
 const statusTextMap: Record<string, string> = {
@@ -69,6 +70,7 @@ const ApplicationCard: React.FC<Props> = ({
             price: item.price,
             courseId: app.courseId,
             applicationId: item.applicationId,
+            dogId: app.dogId,
           });
         }
       });
@@ -216,6 +218,7 @@ const ApplicationCard: React.FC<Props> = ({
                       price: item.price,
                       courseId: app.courseId,
                       applicationId: item.applicationId,
+                      dogId: app.dogId,
                     });
                   }
                 });

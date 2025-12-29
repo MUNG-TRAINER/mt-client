@@ -14,6 +14,7 @@ interface SelectedApplication {
   price: number;
   courseId: number;
   applicationId: number; // 세션별 ID
+  dogId: number;
 }
 
 const ApplicationsActionButton: React.FC<Props> = ({ applications = [] }) => {
