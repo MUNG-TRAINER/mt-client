@@ -201,7 +201,8 @@ export default function CourseRegistModal({
           if (e.message === "ALREADY_APPLIED") {
             setConfirmDesc("이미 신청한 강의입니다.");
           } else {
-            setConfirmDesc("신청 중 오류가 발생했습니다.");
+            // 백엔드에서 전달된 에러 메시지를 그대로 표시
+            setConfirmDesc(e.message || "신청 중 오류가 발생했습니다.");
           }
 
           setConfirmResult(null);

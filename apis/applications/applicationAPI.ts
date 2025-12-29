@@ -1,5 +1,5 @@
-import {ApplicationType} from "@/types/applications/applicationsType";
-import {IResultResponseData} from "@/types/response/resultResponse";
+import { ApplicationType } from "@/types/applications/applicationsType";
+import { IResultResponseData } from "@/types/response/resultResponse";
 import type {
   PendingApplication,
   ApplicationStatusUpdateRequest,
@@ -7,7 +7,7 @@ import type {
   GroupedApplication,
   BulkStatusUpdateRequest,
 } from "@/types/applications/applicationType";
-import {fetchWithAuth} from "../common/fetchWithAuth";
+import { fetchWithAuth } from "../common/fetchWithAuth";
 
 export const applicationAPI = {
   getApplicationList: async () => {
@@ -44,7 +44,6 @@ export const applicationAPI = {
     courseId: number,
     data: Partial<ApplicationType>
   ): Promise<ApplicationType[]> => {
-  
     const res = await fetch(`/api/course/${courseId}/apply`, {
       method: "POST",
       headers: {
@@ -54,13 +53,25 @@ export const applicationAPI = {
     });
 
     if (!res.ok) {
-      const errorBody = await res.json();
+      let errorBody;
+      try {
+        errorBody = await res.json();
+      } catch {
+        // JSON 파싱 실패 시 기본 에러 메시지
+        throw new Error("신청 중 오류가 발생했습니다.");
+      }
 
-      if (errorBody.code === "ALREADY_APPLIED") {
+      // 백엔드 응답: { error: "ALREADY_APPLIED", message: "..." }
+      if (errorBody.error === "ALREADY_APPLIED") {
         throw new Error("ALREADY_APPLIED");
       }
 
-      throw new Error("APPLY_FAILED");
+      // 백엔드에서 보낸 에러 메시지를 그대로 전달
+      if (errorBody.message) {
+        throw new Error(errorBody.message);
+      }
+
+      throw new Error("신청 중 오류가 발생했습니다.");
     }
 
     const result = (await res.json()) as IResultResponseData<ApplicationType[]>;
@@ -87,7 +98,7 @@ export const applicationAPI = {
       {
         method: "GET",
         credentials: "include",
-      },
+      }
     );
 
     if (!response.ok) {
@@ -99,7 +110,7 @@ export const applicationAPI = {
   // 훈련사용: 신청 승인/거절 처리
   updateApplicationStatus: async (
     applicationId: number,
-    data: ApplicationStatusUpdateRequest,
+    data: ApplicationStatusUpdateRequest
   ): Promise<string> => {
     const response = await fetchWithAuth(
       `/api/trainer/applications/${applicationId}`,
@@ -110,7 +121,7 @@ export const applicationAPI = {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
-      },
+      }
     );
 
     if (!response.ok) {
@@ -136,7 +147,7 @@ export const applicationAPI = {
   bulkUpdateApplicationStatus: async (
     courseId: number,
     dogId: number,
-    data: BulkStatusUpdateRequest,
+    data: BulkStatusUpdateRequest
   ): Promise<string> => {
     const response = await fetchWithAuth(
       `/api/trainer/applications/bulk/${courseId}/dog/${dogId}`,
@@ -147,7 +158,7 @@ export const applicationAPI = {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
-      },
+      }
     );
 
     if (!response.ok) {

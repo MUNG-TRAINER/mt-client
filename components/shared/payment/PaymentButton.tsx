@@ -4,10 +4,10 @@ import { useTossPayment } from "@/hooks/payment/useTossPayment";
 import { usePaymentPrepare } from "@/hooks/payment/usePaymentMutation";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { PaymentRequestItem } from "@/types/payment";
 
 interface PaymentButtonProps {
-  orderName: string;
-  courseIds: number[];
+  paymentRequestItems: PaymentRequestItem[];
   customerName: string;
   customerEmail: string;
   className?: string;
@@ -19,8 +19,7 @@ interface PaymentButtonProps {
  * 클릭 시 결제 준비 API를 호출하고 토스페이먼츠 결제창을 띄웁니다.
  */
 export default function PaymentButton({
-  orderName,
-  courseIds,
+  paymentRequestItems,
   customerName,
   customerEmail,
   className = "",
@@ -47,12 +46,15 @@ export default function PaymentButton({
       // 1. 결제 준비 - 주문 생성
       toast.loading("결제를 준비하고 있습니다...");
       const prepareResult = await prepareMutation.mutateAsync({
-        courseIds: courseIds, // 실제로는 선택된 courseId 배열을 전달
+        paymentRequestItems, // courseIds, applicationIds
       });
 
       toast.dismiss();
       // 디버그: 서버 결제 준비 응답 확인
       console.log("결제 준비 결과:", prepareResult);
+
+      // 결제 준비 성공 후 세션 스토리지 정리
+      sessionStorage.removeItem("selectedApplications");
 
       const amountValue = Number(prepareResult.amount);
       // 1-1. 결제 금액이 0원일 경우 결제창 호출 없이 결제 종료 처리
@@ -74,7 +76,7 @@ export default function PaymentButton({
       // 2. 토스페이먼츠 결제창 호출
       await requestPayment({
         merchantUid: prepareResult.merchantUid,
-        orderName,
+        orderName: prepareResult.orderName,
         customerName,
         customerEmail,
         amount: amountValue,

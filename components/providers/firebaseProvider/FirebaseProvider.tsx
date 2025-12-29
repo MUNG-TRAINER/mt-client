@@ -17,7 +17,10 @@ interface IFCMContextTypes {
   token: string | null;
   ready: boolean;
 }
-const FCMContext = createContext<IFCMContextTypes>({ready: false, token: null});
+const FCMContext = createContext<IFCMContextTypes>({
+  ready: false,
+  token: null,
+});
 export const useFCM = () => useContext(FCMContext);
 
 export default function FirebaseProvider({children}: {children: ReactNode}) {

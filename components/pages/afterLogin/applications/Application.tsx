@@ -32,9 +32,11 @@ const Applications = () => {
         <ul className="flex-1 overflow-y-auto flex flex-col gap-4 p-5">
           {applicationsToShow.map((app) => (
             <ApplicationCard
-              key={app.applicationId}
+              key={app.courseId}
               app={app}
-              isSelected={selectedIndex.includes(app.applicationId)}
+              isSelected={selectedIndex.includes(
+                app.applicationItems[0]?.applicationId || 0
+              )}
               onOpenRejectModal={openRejectModal}
             />
           ))}
