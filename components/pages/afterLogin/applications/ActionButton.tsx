@@ -43,7 +43,6 @@ const ApplicationsActionButton: React.FC<Props> = () => {
     } catch {
       return "결제하기";
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab, selectedIndex]);
 
   const handleOnClick = () => {
