@@ -113,7 +113,7 @@ export default function ReuploadComp({
         </div>
         <div className="flex gap-2">
           <button className="w-full py-2 bg-(--mt-blue) rounded-md font-bold text-(--mt-white)">
-            수정하기
+            훈련 재개설하기
           </button>
           <Link
             href={`/course/${courseId}`}

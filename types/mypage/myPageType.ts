@@ -15,4 +15,5 @@ export interface IMyPageTypes {
   roadname: string;
   restAddress: string;
   postcode: string;
+  fcmToken?: string;
 }

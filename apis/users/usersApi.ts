@@ -66,4 +66,16 @@ export const usersApi = {
       throw new Error("프로필 공개 설정 변경에 실패했습니다.");
     }
   },
+  getUserFCMToken: async (userId: number) => {
+    const res = await fetchWithAuth(`/api/users/fcm-token/${userId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!res.ok) {
+      throw new Error("해당 유저의 FCM토큰을 가져오지 못했습니다.");
+    }
+    return await res.json();
+  },
 };

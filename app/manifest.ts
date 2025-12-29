@@ -12,7 +12,12 @@ export default function manifest(): MetadataRoute.Manifest {
     screenshots: [
       {
         src: "/logos/logo_png.png",
-        sizes: "1280x720",
+        sizes: "383x400",
+        form_factor: "narrow",
+      },
+      {
+        src: "/images/pwa-wide.jpg",
+        sizes: "1280x847",
         form_factor: "wide",
       },
     ],

@@ -25,8 +25,8 @@ export interface IDogResponse {
 // 반려견 통계 상세 타입 (API_DOG_STATS_DETAIL.md 기반)
 export type CourseType = "ONCE" | "MULTI";
 export type LessonForm = "WALK" | "GROUP" | "PRIVATE";
-export type CourseStatus = "SCHEDULED" | "CANCELLED" | "DONE";
-export type Difficulty = "초급" | "중급" | "고급";
+export type CourseStatus = "SCHEDULED" | "IN_PROGRESS" | "CANCELLED" | "DONE";
+export type Difficulty = "BASIC" | "STANDARD" | "EXPERT";
 export type DogSize = "SMALL" | "MEDIUM" | "LARGE";
 export type AttendanceStatus = "ATTENDED" | "ABSENT" | null;
 export type SocializationLevel = "LOW" | "MEDIUM" | "HIGH";

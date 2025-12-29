@@ -24,8 +24,8 @@ export default function useCheckLoggedIn() {
     },
     staleTime: ACCESS_TOKEN_TIME - 30_000,
     gcTime: ACCESS_TOKEN_TIME * 2,
+    refetchInterval: isLoggedOut ? false : ACCESS_TOKEN_TIME + 5000,
     enabled: !isLoggedOut,
-    refetchInterval: isLoggedOut ? false : ACCESS_TOKEN_TIME - 30_000,
     retry: false,
   });
 
@@ -50,6 +50,7 @@ export default function useCheckLoggedIn() {
     );
   };
   const role = isLoggedOut ? null : data && "role" in data ? data.role : null;
+  const myId = data && "userId" in data && data.userId;
   return {
     data,
     isPending,
@@ -59,5 +60,6 @@ export default function useCheckLoggedIn() {
     resetUserCheck,
     forceRefresh,
     checkIsOwner,
+    myId,
   };
 }
