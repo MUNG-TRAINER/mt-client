@@ -10,5 +10,4 @@ export interface IFirebaseSendMsgTypes extends IFirebaseMsgTypes {
 }
 export interface IFirebaseSendMsgHookTypes extends IFirebaseMsgTypes {
   msgBody: string;
-  targetId: number;
 }

@@ -11,22 +11,30 @@ import {useCreateWishlist} from "@/hooks/afterLogin/wishlist/useCreateWishlist";
 import ConfirmModal from "@/components/pages/afterLogin/wishlist/ConfirmModal";
 import {useApplyCourse} from "@/hooks/afterLogin/applications/useApplyCourse";
 import {useWishlistDogs} from "@/hooks/afterLogin/wishlist/useWishlistDogs";
+import {useFCMState} from "@/stores/fcm/fcmState";
+import useCheckLoggedIn from "@/hooks/afterLogin/users/useCheckLoggedIn";
 
 export default function CourseRegistModal({
+  trainerToken,
   courseId,
   dogs,
   mode,
   modalOff,
 }: {
+  trainerToken: string;
   courseId: string;
   dogs: IDogListType | undefined;
   mode: "wishlist" | "apply" | null;
   modalOff: Dispatch<SetStateAction<boolean>>;
 }) {
+  const router = useRouter();
+  //states
   const [id, setId] = useState<number | null>(null);
   const [open, setOpen] = useState(false);
-  const router = useRouter();
   const [dogColors] = useState(() => dogs && randomColor(dogs));
+  //zustand
+  const {myId} = useCheckLoggedIn();
+  const {setUserId, setTrainerToken} = useFCMState();
 
   const handleBack = () => {
     // animate close then call modalOff
@@ -158,6 +166,8 @@ export default function CourseRegistModal({
       // 상담 안 된 강아지는 상담 안내 모달 띄우고 이동
       setConfirmDesc("상담이 안된 반려견입니다. 상담페이지로 이동합니다.");
       setConfirmOpen(true);
+      setUserId(Number(myId));
+      setTrainerToken(trainerToken);
       setTimeout(() => {
         setConfirmOpen(false);
         router.push(`/counseling/create/${id}`);
@@ -179,7 +189,6 @@ export default function CourseRegistModal({
         },
         onError: (e) => {
           console.error(e);
-
           if (e.message === "ALREADY_APPLIED") {
             setConfirmDesc("이미 신청한 강의입니다.");
           } else {

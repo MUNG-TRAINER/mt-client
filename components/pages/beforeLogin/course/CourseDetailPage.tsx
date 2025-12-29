@@ -27,6 +27,7 @@ export default function CourseDetailPage({
   const {data: myDogs} = useMyDogs();
   const {modal, mode, setModalOff} = useRegistModal();
   const isClose = checkIsClose(sessionList, courseInfo);
+  console.log(trainerInfo.fcmToken);
   if (!courseInfo) {
     return <div className="p-6 text-center">과정 정보를 찾을 수 없습니다.</div>;
   }
@@ -59,6 +60,7 @@ export default function CourseDetailPage({
       </div>
       {modal && (
         <CourseRegistModal
+          trainerToken={trainerInfo.fcmToken ?? ""}
           courseId={courseId}
           dogs={myDogs}
           mode={mode}

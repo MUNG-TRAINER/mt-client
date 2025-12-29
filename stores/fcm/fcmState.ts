@@ -1,16 +1,24 @@
-import {createStore} from "zustand";
+import {create} from "zustand";
 import {createJSONStorage, persist} from "zustand/middleware";
 interface IFCMState {
+  userId: number | null;
   targetId: number | null;
+  trainerToken: string | null;
 }
 interface IFCMSetState {
+  setUserId: (id: number | null) => void;
   setTargetId: (id: number | null) => void;
+  setTrainerToken: (token: string | null) => void;
 }
-export const useFCMState = createStore<IFCMState & IFCMSetState>()(
+export const useFCMState = create<IFCMState & IFCMSetState>()(
   persist(
     (set) => ({
+      userId: null,
       targetId: null,
-      setTargetId: (id: number | null) => set(() => ({targetId: id})),
+      trainerToken: null,
+      setUserId: (id: number | null) => set({targetId: id}),
+      setTargetId: (id: number | null) => set({targetId: id}),
+      setTrainerToken: (token: string | null) => set({trainerToken: token}),
     }),
     {
       name: "TARGET_USERID",

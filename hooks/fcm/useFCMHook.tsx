@@ -3,29 +3,33 @@
 import {fcmApi} from "@/apis/fcm/fcmApi";
 import {usersApi} from "@/apis/users/usersApi";
 import {IFirebaseSendMsgHookTypes} from "@/types/firebaseMsg/IFirebaseMsgTypes";
-import {useMutation} from "@tanstack/react-query";
+import {useMutation, useQuery} from "@tanstack/react-query";
 
-export default function useFCMHook() {
+export default function useFCMHook({targetId}: {targetId: number}) {
+  const {data: token} = useQuery({
+    queryKey: ["getUserFCMToken", targetId],
+    queryFn: async (): Promise<string> =>
+      await usersApi.getUserFCMToken(targetId),
+    retry: false,
+  });
   const {mutate, isPending, isError} = useMutation({
     mutationKey: ["sendFCMMsg"],
     mutationFn: async ({
-      targetId,
       userId,
       title,
       desc,
       url,
       msgBody,
     }: IFirebaseSendMsgHookTypes) => {
-      const targetFCMToken = await usersApi.getUserFCMToken(targetId);
       await fcmApi.sendFCMMsg({
         userId,
         title,
         desc,
         url,
         msgBody,
-        token: targetFCMToken,
+        token: token + "",
       });
     },
   });
-  return {mutate, isPending, isError};
+  return {token, mutate, isPending, isError};
 }
