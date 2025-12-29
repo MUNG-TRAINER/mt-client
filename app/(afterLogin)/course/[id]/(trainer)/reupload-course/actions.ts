@@ -30,7 +30,7 @@ export async function reuploadCourseAction(
     const sessions: SessionUploadRequest[] = [];
     for (let i = 0; i < sessionCount; i++) {
       const sessionNo = formData.get(`session[${i}].sessionNo`)?.toString();
-      const status = formData.get(`session[${i}].status`)?.toString();
+      const status = "SCHEDULED";
       const maxStudents = formData.get(`session[${i}].maxStudents`)?.toString();
       const price = formData.get(`session[${i}].price`)?.toString();
       const sessionDate = formData.get(`session[${i}].sessionDate`)?.toString();
@@ -61,6 +61,7 @@ export async function reuploadCourseAction(
       title: formData.get("title"),
       location: formData.get("location"),
       schedule: formData.get("schedule"),
+      status: "SCHEDULED",
       isFree: formData.get("isFree"),
       mainImage: formData.get("mainImage") as File | null,
       mainImageKey: formData.get("mainImageKey") as string,

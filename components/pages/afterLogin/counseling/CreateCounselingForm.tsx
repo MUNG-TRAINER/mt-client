@@ -1,14 +1,16 @@
 "use client";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {useState} from "react";
+import {useRouter} from "next/navigation";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
 import Image from "next/image";
 import useDogForCounseling from "@/hooks/afterLogin/counseling/useDogForCounseling";
-import { counselingApi } from "@/apis/counseling/counselingApi";
-import { DogIcon } from "@/components/icons/dog";
-import { InformationCircleIcon } from "@/components/icons/info";
+import {counselingApi} from "@/apis/counseling/counselingApi";
+import {DogIcon} from "@/components/icons/dog";
+import {InformationCircleIcon} from "@/components/icons/info";
 import RoundboxColorBtn from "@/components/shared/buttons/RoundboxColorBtn";
 import AlertModal from "@/components/shared/modal/AlertModal";
+import {fcmApi} from "@/apis/fcm/fcmApi";
+import {useFCMState} from "@/stores/fcm/fcmState";
 
 interface ICreateCounselingFormProps {
   dogId: number;
@@ -19,18 +21,26 @@ export default function CreateCounselingForm({
 }: ICreateCounselingFormProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { data: dog, isPending, isError } = useDogForCounseling(dogId);
+  const {data: dog, isPending, isError} = useDogForCounseling(dogId);
   const [phone, setPhone] = useState("");
   const [phoneError, setPhoneError] = useState("");
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showErrorModal, setShowErrorModal] = useState(false);
-
+  const {userId, trainerToken} = useFCMState();
   // 상담 신청 mutation
   const createMutation = useMutation({
     mutationFn: counselingApi.createCounseling,
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       // 내 상담 목록만 무효화
-      queryClient.invalidateQueries({ queryKey: ["counselings", "my"] });
+      queryClient.invalidateQueries({queryKey: ["counselings", "my"]});
+      await fcmApi.sendFCMMsg({
+        userId: userId!,
+        title: `새로운 상담신청이 도착했어요.`,
+        msgBody: `${dog?.dogName}의 상담신청이 도착했어요.`,
+        desc: `${dog?.dogName}의 상담신청이 도착했어요.`,
+        url: `/trainer/counseling`,
+        token: trainerToken ?? "",
+      });
       setShowSuccessModal(true);
     },
     onError: () => {

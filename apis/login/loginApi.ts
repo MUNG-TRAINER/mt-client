@@ -39,18 +39,14 @@ export const loginApi = {
     return data;
   },
   check: async () => {
-    const res = await fetchWithAuth(
-      `/api/auth/check`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        cache: "no-store",
+    const res = await fetchWithAuth(`/api/auth/check`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
       },
-      false,
-    );
+      credentials: "include",
+      cache: "no-store",
+    });
     if (res.status === 401) {
       const data: IResultResponseData<IFailedCheckLoggedInType> =
         await res.json();

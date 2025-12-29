@@ -8,7 +8,9 @@ interface IPresignedUrlRequest {
 
 export const presignedUrlApi = {
   // POST /presigned-url - S3 업로드용 Presigned URL 발급
-  getPresignedUrl: async (data: IPresignedUrlRequest): Promise<string> => {
+  getPresignedUrl: async (
+    data: IPresignedUrlRequest,
+  ): Promise<{presignedUrl: string}> => {
     const response = await fetchWithAuth(`/api/s3/getPresignedUrl`, {
       method: "POST",
       headers: {
@@ -22,8 +24,7 @@ export const presignedUrlApi = {
     }
 
     const result = await response.json();
-    const presignedUrl: string = result.uploadUrl || result;
-    return presignedUrl;
+    return result;
   },
 
   // Presigned URL로 S3에 파일 업로드

@@ -11,4 +11,5 @@ export interface ITrainerInfoType {
   tag: string;
   registCode: string;
   certificationImageUrl: string | null;
+  fcmToken?: string;
 }
