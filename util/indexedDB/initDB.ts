@@ -7,9 +7,9 @@ export interface IAlertTypes {
   id: number;
   state: boolean;
 }
-export const INDEXED_DB_NAME = "notice-center";
-export const ALERT = "alert";
-export const NOTIFICATION = "notification";
+export const INDEXED_DB_NAME = "MUNGSCHOOL";
+export const ALERT = "ALERT";
+export const NOTIFICATION = "NOTIFICATION";
 
 // initailized DB
 export const initDB = (ver: number): Promise<IDBDatabase> => {
@@ -23,14 +23,13 @@ export const initDB = (ver: number): Promise<IDBDatabase> => {
     // index db 업그레이드 시 자동 업데이트
     dbOpen.addEventListener("upgradeneeded", () => {
       const db = dbOpen.result;
-      const dbs =
-        db.objectStoreNames.contains(ALERT) &&
-        db.objectStoreNames.contains(NOTIFICATION);
-      if (!dbs) {
+      if (!db.objectStoreNames.contains(ALERT)) {
         db.createObjectStore(ALERT, {
           keyPath: "id",
           autoIncrement: true,
         });
+      }
+      if (!db.objectStoreNames.contains(NOTIFICATION)) {
         db.createObjectStore(NOTIFICATION, {
           keyPath: "id",
           autoIncrement: true,

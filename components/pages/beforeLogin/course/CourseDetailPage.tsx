@@ -59,6 +59,7 @@ export default function CourseDetailPage({
       </div>
       {modal && (
         <CourseRegistModal
+          trainerId={Number(trainerInfo.trainerId)}
           trainerToken={trainerInfo.fcmToken ?? ""}
           courseId={courseId}
           dogs={myDogs}
