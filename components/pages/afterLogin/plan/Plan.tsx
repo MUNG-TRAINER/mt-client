@@ -12,6 +12,7 @@ import {useRouter} from "next/navigation";
 import DogImage from "@/public/images/application/dog.jpg";
 import CalendarImage from "@/public/images/application/calendar.jpg";
 import SessionNoImage from "@/public/images/application/star.jpg";
+import AttendanceModal from "../trainer/attendance/AttendanceModal";
 
 interface PlanProps {
   courses: UserCourseType[] | TrainerCourseType[];
@@ -32,6 +33,14 @@ export default function Plan({
 
   // 선택한 날짜 상태 (캘린더용)
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
+
+  // 출석 모달 상태
+  const [selectedSession, setSelectedSession] = useState<{
+    courseId: number;
+    sessionId: number;
+    sessionNo: number;
+    isScheduled: boolean;
+  } | null>(null);
 
   // 선택된 날짜에 해당하는 세션만 필터링
   const selectedSessions = selectedDate
@@ -138,11 +147,28 @@ export default function Plan({
           )}
         </div>
       )}
+      
+      {/* 출석 모달 - 나의 훈련 전체 보기 위에 배치 */}
+      {selectedSession && (
+        <AttendanceModal
+          isOpen={!!selectedSession}
+          courseId={selectedSession.courseId}
+          sessionId={selectedSession.sessionId}
+          sessionNo={selectedSession.sessionNo}
+          onClose={() => setSelectedSession(null)}
+          isEditable={selectedSession.isScheduled}
+        />
+      )}
+      
       <div className="text-[18px] font-semibold mt-5 mb-5">
         나의 훈련 전체 보기
       </div>
       <PlanTabs activeTab={activeTab} setActiveTab={setActiveTab} />
-      <PlanCourseList courses={planCourses} isTrainer={isTrainer} />
+      <PlanCourseList 
+        courses={planCourses} 
+        isTrainer={isTrainer}
+        onOpenAttendance={setSelectedSession}
+      />
       {(role === "TRAINER" || role === "USER") && <PlanFloatingBtn />}
     </div>
   );

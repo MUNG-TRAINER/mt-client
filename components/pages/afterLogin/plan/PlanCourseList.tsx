@@ -11,22 +11,21 @@ import TypeImage from "@/public/images/application/repeat.jpg";
 import LessonformImage from "@/public/images/application/check.jpg";
 import SessionNoImage from "@/public/images/application/star.jpg";
 import BellImage from "@/public/images/application/bell.jpg";
-import {useState} from "react";
-import AttendanceModal from "../trainer/attendance/AttendanceModal";
 
 interface Props {
   courses: UserCourseType[] | TrainerCourseType[];
   isTrainer: boolean;
-}
-export default function PlanCourseList({courses, isTrainer = false}: Props) {
-  const router = useRouter();
-  const formatTime = (time: string) => time.slice(0, 5);
-  const [selectedSession, setSelectedSession] = useState<{
+  onOpenAttendance?: (session: {
     courseId: number;
     sessionId: number;
     sessionNo: number;
     isScheduled: boolean;
-  } | null>(null);
+  }) => void;
+}
+export default function PlanCourseList({courses, isTrainer = false, onOpenAttendance}: Props) {
+  const router = useRouter();
+  const formatTime = (time: string) => time.slice(0, 5);
+
   if (!courses || courses.length === 0) {
     return (
       <div className="text-sm text-gray-400 text-center py-10">
@@ -126,7 +125,7 @@ export default function PlanCourseList({courses, isTrainer = false}: Props) {
                     style={{border: "1px solid #C5C5C5", color: "#444"}}
                     onClick={(e) => {
                       e.stopPropagation();
-                      setSelectedSession({
+                      onOpenAttendance?.({
                         courseId: course.courseId,
                         sessionId: session.sessionId,
                         sessionNo: session.sessionNo,
@@ -152,17 +151,6 @@ export default function PlanCourseList({courses, isTrainer = false}: Props) {
           )),
         )}
       </ul>
-      {/* 출석 모달 - 예정된 훈련은 편집 가능, 완료된 훈련은 읽기 전용 */}
-      {selectedSession && (
-        <AttendanceModal
-          isOpen={!!selectedSession}
-          courseId={selectedSession.courseId}
-          sessionId={selectedSession.sessionId}
-          sessionNo={selectedSession.sessionNo}
-          onClose={() => setSelectedSession(null)}
-          isEditable={selectedSession.isScheduled}
-        />
-      )}
     </>
   );
 }
