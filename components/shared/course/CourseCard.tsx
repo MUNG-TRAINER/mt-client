@@ -13,6 +13,10 @@ import { UserIcon } from "@/components/icons/user";
 import { CheckIcon } from "@/components/icons/check";
 import { XMarkIcon } from "@/components/icons/xMark";
 import { getDogSizeLabel } from "@/util/course/courseMappings";
+import {
+  getDifficultyColor,
+  getDifficultyLabel,
+} from "@/util/course/difficultyUtils";
 
 interface CourseCardProps {
   course: CourseItem;
@@ -54,9 +58,9 @@ export const CourseCard = ({ course, onReserve }: CourseCardProps) => {
 
     if (course.status === "DONE") {
       return (
-        <div className="absolute top-3 right-3 px-3 py-1.5 bg-green-500 text-white text-xs font-bold rounded-lg shadow-lg flex items-center gap-1">
+        <div className="absolute top-3 right-3 px-3 py-1.5 bg-gray-500 text-white text-xs font-bold rounded-lg shadow-lg flex items-center gap-1">
           <CheckIcon className="size-3.5" />
-          마감
+          종료
         </div>
       );
     }
@@ -70,9 +74,18 @@ export const CourseCard = ({ course, onReserve }: CourseCardProps) => {
       );
     }
 
-    if (course.status === "SCHEDULED" && course.session) {
+    if (course.status === "IN_PROGRESS") {
       return (
         <div className="absolute top-3 right-3 px-3 py-1.5 bg-blue-500 text-white text-xs font-bold rounded-lg shadow-lg flex items-center gap-1">
+          <ClockIcon className="size-3.5" />
+          진행중
+        </div>
+      );
+    }
+
+    if (course.status === "SCHEDULED" && course.session) {
+      return (
+        <div className="absolute top-3 right-3 px-3 py-1.5 bg-green-500 text-white text-xs font-bold rounded-lg shadow-lg flex items-center gap-1">
           <UserIcon className="size-3.5" />
           모집중
         </div>
@@ -127,8 +140,10 @@ export const CourseCard = ({ course, onReserve }: CourseCardProps) => {
           <span className="px-2.5 py-1 bg-blue-50 text-blue-600 text-xs rounded-md font-semibold">
             {LESSON_FORM_LABEL[course.lessonForm]}
           </span>
-          <span className="px-2.5 py-1 bg-green-50 text-green-600 text-xs rounded-md font-semibold">
-            {course.difficulty}
+          <span
+            className={`px-2.5 py-1 text-xs rounded-md font-semibold ${getDifficultyColor(course.difficulty)}`}
+          >
+            {getDifficultyLabel(course.difficulty)}
           </span>
           {getDogSizeLabel(course.dogSize).map((sizeLabel, index) => (
             <span
@@ -211,6 +226,7 @@ export const CourseCard = ({ course, onReserve }: CourseCardProps) => {
           )}
           {course.status === "CANCELLED" ||
           course.status === "DONE" ||
+          course.status === "IN_PROGRESS" ||
           !course.session ? (
             <button
               onClick={handleButtonClick}

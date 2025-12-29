@@ -17,7 +17,10 @@ interface IFCMContextTypes {
   token: string | null;
   ready: boolean;
 }
-const FCMContext = createContext<IFCMContextTypes>({ready: false, token: null});
+const FCMContext = createContext<IFCMContextTypes>({
+  ready: false,
+  token: null,
+});
 export const useFCM = () => useContext(FCMContext);
 
 export default function FirebaseProvider({children}: {children: ReactNode}) {
@@ -25,7 +28,13 @@ export default function FirebaseProvider({children}: {children: ReactNode}) {
   const [token, setToken] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
   // custom hook
-  const {addNotification, editAlertState} = useIndexedDB();
+  const {initDB, addNotification, editAlertState} = useIndexedDB();
+  useEffect(() => {
+    initDB(1)
+      .then(() => console.log("indexDB 작동"))
+      .catch(() => console.log("indexDB 에러"));
+  }, [initDB]);
+
   useEffect(() => {
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker
@@ -53,15 +62,15 @@ export default function FirebaseProvider({children}: {children: ReactNode}) {
     const init = async () => {
       const notification = await Notification.requestPermission();
       const messaging = getMessaging(app);
+      const vapidKeyResponse = await fetch("/api/fcm/vapidkey");
       if (notification === "granted") {
         const fcmToken = await getToken(messaging, {
-          vapidKey:
-            "BDvAfhYQkGZBR6_A_NLM2jMttamkTgaHVlIlU3NjkN_6d1JSKexIcf5n9TKfSfOnVTfW6PqDXn9h4_OkCs\_\_JSdiE",
+          vapidKey: await vapidKeyResponse.json(),
         });
+        await fcmApi.updateFcmToken(fcmToken);
         setToken(fcmToken);
-
         setReady(true);
-        msgUnSubscribe = onMessage(messaging, (payload) => {
+        msgUnSubscribe = onMessage(messaging, async (payload) => {
           console.log("foreground :: ", payload);
           const payLoadTitle = payload.notification?.title;
           const payLoadOption: NotificationOptions = {
@@ -72,8 +81,8 @@ export default function FirebaseProvider({children}: {children: ReactNode}) {
           const noti = new Notification(payLoadTitle + "", payLoadOption);
           const data: IFirebaseMsgTypes = noti.data;
           // 여기에 db에 noti저장하는 함수 만들 수 있음
-          addNotification({ver: 1, data});
-          editAlertState(true);
+          await addNotification({ver: 1, data});
+          await editAlertState(true);
           const origin = self.location?.origin ?? window.location.origin;
           const path = data.url ? data.url : "";
           noti.onclick = () => {

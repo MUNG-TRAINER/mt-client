@@ -5,24 +5,18 @@ import {usersApi} from "@/apis/users/usersApi";
 import {IFirebaseSendMsgHookTypes} from "@/types/firebaseMsg/IFirebaseMsgTypes";
 import {useMutation, useQuery} from "@tanstack/react-query";
 
-export default function useFCMHook({
-  targetId,
+export default function useFindTokenByName({
   userName,
+  enabled,
 }: {
-  targetId: number;
-  userName?: string;
+  userName: string;
+  enabled: boolean;
 }) {
   const {data: token} = useQuery({
-    queryKey: ["getUserFCMToken", targetId],
-    queryFn: async (): Promise<string> =>
-      await usersApi.getUserFCMToken(targetId),
-    retry: false,
-  });
-  const {data: tokenByUserName} = useQuery({
     queryKey: ["getUserFCMToken", userName],
     queryFn: async (): Promise<string> =>
       await usersApi.getUserFCMTokenByUserName(userName + ""),
-    retry: false,
+    enabled,
   });
   const {mutate, isPending, isError} = useMutation({
     mutationKey: ["sendFCMMsg"],
@@ -43,5 +37,5 @@ export default function useFCMHook({
       });
     },
   });
-  return {token, tokenByUserName, mutate, isPending, isError};
+  return {token, mutate, isPending, isError};
 }
