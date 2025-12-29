@@ -7,7 +7,6 @@ import { useRouter } from "next/navigation";
 import { PaymentRequestItem } from "@/types/payment";
 
 interface PaymentButtonProps {
-  orderName: string;
   paymentRequestItems: PaymentRequestItem[];
   customerName: string;
   customerEmail: string;
@@ -20,7 +19,6 @@ interface PaymentButtonProps {
  * 클릭 시 결제 준비 API를 호출하고 토스페이먼츠 결제창을 띄웁니다.
  */
 export default function PaymentButton({
-  orderName,
   paymentRequestItems,
   customerName,
   customerEmail,
@@ -75,7 +73,7 @@ export default function PaymentButton({
       // 2. 토스페이먼츠 결제창 호출
       await requestPayment({
         merchantUid: prepareResult.merchantUid,
-        orderName,
+        orderName: prepareResult.orderName,
         customerName,
         customerEmail,
         amount: amountValue,

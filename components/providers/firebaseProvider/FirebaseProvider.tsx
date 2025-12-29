@@ -1,9 +1,9 @@
 "use client";
-import {fcmApi} from "@/apis/fcm/fcmApi";
+import { fcmApi } from "@/apis/fcm/fcmApi";
 import useIndexedDB from "@/hooks/indexedDB/useIndexedDB";
-import {IFirebaseMsgTypes} from "@/types/firebaseMsg/IFirebaseMsgTypes";
-import {app} from "@/util/firebase/initFirebase";
-import {getMessaging, getToken, onMessage} from "firebase/messaging";
+import { IFirebaseMsgTypes } from "@/types/firebaseMsg/IFirebaseMsgTypes";
+import { app } from "@/util/firebase/initFirebase";
+import { getMessaging, getToken, onMessage } from "firebase/messaging";
 import {
   createContext,
   ReactNode,
@@ -17,19 +17,26 @@ interface IFCMContextTypes {
   token: string | null;
   ready: boolean;
 }
-const FCMContext = createContext<IFCMContextTypes>({ready: false, token: null});
+const FCMContext = createContext<IFCMContextTypes>({
+  ready: false,
+  token: null,
+});
 export const useFCM = () => useContext(FCMContext);
 
-export default function FirebaseProvider({children}: {children: ReactNode}) {
+export default function FirebaseProvider({
+  children,
+}: {
+  children: ReactNode;
+}) {
   // states
   const [token, setToken] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
   // custom hook
-  const {addNotification, editAlertState} = useIndexedDB();
+  const { addNotification, editAlertState } = useIndexedDB();
   useEffect(() => {
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker
-        .register("/firebase-messaging-sw.js", {scope: "/"})
+        .register("/firebase-messaging-sw.js", { scope: "/" })
         .then(
           (regist) => {
             console.log("서비스워커가 등록되었습니다.");
@@ -55,8 +62,7 @@ export default function FirebaseProvider({children}: {children: ReactNode}) {
       const messaging = getMessaging(app);
       if (notification === "granted") {
         const fcmToken = await getToken(messaging, {
-          vapidKey:
-            "BDvAfhYQkGZBR6_A_NLM2jMttamkTgaHVlIlU3NjkN_6d1JSKexIcf5n9TKfSfOnVTfW6PqDXn9h4_OkCs\_\_JSdiE",
+          vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY,
         });
         setToken(fcmToken);
 
@@ -72,7 +78,7 @@ export default function FirebaseProvider({children}: {children: ReactNode}) {
           const noti = new Notification(payLoadTitle + "", payLoadOption);
           const data: IFirebaseMsgTypes = noti.data;
           // 여기에 db에 noti저장하는 함수 만들 수 있음
-          addNotification({ver: 1, data});
+          addNotification({ ver: 1, data });
           editAlertState(true);
           const origin = self.location?.origin ?? window.location.origin;
           const path = data.url ? data.url : "";
@@ -96,6 +102,6 @@ export default function FirebaseProvider({children}: {children: ReactNode}) {
     updateFcmToken();
   }, [token]);
 
-  const value = useMemo(() => ({token, ready}), [token, ready]);
+  const value = useMemo(() => ({ token, ready }), [token, ready]);
   return <FCMContext.Provider value={value}>{children}</FCMContext.Provider>;
 }

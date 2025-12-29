@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import PaymentCheckoutSection from "@/components/shared/payment/PaymentCheckoutSection";
+import type { PaymentUiItem } from "@/components/shared/payment/PaymentCheckoutSection";
 import type { PaymentRequestItem } from "@/types/payment";
 
 /**
@@ -13,6 +14,7 @@ interface PaymentItem {
   price: number;
   courseId: number;
   applicationId: number;
+  dogId: number;
 }
 
 export default function PaymentDetailPage() {
@@ -36,22 +38,29 @@ export default function PaymentDetailPage() {
           price: Number(it?.price ?? 0),
           courseId: Number(it?.courseId ?? 0),
           applicationId: Number(it?.applicationId ?? 0),
+          dogId: Number(it?.dogId ?? 0),
         }))
         .filter((it) => it.title !== "" && !Number.isNaN(it.price));
 
       return normalized;
-    } catch (e) {
+    } catch {
       return [];
-    } finally {
-      // 사용 후 세션 스토리지 정리
-      sessionStorage.removeItem("selectedApplications");
     }
   });
-  const paymentRequestItems: PaymentRequestItem[] = items.map((it) => ({ 
-    courseId: it.courseId, 
-    applicationId: it.applicationId 
+  const paymentRequestItems: PaymentRequestItem[] = items.map((it) => ({
+    courseId: it.courseId,
+    applicationId: it.applicationId,
   }));
   const totalAmount = items.reduce((sum, it) => sum + it.price, 0);
+
+  // CheckoutSection에 UI 전용 아이템 전달 (그룹핑은 내부에서 수행)
+  const uiItems: PaymentUiItem[] = items.map((it) => ({
+    courseId: it.courseId,
+    dogId: it.dogId,
+    applicationId: it.applicationId,
+    price: it.price,
+    title: it.title,
+  }));
 
   // 주문명: 단건은 그대로, 다건은 "첫상품 외 N건"
   const orderName =
@@ -67,7 +76,7 @@ export default function PaymentDetailPage() {
           <h1 className="text-3xl font-bold text-gray-900 mb-6">결제하기</h1>
 
           {/* 상품 정보 */}
-          <div className="border-b pb-6 mb-6">
+          {/* <div className="border-b pb-6 mb-6">
             <h2 className="text-xl font-semibold text-gray-800 mb-4">
               주문 상품
             </h2>
@@ -92,12 +101,12 @@ export default function PaymentDetailPage() {
                 )}
               </div>
             </div>
-          </div>
+          </div> */}
 
           <PaymentCheckoutSection
-            orderName={orderName}
             paymentRequestItems={paymentRequestItems}
             totalAmount={totalAmount}
+            uiItems={uiItems}
           />
 
           {/* 안내 문구 */}
