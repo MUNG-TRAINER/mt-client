@@ -17,7 +17,7 @@ interface SelectedApplication {
   dogId: number;
 }
 
-const ApplicationsActionButton: React.FC<Props> = ({ applications = [] }) => {
+const ApplicationsActionButton: React.FC<Props> = () => {
   const router = useRouter();
   const { activeTab, selectedIndex } = useApplicationState();
   const { mutate } = useDeleteApplication();
@@ -32,23 +32,18 @@ const ApplicationsActionButton: React.FC<Props> = ({ applications = [] }) => {
 
     try {
       const selectedApplications: SelectedApplication[] = JSON.parse(stored);
-      // ACCEPT 상태의 세션만 필터링
-      const acceptItems = selectedApplications.filter((sel) => {
-        const app = applications.find((a) => a.courseId === sel.courseId);
-        const item = app?.applicationItems.find(
-          (i) => i.applicationId === sel.applicationId
-        );
-        return item && item.applicationStatus === "ACCEPT";
-      });
 
-      if (acceptItems.length === 0) return "결제하기";
+      if (selectedApplications.length === 0) return "결제하기";
 
-      const totalPrice = acceptItems.reduce((sum, sel) => sum + sel.price, 0);
+      const totalPrice = selectedApplications.reduce(
+        (sum, sel) => sum + sel.price,
+        0,
+      );
       return `${totalPrice.toLocaleString()}원 결제하기`;
     } catch {
       return "결제하기";
     }
-  }, [activeTab, selectedIndex, applications]);
+  }, [activeTab, selectedIndex]);
 
   const handleOnClick = () => {
     if (activeTab === "pending") {
@@ -58,27 +53,18 @@ const ApplicationsActionButton: React.FC<Props> = ({ applications = [] }) => {
 
     // sessionStorage에서 선택된 항목 가져오기
     const selected = sessionStorage.getItem("selectedApplications");
-    let selectedApplications: SelectedApplication[] = selected
+    const selectedApplications: SelectedApplication[] = selected
       ? JSON.parse(selected)
       : [];
-
-    // 'ACCEPT' 상태만 결제 가능하도록 필터링
-    selectedApplications = selectedApplications.filter((sel) => {
-      const app = applications.find((a) => a.courseId === sel.courseId);
-      const item = app?.applicationItems.find(
-        (i) => i.applicationId === sel.applicationId
-      );
-      return item && item.applicationStatus === "ACCEPT";
-    });
 
     if (selectedApplications.length === 0) {
       throw new Error("결제 가능한 항목이 없습니다.");
     }
 
-    // 필터링된 결과를 세션 스토리지에 저장
+    // 선택된 항목 그대로를 세션 스토리지에 저장
     sessionStorage.setItem(
       "selectedApplications",
-      JSON.stringify(selectedApplications)
+      JSON.stringify(selectedApplications),
     );
     router.push(`/payment/detail`);
   };
@@ -86,7 +72,7 @@ const ApplicationsActionButton: React.FC<Props> = ({ applications = [] }) => {
     <div className="sticky bottom-0 w-full p-4 bg-white border-t border-gray-300">
       <button
         onClick={handleOnClick}
-        // 결제탭에서는 'ACCEPT' 상태의 선택된 항목이 없으면 비활성화
+        // 결제탭에서는 선택된 항목이 있으면 활성화
         disabled={
           activeTab === "pending"
             ? selectedIndex.length === 0
@@ -96,16 +82,7 @@ const ApplicationsActionButton: React.FC<Props> = ({ applications = [] }) => {
                 try {
                   const selectedApplications: SelectedApplication[] =
                     JSON.parse(stored);
-                  const acceptItems = selectedApplications.filter((sel) => {
-                    const app = applications.find(
-                      (a) => a.courseId === sel.courseId
-                    );
-                    const item = app?.applicationItems.find(
-                      (i) => i.applicationId === sel.applicationId
-                    );
-                    return item && item.applicationStatus === "ACCEPT";
-                  });
-                  return acceptItems.length === 0;
+                  return selectedApplications.length === 0;
                 } catch {
                   return true;
                 }
@@ -123,16 +100,7 @@ const ApplicationsActionButton: React.FC<Props> = ({ applications = [] }) => {
               try {
                 const selectedApplications: SelectedApplication[] =
                   JSON.parse(stored);
-                const acceptItems = selectedApplications.filter((sel) => {
-                  const app = applications.find(
-                    (a) => a.courseId === sel.courseId
-                  );
-                  const item = app?.applicationItems.find(
-                    (i) => i.applicationId === sel.applicationId
-                  );
-                  return item && item.applicationStatus === "ACCEPT";
-                });
-                return acceptItems.length === 0;
+                return selectedApplications.length === 0;
               } catch {
                 return true;
               }
