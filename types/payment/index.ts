@@ -40,6 +40,7 @@ export interface PaymentCancelResponse {
   status: string;
   canceledAt: string;
   cancelAmount: number;
+  canceledAmount?: number;
   cancelReason: string;
 }
 
@@ -81,4 +82,14 @@ export interface PaymentFromApplicationQuery {
   dogName?: string;
   customerName?: string;
   customerEmail?: string;
+}
+
+// 결제 내역 응답
+export interface PaymentLogResponse {
+  paymentId: number;
+  orderName: string;
+  status: string;
+  amount: number;
+  paymentKey: string;
+  paymentDate: string;
 }

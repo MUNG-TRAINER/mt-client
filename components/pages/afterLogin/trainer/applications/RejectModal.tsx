@@ -94,7 +94,7 @@ export const RejectModal = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+    <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
       <div
         ref={modalRef}
         className="bg-white rounded-2xl w-full max-w-sm shadow-xl"

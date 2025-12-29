@@ -14,6 +14,21 @@ export default function SessionSchedule({
 }: ISessionSchedule) {
   const id = useId();
   const now = new Date();
+
+  // YYYY-MM-DD 포맷 함수
+  const formatDate = (date: Date) => {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, "0");
+    const d = String(date.getDate()).padStart(2, "0");
+    return `${y}-${m}-${d}`;
+  };
+
+  // 이번 달 시작 (오늘)
+  const minDate = formatDate(now);
+
+  // 이번 달 마지막 날
+  const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth() + 4, 0);
+  const maxDate = formatDate(lastDayOfMonth);
   return (
     <CourseLabelBox>
       <label
@@ -27,7 +42,8 @@ export default function SessionSchedule({
         name={inputName}
         type="date"
         {...props}
-        max={`${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`}
+        min={minDate}
+        max={maxDate}
         required
       />
     </CourseLabelBox>

@@ -8,6 +8,7 @@ interface DogListModalProps {
   onSelect?: (dogId: number) => void; // 최종 선택된 반려견 Id 전달
   onClose?: () => void; // 모달 닫기
   onChangeDog?: (wishlistItemId: number, dogId: number) => void;
+  containerClassName?: string;
 }
 
 const DogListModal: React.FC<DogListModalProps> = ({onSelect, onClose}) => {

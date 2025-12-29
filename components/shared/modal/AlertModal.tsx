@@ -9,6 +9,7 @@ interface AlertModalProps {
   title: string;
   message: string;
   onClose: () => void;
+  positioning?: "fixed" | "absolute"; // 전체 화면 중앙(fixed) 또는 부모 컨테이너 기준(absolute)
 }
 
 export default function AlertModal({
@@ -17,6 +18,7 @@ export default function AlertModal({
   title,
   message,
   onClose,
+  positioning = "fixed",
 }: AlertModalProps) {
   // ESC 키로 모달 닫기
   useEffect(() => {
@@ -68,7 +70,7 @@ export default function AlertModal({
 
   return (
     <div
-      className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50"
+      className={`${positioning} inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50`}
       onClick={onClose}
       role="dialog"
       aria-modal="true"

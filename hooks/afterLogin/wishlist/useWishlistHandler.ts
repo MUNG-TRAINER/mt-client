@@ -5,6 +5,7 @@ import {useWishlistDogs} from "./useWishlistDogs";
 import {useDeleteWishlist} from "./useDeleteWishlist";
 import {useUpdateWishlist} from "./usePatchWishlist";
 import {useApplyWishlist} from "./useApplyWishlist";
+import {ApplicationType} from "@/types/applications/applicationsType";
 
 export const useWishlistHandler = () => {
   const {wishlist, loading, refetch} = useUserWishlist();
@@ -16,7 +17,7 @@ export const useWishlistHandler = () => {
 
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [selectedDogIds, setSelectedDogIds] = useState<Record<number, number>>(
-    {}
+    {},
   );
   const [modalContent, setModalContent] = useState<{
     title?: string;
@@ -25,7 +26,7 @@ export const useWishlistHandler = () => {
 
   const handleSelect = (id: number, isChecked: boolean) => {
     setSelectedIds((prev) =>
-      isChecked ? [...prev, id] : prev.filter((i) => i !== id)
+      isChecked ? [...prev, id] : prev.filter((i) => i !== id),
     );
   };
 
@@ -37,7 +38,7 @@ export const useWishlistHandler = () => {
     const duplicate = wishlist.find(
       (w) =>
         w.courseId === item.courseId &&
-        (selectedDogIds[w.wishlistItemId] ?? w.dogId) === dogId
+        (selectedDogIds[w.wishlistItemId] ?? w.dogId) === dogId,
     );
     if (duplicate && duplicate.wishlistItemId !== wishlistItemId) {
       setModalContent({
@@ -84,9 +85,36 @@ export const useWishlistHandler = () => {
       return;
     }
 
+    // 신청내역 가져오기 (이미 신청된 강의+반려견 체크)
+    let applications: ApplicationType[] | [] = [];
+    try {
+      const res = await fetch("/api/application/list", {
+        method: "GET",
+        headers: {"Content-Type": "application/json"},
+      });
+      if (res.ok) {
+        const json = await res.json();
+        applications = Array.isArray(json.data)
+          ? json.data
+          : json.data?.data || [];
+      }
+    } catch {}
+
     for (const id of selectedIds) {
       const item = wishlist.find((w) => w.wishlistItemId === id)!;
       const dogId = selectedDogIds[id] ?? item.dogId;
+
+      // 이미 신청된 강의+반려견이면 안내
+      const isDuplicate = applications.some(
+        (app) => app.courseId === item.courseId && app.dogId === dogId,
+      );
+      if (isDuplicate) {
+        setModalContent({
+          title: "중복 신청",
+          description: "이미 신청한 강의입니다.",
+        });
+        return;
+      }
 
       const dog = dogs.find((d) => d.dogId === dogId);
       if (dog && !dog.hasCounseling) {

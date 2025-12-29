@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import useGroupedApplications from "@/hooks/afterLogin/applications/useGroupedApplications";
 import { useApplicationSelection } from "@/hooks/afterLogin/applications/useApplicationSelection";
 import { useApplicationModals } from "@/hooks/afterLogin/applications/useApplicationModals";
@@ -8,6 +9,7 @@ import { ApplicationList } from "./ApplicationList";
 import { RejectModal } from "./RejectModal";
 import { ApprovalConfirmModal } from "./ApprovalConfirmModal";
 import { DogDetailModal } from "./DogDetailModal";
+import AlertModal from "@/components/shared/modal/AlertModal";
 import type { GroupedApplication } from "@/types/applications/applicationType";
 
 export const ApplicationManagementClient = () => {
@@ -28,6 +30,19 @@ export const ApplicationManagementClient = () => {
     closeDogDetailModal,
   } = useApplicationModals();
   const { handleBulkApprove, handleBulkReject } = useApplicationBulkActions();
+
+  // 결과 모달 상태
+  const [resultModal, setResultModal] = useState<{
+    isOpen: boolean;
+    type: "success" | "error" | "info";
+    title: string;
+    message: string;
+  }>({
+    isOpen: false,
+    type: "success",
+    title: "",
+    message: "",
+  });
 
   // 카드 클릭 시 반려견 정보 모달 열기
   const handleCardClick = (application: GroupedApplication) => {
@@ -69,15 +84,26 @@ export const ApplicationManagementClient = () => {
 
     // 결과 피드백
     if (result.failed.length === 0) {
-      alert(`${result.succeeded.length}건이 거절되었습니다.`);
+      setResultModal({
+        isOpen: true,
+        type: "success",
+        title: "거절 완료",
+        message: `${result.succeeded.length}건이 거절되었습니다.`,
+      });
     } else if (result.succeeded.length === 0) {
-      alert(
-        `거절에 실패했습니다. (실패: ${result.failed.length}건)\n다시 시도해주세요.`
-      );
+      setResultModal({
+        isOpen: true,
+        type: "error",
+        title: "거절 실패",
+        message: `거절에 실패했습니다. (실패: ${result.failed.length}건)\n다시 시도해주세요.`,
+      });
     } else {
-      alert(
-        `일부 처리되었습니다.\n성공: ${result.succeeded.length}건\n실패: ${result.failed.length}건\n\n실패한 항목은 선택된 상태로 유지됩니다.`
-      );
+      setResultModal({
+        isOpen: true,
+        type: "info",
+        title: "일부 처리 완료",
+        message: `성공: ${result.succeeded.length}건\n실패: ${result.failed.length}건\n\n실패한 항목은 선택된 상태로 유지됩니다.`,
+      });
     }
   };
 
@@ -101,15 +127,26 @@ export const ApplicationManagementClient = () => {
 
     // 결과 피드백
     if (result.failed.length === 0) {
-      alert(`${result.succeeded.length}건이 승인되었습니다.`);
+      setResultModal({
+        isOpen: true,
+        type: "success",
+        title: "승인 완료",
+        message: `${result.succeeded.length}건이 승인되었습니다.`,
+      });
     } else if (result.succeeded.length === 0) {
-      alert(
-        `승인에 실패했습니다. (실패: ${result.failed.length}건)\n다시 시도해주세요.`
-      );
+      setResultModal({
+        isOpen: true,
+        type: "error",
+        title: "승인 실패",
+        message: `승인에 실패했습니다. (실패: ${result.failed.length}건)\n다시 시도해주세요.`,
+      });
     } else {
-      alert(
-        `일부 처리되었습니다.\n성공: ${result.succeeded.length}건\n실패: ${result.failed.length}건\n\n실패한 항목은 선택된 상태로 유지됩니다.`
-      );
+      setResultModal({
+        isOpen: true,
+        type: "info",
+        title: "일부 처리 완료",
+        message: `성공: ${result.succeeded.length}건\n실패: ${result.failed.length}건\n\n실패한 항목은 선택된 상태로 유지됩니다.`,
+      });
     }
   };
 
@@ -135,7 +172,7 @@ export const ApplicationManagementClient = () => {
   }
 
   return (
-    <div className="w-full h-full p-4">
+    <div className="relative w-full h-full p-4">
       {/* 헤더 */}
       <div className="mb-3">
         <h1 className="text-xl font-bold text-gray-900">승인 대기 목록</h1>
@@ -198,6 +235,16 @@ export const ApplicationManagementClient = () => {
         count={selectedItems.size}
         onClose={closeApprovalModal}
         onConfirm={handleApprovalConfirm}
+      />
+
+      {/* 결과 모달 */}
+      <AlertModal
+        isOpen={resultModal.isOpen}
+        type={resultModal.type}
+        title={resultModal.title}
+        message={resultModal.message}
+        positioning="absolute"
+        onClose={() => setResultModal({ ...resultModal, isOpen: false })}
       />
     </div>
   );

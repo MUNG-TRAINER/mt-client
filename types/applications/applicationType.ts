@@ -43,6 +43,10 @@ export interface SessionInfo {
   sessionDate: string; // YYYY-MM-DD
   startTime: string; // HH:mm:ss
   endTime: string; // HH:mm:ss
+  status?: "APPLIED" | "WAITING"; // 신청 상태
+  isWaiting?: boolean; // 대기 중 여부
+  isPreApproved?: boolean; // 미리 승인 여부
+  waitingOrder?: number | null; // 대기 순번 (1부터 시작, 대기 중이 아니면 null)
 }
 
 // 코스별 그룹핑된 신청 타입

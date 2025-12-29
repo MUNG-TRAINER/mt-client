@@ -112,8 +112,9 @@ export default function TrainerEditForm({
           fileName: profileFile.name,
           contentType: profileFile.type,
         });
+        const presignedUrl = uploadUrl.presignedUrl;
         const fileKey = await presignedUrlApi.uploadToS3(
-          uploadUrl,
+          presignedUrl,
           profileFile,
         );
         nextProfileImageKey = fileKey;
@@ -124,7 +125,11 @@ export default function TrainerEditForm({
           fileName: certFile.name,
           contentType: certFile.type,
         });
-        const fileKey = await presignedUrlApi.uploadToS3(uploadUrl, certFile);
+        const presignedUrl = uploadUrl.presignedUrl;
+        const fileKey = await presignedUrlApi.uploadToS3(
+          presignedUrl,
+          certFile,
+        );
         nextCertImageKey = fileKey;
       }
 

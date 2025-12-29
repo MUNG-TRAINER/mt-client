@@ -1,14 +1,16 @@
 "use client";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {useState} from "react";
+import {useRouter} from "next/navigation";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
 import Image from "next/image";
 import useDogForCounseling from "@/hooks/afterLogin/counseling/useDogForCounseling";
-import { counselingApi } from "@/apis/counseling/counselingApi";
-import { DogIcon } from "@/components/icons/dog";
-import { InformationCircleIcon } from "@/components/icons/info";
+import {counselingApi} from "@/apis/counseling/counselingApi";
+import {DogIcon} from "@/components/icons/dog";
+import {InformationCircleIcon} from "@/components/icons/info";
 import RoundboxColorBtn from "@/components/shared/buttons/RoundboxColorBtn";
 import AlertModal from "@/components/shared/modal/AlertModal";
+import {fcmApi} from "@/apis/fcm/fcmApi";
+import {useFCMState} from "@/stores/fcm/fcmState";
 
 interface ICreateCounselingFormProps {
   dogId: number;
@@ -19,18 +21,26 @@ export default function CreateCounselingForm({
 }: ICreateCounselingFormProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { data: dog, isPending, isError } = useDogForCounseling(dogId);
+  const {data: dog, isPending, isError} = useDogForCounseling(dogId);
   const [phone, setPhone] = useState("");
   const [phoneError, setPhoneError] = useState("");
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showErrorModal, setShowErrorModal] = useState(false);
-
+  const {userId, trainerToken} = useFCMState();
   // 상담 신청 mutation
   const createMutation = useMutation({
     mutationFn: counselingApi.createCounseling,
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       // 내 상담 목록만 무효화
-      queryClient.invalidateQueries({ queryKey: ["counselings", "my"] });
+      queryClient.invalidateQueries({queryKey: ["counselings", "my"]});
+      await fcmApi.sendFCMMsg({
+        userId: userId!,
+        title: `새로운 상담신청이 도착했어요.`,
+        msgBody: `${dog?.dogName}의 상담신청이 도착했어요.`,
+        desc: `${dog?.dogName}의 상담신청이 도착했어요.`,
+        url: `/trainer/counseling`,
+        token: trainerToken ?? "",
+      });
       setShowSuccessModal(true);
     },
     onError: () => {
@@ -100,18 +110,27 @@ export default function CreateCounselingForm({
         <p className="text-(--mt-black) text-lg font-medium">
           이미 {dog.dogName}에 대한 상담이 신청되어 있습니다.
         </p>
-        <button
-          onClick={() => router.push(`/counseling/${dog.counselingId}`)}
-          className="px-6 py-3 bg-(--mt-blue-point) text-(--mt-white) rounded-xl font-bold shadow-md"
-        >
-          상담 내역 보기
-        </button>
+        {dog.counselingId ? (
+          <button
+            onClick={() => router.push(`/counseling/${dog.counselingId}`)}
+            className="px-6 py-3 bg-(--mt-blue-point) text-(--mt-white) rounded-xl font-bold shadow-md"
+          >
+            상담 내역 보기
+          </button>
+        ) : (
+          <button
+            onClick={() => router.push("/counseling")}
+            className="px-6 py-3 bg-(--mt-blue-point) text-(--mt-white) rounded-xl font-bold shadow-md"
+          >
+            상담 목록으로
+          </button>
+        )}
       </div>
     );
   }
 
   return (
-    <div className="bg-white w-full h-full m-auto p-6 rounded-md flex flex-col gap-6 overflow-y-auto">
+    <div className="relative bg-white w-full h-full m-auto p-6 rounded-md flex flex-col gap-6 overflow-y-auto">
       {/* 헤더 */}
       <div>
         <h1 className="text-2xl font-bold text-(--mt-black)">상담 신청</h1>
@@ -217,6 +236,7 @@ export default function CreateCounselingForm({
         type="success"
         title="상담 신청 완료"
         message="상담이 성공적으로 신청되었습니다."
+        positioning="absolute"
         onClose={() => {
           setShowSuccessModal(false);
           router.push("/counseling");
@@ -229,6 +249,7 @@ export default function CreateCounselingForm({
         type="error"
         title="상담 신청 실패"
         message="상담 신청에 실패했습니다. 다시 시도해주세요."
+        positioning="absolute"
         onClose={() => setShowErrorModal(false)}
       />
     </div>

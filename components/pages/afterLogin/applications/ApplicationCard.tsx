@@ -1,15 +1,22 @@
 "use client";
 
-import React, {useState} from "react";
-import {ApplicationType} from "@/types/applications/applicationsType";
+import React from "react";
+import { ApplicationType } from "@/types/applications/applicationsType";
 import CardList from "../../../shared/cards/CourseCard";
 import Image from "next/image";
-import {useApplicationState} from "@/stores/applicationsState";
-import {useRouter} from "next/navigation";
+import { useApplicationState } from "@/stores/applicationsState";
+import { useRouter } from "next/navigation";
 import DogImage from "@/public/images/application/dog.jpg";
 interface Props {
   app: ApplicationType;
   isSelected: boolean; //  선택 여부
+  onOpenRejectModal?: (reason?: string | null) => void;
+}
+interface SelectedApplication {
+  title: string;
+  price: number;
+  courseId: number;
+  applicationId: number;
 }
 
 const statusTextMap: Record<ApplicationType["applicationStatus"], string> = {
@@ -22,18 +29,58 @@ const statusTextMap: Record<ApplicationType["applicationStatus"], string> = {
   EXPIRED: "만료됨",
 };
 
-const ApplicationCard: React.FC<Props> = ({app, isSelected}) => {
-  const {setSelectedIndex} = useApplicationState();
+const ApplicationCard: React.FC<Props> = ({
+  app,
+  isSelected,
+  onOpenRejectModal,
+}) => {
+  const { setSelectedIndex } = useApplicationState();
   const statusText = statusTextMap[app.applicationStatus];
-  const [isRejectModalOpen, setRejectModalOpen] = useState(false);
+
   const router = useRouter();
   const handleClick = (courseId: number) => {
     router.push(`/course/${courseId}`);
   };
+
+  // 체크박스 변경 시 세션스토리지 업데이트
+  const handleCheckboxChange = (checked: boolean) => {
+    const stored = sessionStorage.getItem("selectedApplications");
+    const currentSelections: SelectedApplication[] = stored
+      ? JSON.parse(stored)
+      : [];
+
+    if (checked) {
+      // 중복 체크 후 추가
+      const exists = currentSelections.some(
+        (item) => item.applicationId === app.applicationId
+      );
+      if (!exists) {
+        currentSelections.push({
+          title: app.title,
+          price: app.price,
+          courseId: app.courseId,
+          applicationId: app.applicationId,
+        });
+      }
+    } else {
+      // 체크 해제 시 제거
+      const updated = currentSelections.filter(
+        (item) => item.applicationId !== app.applicationId
+      );
+      sessionStorage.setItem("selectedApplications", JSON.stringify(updated));
+      return;
+    }
+
+    sessionStorage.setItem(
+      "selectedApplications",
+      JSON.stringify(currentSelections)
+    );
+  };
+
   return (
     <li
       className="relative cursor-pointer flex flex-col rounded-2xl shadow-md bg-white p-4"
-      style={{border: "1px solid #E9ECEF"}}
+      style={{ border: "1px solid #E9ECEF" }}
       onClick={() => handleClick(app.courseId)}
     >
       {/* 체크박스 */}
@@ -43,7 +90,7 @@ const ApplicationCard: React.FC<Props> = ({app, isSelected}) => {
       >
         <input
           type="checkbox"
-          style={{accentColor: "var(--mt-blue-point)"}}
+          style={{ accentColor: "var(--mt-blue-point)" }}
           className="w-6 h-6 cursor-pointer"
           checked={isSelected} // 상위 상태 반영
           disabled={["CANCELLED", "EXPIRED", "REJECTED"].includes(
@@ -52,7 +99,8 @@ const ApplicationCard: React.FC<Props> = ({app, isSelected}) => {
           onClick={(e) => e.stopPropagation()}
           onChange={(e) => {
             e.stopPropagation();
-            setSelectedIndex(app.courseId, e.target.checked);
+            setSelectedIndex(app.applicationId, e.target.checked);
+            handleCheckboxChange(e.target.checked);
           }}
         />
       </div>
@@ -79,7 +127,7 @@ const ApplicationCard: React.FC<Props> = ({app, isSelected}) => {
             {app.dogName}
           </div>
         )}
-        {app.price && (
+        {typeof app.price === "number" && (
           <div className="flex justify-end items-baseline gap-1 mb-1">
             <span className="text-sm text-gray-500">총 금액</span>
             <span className="text-xl font-bold text-[var(--mt-blue-point)]">
@@ -95,17 +143,17 @@ const ApplicationCard: React.FC<Props> = ({app, isSelected}) => {
           <>
             <button
               className="flex-1 flex items-center justify-center gap-2 py-2 text-sm font-semibold rounded-lg"
-              style={{border: "1px solid #C5C5C5", color: "#374151"}}
+              style={{ border: "1px solid #C5C5C5", color: "#374151" }}
             >
               승인 거절
             </button>
             <button
               className="flex-1 flex items-center justify-center gap-2 py-2 text-sm font-semibold rounded-lg"
-              style={{border: "1px solid #C5C5C5", color: "#EF4444"}}
+              style={{ border: "1px solid #C5C5C5", color: "#EF4444" }}
               onClick={(e) => {
                 e.stopPropagation();
                 app.rejectReason
-                  ? setRejectModalOpen(true)
+                  ? onOpenRejectModal?.(app.rejectReason)
                   : alert("거절 사유가 없습니다.");
               }}
             >
@@ -118,7 +166,7 @@ const ApplicationCard: React.FC<Props> = ({app, isSelected}) => {
           <>
             <button
               className="flex-1 flex items-center justify-center gap-2 py-2 text-sm font-semibold rounded-lg"
-              style={{border: "1px solid #C5C5C5", color: "#374151"}}
+              style={{ border: "1px solid #C5C5C5", color: "#374151" }}
             >
               승인 완료
             </button>
@@ -126,7 +174,37 @@ const ApplicationCard: React.FC<Props> = ({app, isSelected}) => {
               className="flex-1 flex items-center justify-center gap-2 py-2 text-sm font-semibold rounded-lg bg-blue-100 text-(--mt-blue-point)"
               onClick={(e) => {
                 e.stopPropagation();
-                console.log("결제하기 클릭");
+                // 세션스토리지에 값이 없으면 현재 카드만 저장
+                let currentSelections: SelectedApplication[] = [];
+                const stored = sessionStorage.getItem("selectedApplications");
+                if (stored) {
+                  try {
+                    currentSelections = JSON.parse(stored);
+                  } catch (error) {
+                    console.error(
+                      "세션스토리지의 selectedApplications 파싱 중 오류가 발생했습니다.",
+                      error
+                    );
+                    currentSelections = [];
+                  }
+                }
+                // 현재 카드가 없으면 추가
+                const exists = currentSelections.some(
+                  (item) => item.applicationId === app.applicationId
+                );
+                if (!exists) {
+                  currentSelections.push({
+                    title: app.title,
+                    price: app.price,
+                    courseId: app.courseId,
+                    applicationId: app.applicationId,
+                  });
+                  sessionStorage.setItem(
+                    "selectedApplications",
+                    JSON.stringify(currentSelections)
+                  );
+                }
+                router.push(`/payment/detail`);
               }}
             >
               결제하기
@@ -136,42 +214,19 @@ const ApplicationCard: React.FC<Props> = ({app, isSelected}) => {
 
         {[
           "APPLIED",
-          "CANCELLED",
           "WAITING",
-          "COUNSELING_REQUIRED",
+          "CANCELLED",
           "EXPIRED",
+          "COUNSELING_REQUIRED",
         ].includes(app.applicationStatus) && (
           <button
             className="flex-1 flex items-center justify-center gap-2 py-2 text-sm font-semibold rounded-lg"
-            style={{border: "1px solid #C5C5C5", color: "#374151"}}
+            style={{ border: "1px solid #C5C5C5", color: "#374151" }}
           >
             {statusText}
           </button>
         )}
       </div>
-      {/* 거절사유 모달 */}
-      {isRejectModalOpen && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
-          onClick={() => setRejectModalOpen(false)}
-        >
-          <div
-            className="bg-white rounded-xl p-6 w-80 relative"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h3 className="text-lg font-semibold mb-2">거절 사유</h3>
-            <p className="text-sm text-gray-700 bg-blue-100 p-4">
-              {app.rejectReason?.trim() || "사유 없음"}
-            </p>
-            <button
-              className="absolute top-2 right-4 text-gray-500 hover:text-gray-700"
-              onClick={() => setRejectModalOpen(false)}
-            >
-              ✕
-            </button>
-          </div>
-        </div>
-      )}
     </li>
   );
 };
