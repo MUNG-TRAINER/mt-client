@@ -1,22 +1,21 @@
 "use client";
-import { UserIcon } from "@/components/icons/user";
+import {UserIcon} from "@/components/icons/user";
 import UserBadge from "@/components/shared/badges/UserBadge";
 import ToggleSlide from "@/components/shared/toggleSlide/ToggleSlide";
 import useMe from "@/hooks/afterLogin/users/useMe";
 import useUpdatePublicStatus from "@/hooks/afterLogin/users/useUpdatePublicStatus";
 import Image from "next/image";
 import Link from "next/link";
-import { CakeIcon } from "@/components/icons/cake";
-import { PhoneIcon } from "@/components/icons/phone";
-import { EnvelopeIcon } from "@/components/icons/envelope";
-import { MapPinIcon, MapIcon } from "@/components/icons/location";
-import { BuildingOffice2Icon, HomeIcon } from "@/components/icons/home";
+import {CakeIcon} from "@/components/icons/cake";
+import {PhoneIcon} from "@/components/icons/phone";
+import {EnvelopeIcon} from "@/components/icons/envelope";
+import {MapPinIcon, MapIcon} from "@/components/icons/location";
+import {BuildingOffice2Icon, HomeIcon} from "@/components/icons/home";
 import AuthInput from "@/components/shared/inputs/AuthInput";
 
 export default function MyPage() {
-  const { data, isPending } = useMe();
-  const { mutate: updatePublicStatus } = useUpdatePublicStatus();
-
+  const {data, isPending} = useMe();
+  const {mutate: updatePublicStatus} = useUpdatePublicStatus();
   const handleToggleChange = () => {
     if (data?.isPublic !== undefined) {
       updatePublicStatus(!data.isPublic);

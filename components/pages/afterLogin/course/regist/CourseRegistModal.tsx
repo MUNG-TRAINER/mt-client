@@ -11,22 +11,30 @@ import {useCreateWishlist} from "@/hooks/afterLogin/wishlist/useCreateWishlist";
 import ConfirmModal from "@/components/pages/afterLogin/wishlist/ConfirmModal";
 import {useApplyCourse} from "@/hooks/afterLogin/applications/useApplyCourse";
 import {useWishlistDogs} from "@/hooks/afterLogin/wishlist/useWishlistDogs";
+import {useFCMState} from "@/stores/fcm/fcmState";
+import useCheckLoggedIn from "@/hooks/afterLogin/users/useCheckLoggedIn";
 
 export default function CourseRegistModal({
+  trainerToken,
   courseId,
   dogs,
   mode,
   modalOff,
 }: {
+  trainerToken: string;
   courseId: string;
   dogs: IDogListType | undefined;
   mode: "wishlist" | "apply" | null;
   modalOff: Dispatch<SetStateAction<boolean>>;
 }) {
+  const router = useRouter();
+  //states
   const [id, setId] = useState<number | null>(null);
   const [open, setOpen] = useState(false);
-  const router = useRouter();
   const [dogColors] = useState(() => dogs && randomColor(dogs));
+  //zustand
+  const {myId} = useCheckLoggedIn();
+  const {setUserId, setTrainerToken} = useFCMState();
 
   const handleBack = () => {
     // animate close then call modalOff
@@ -86,7 +94,7 @@ export default function CourseRegistModal({
           // ... 기타 필요한 필드
         }
         const isDuplicate = (wishlist as WishlistType[]).some(
-          (w) => w.courseId === Number(courseId) && w.dogId === id
+          (w) => w.courseId === Number(courseId) && w.dogId === id,
         );
         if (isDuplicate) {
           setConfirmDesc("이미 찜한 강의입니다.");
@@ -136,8 +144,8 @@ export default function CourseRegistModal({
         app.courseId === Number(courseId) &&
         app.dogId === id &&
         ["APPLIED", "WAITING", "ACCEPT", "PAID"].includes(
-          String(app.applicationStatus)
-        )
+          String(app.applicationStatus),
+        ),
     );
     if (isAlreadyApplied) {
       setConfirmDesc("이미 신청한 강의입니다.");
@@ -158,6 +166,8 @@ export default function CourseRegistModal({
       // 상담 안 된 강아지는 상담 안내 모달 띄우고 이동
       setConfirmDesc("상담이 안된 반려견입니다. 상담페이지로 이동합니다.");
       setConfirmOpen(true);
+      setUserId(Number(myId));
+      setTrainerToken(trainerToken);
       setTimeout(() => {
         setConfirmOpen(false);
         router.push(`/counseling/create/${id}`);
@@ -179,7 +189,6 @@ export default function CourseRegistModal({
         },
         onError: (e) => {
           console.error(e);
-
           if (e.message === "ALREADY_APPLIED") {
             setConfirmDesc("이미 신청한 강의입니다.");
           } else {
@@ -189,12 +198,12 @@ export default function CourseRegistModal({
           setConfirmResult(null);
           setConfirmOpen(true);
         },
-      }
+      },
     );
   };
 
   return (
-    <div className="absolute inset-0 z-70 flex items-center justify-center">
+    <div className="absolute inset-0 z-70">
       {/* overlay */}
       <div
         onClick={handleBack}
@@ -205,7 +214,7 @@ export default function CourseRegistModal({
       />
       {/* 중앙 모달 */}
       <div
-        className={`relative z-10 bg-white rounded-2xl shadow-2xl pt-10 px-8 pb-6 flex flex-col items-center gap-6 w-[400px] min-h-[250px] max-h-[500px] m-6 transition-transform duration-300 ease-in-out ${
+        className={`show_modal absolute bottom-0 z-10 bg-white rounded-t-2xl shadow-2xl pt-10 px-8 pb-6 flex flex-col items-center gap-6 w-full h-56 transition-transform duration-300 ease-in-out ${
           open
             ? "opacity-100 scale-100"
             : "opacity-0 scale-95 pointer-events-none"
@@ -285,7 +294,7 @@ export default function CourseRegistModal({
                       </label>
                     ))}
                 </fieldset>
-                <div className="flex items-center gap-3 w-full flex-shrink-0 mt-2">
+                <div className="flex items-center gap-3 w-full shrink-0 mt-2">
                   <button
                     type="button"
                     onClick={handleBack}
