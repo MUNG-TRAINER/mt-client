@@ -4,10 +4,11 @@ import { useTossPayment } from "@/hooks/payment/useTossPayment";
 import { usePaymentPrepare } from "@/hooks/payment/usePaymentMutation";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { PaymentRequestItem } from "@/types/payment";
 
 interface PaymentButtonProps {
   orderName: string;
-  courseIds: number[];
+  paymentRequestItems: PaymentRequestItem[];
   customerName: string;
   customerEmail: string;
   className?: string;
@@ -20,7 +21,7 @@ interface PaymentButtonProps {
  */
 export default function PaymentButton({
   orderName,
-  courseIds,
+  paymentRequestItems,
   customerName,
   customerEmail,
   className = "",
@@ -47,7 +48,7 @@ export default function PaymentButton({
       // 1. 결제 준비 - 주문 생성
       toast.loading("결제를 준비하고 있습니다...");
       const prepareResult = await prepareMutation.mutateAsync({
-        courseIds: courseIds, // 실제로는 선택된 courseId 배열을 전달
+        paymentRequestItems, // courseIds, applicationIds
       });
 
       toast.dismiss();
