@@ -1,5 +1,5 @@
-import {ApplicationType} from "@/types/applications/applicationsType";
-import {IResultResponseData} from "@/types/response/resultResponse";
+import { ApplicationType } from "@/types/applications/applicationsType";
+import { IResultResponseData } from "@/types/response/resultResponse";
 import type {
   PendingApplication,
   ApplicationStatusUpdateRequest,
@@ -7,7 +7,7 @@ import type {
   GroupedApplication,
   BulkStatusUpdateRequest,
 } from "@/types/applications/applicationType";
-import {fetchWithAuth} from "../common/fetchWithAuth";
+import { fetchWithAuth } from "../common/fetchWithAuth";
 
 export const applicationAPI = {
   getApplicationList: async () => {
@@ -44,7 +44,6 @@ export const applicationAPI = {
     courseId: number,
     data: Partial<ApplicationType>
   ): Promise<ApplicationType[]> => {
-  
     const res = await fetch(`/api/course/${courseId}/apply`, {
       method: "POST",
       headers: {
@@ -87,7 +86,7 @@ export const applicationAPI = {
       {
         method: "GET",
         credentials: "include",
-      },
+      }
     );
 
     if (!response.ok) {
@@ -99,7 +98,7 @@ export const applicationAPI = {
   // 훈련사용: 신청 승인/거절 처리
   updateApplicationStatus: async (
     applicationId: number,
-    data: ApplicationStatusUpdateRequest,
+    data: ApplicationStatusUpdateRequest
   ): Promise<string> => {
     const response = await fetchWithAuth(
       `/api/trainer/applications/${applicationId}`,
@@ -110,7 +109,7 @@ export const applicationAPI = {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
-      },
+      }
     );
 
     if (!response.ok) {
@@ -136,7 +135,7 @@ export const applicationAPI = {
   bulkUpdateApplicationStatus: async (
     courseId: number,
     dogId: number,
-    data: BulkStatusUpdateRequest,
+    data: BulkStatusUpdateRequest
   ): Promise<string> => {
     const response = await fetchWithAuth(
       `/api/trainer/applications/bulk/${courseId}/dog/${dogId}`,
@@ -147,7 +146,7 @@ export const applicationAPI = {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
-      },
+      }
     );
 
     if (!response.ok) {
