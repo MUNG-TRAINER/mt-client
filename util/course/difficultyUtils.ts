@@ -3,11 +3,11 @@
  */
 export function getDifficultyColor(difficulty: string): string {
   switch (difficulty) {
-    case "초급":
+    case "BASIC":
       return "bg-green-100 text-green-700";
-    case "중급":
+    case "STANDARD":
       return "bg-yellow-100 text-yellow-700";
-    case "고급":
+    case "EXPERT":
       return "bg-red-100 text-red-700";
     default:
       return "bg-gray-100 text-gray-700";
@@ -19,11 +19,11 @@ export function getDifficultyColor(difficulty: string): string {
  */
 export function getDifficultyLabel(difficulty: string): string {
   switch (difficulty) {
-    case "초급":
+    case "BASIC":
       return "초급";
-    case "중급":
+    case "STANDARD":
       return "중급";
-    case "고급":
+    case "EXPERT":
       return "고급";
     default:
       return difficulty;
@@ -39,16 +39,8 @@ export function getDifficultyBadgeConfig(difficulty: string | undefined): {
 } | null {
   if (!difficulty) return null;
 
-  const config = {
-    초급: { label: "초급", color: "bg-green-100 text-green-700" },
-    중급: { label: "중급", color: "bg-yellow-100 text-yellow-700" },
-    고급: { label: "고급", color: "bg-red-100 text-red-700" },
+  return {
+    label: getDifficultyLabel(difficulty),
+    color: getDifficultyColor(difficulty),
   };
-
-  return (
-    config[difficulty as keyof typeof config] || {
-      label: difficulty,
-      color: "bg-gray-100 text-gray-700",
-    }
-  );
 }
