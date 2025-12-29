@@ -3,7 +3,6 @@ import {UserRoleType} from "../common/commonType";
 export interface ILoginDataType {
   userName: string;
   password: string;
-  fcm_token?: string;
 }
 
 export interface ILoginResponse {
