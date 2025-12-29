@@ -19,10 +19,11 @@ interface SelectedApplication {
   applicationId: number;
 }
 
-const statusTextMap: Record<ApplicationType["applicationStatus"], string> = {
+const statusTextMap: Record<string, string> = {
   APPLIED: "승인 대기중",
   WAITING: "대기 예약",
   ACCEPT: "승인 완료",
+  PAID: "결제완료",
   REJECTED: "승인 거절",
   CANCELLED: "취소됨",
   COUNSELING_REQUIRED: "상담 요청",
@@ -35,14 +36,21 @@ const ApplicationCard: React.FC<Props> = ({
   onOpenRejectModal,
 }) => {
   const { setSelectedIndex } = useApplicationState();
-  const statusText = statusTextMap[app.applicationStatus];
+
+  // 전체 상태 결정 (모든 세션이 같은 상태면 그 상태, 아니면 첫 번째)
+  const allStatuses = app.applicationItems.map(
+    (item) => item.applicationStatus
+  );
+  const isSameStatus = allStatuses.every((status) => status === allStatuses[0]);
+  const displayStatus = isSameStatus ? allStatuses[0] : allStatuses[0];
+  const statusText = statusTextMap[displayStatus] || displayStatus;
 
   const router = useRouter();
   const handleClick = (courseId: number) => {
     router.push(`/course/${courseId}`);
   };
 
-  // 체크박스 변경 시 세션스토리지 업데이트
+  // 체크박스 변경 시 세션스토리지 업데이트 (각 세션별로 객체 생성)
   const handleCheckboxChange = (checked: boolean) => {
     const stored = sessionStorage.getItem("selectedApplications");
     const currentSelections: SelectedApplication[] = stored
@@ -50,22 +58,27 @@ const ApplicationCard: React.FC<Props> = ({
       : [];
 
     if (checked) {
-      // 중복 체크 후 추가
-      const exists = currentSelections.some(
-        (item) => item.applicationId === app.applicationId
-      );
-      if (!exists) {
-        currentSelections.push({
-          title: app.title,
-          price: app.price,
-          courseId: app.courseId,
-          applicationId: app.applicationId,
-        });
-      }
+      // 해당 과정의 모든 세션을 각각 SelectedApplication 객체로 추가
+      app.applicationItems.forEach((item) => {
+        const exists = currentSelections.some(
+          (sel) => sel.applicationId === item.applicationId
+        );
+        if (!exists) {
+          currentSelections.push({
+            title: app.title,
+            price: item.price,
+            courseId: app.courseId,
+            applicationId: item.applicationId,
+          });
+        }
+      });
     } else {
-      // 체크 해제 시 제거
+      // 체크 해제 시 해당 과정의 모든 세션 제거
+      const applicationIds = app.applicationItems.map(
+        (item) => item.applicationId
+      );
       const updated = currentSelections.filter(
-        (item) => item.applicationId !== app.applicationId
+        (item) => !applicationIds.includes(item.applicationId)
       );
       sessionStorage.setItem("selectedApplications", JSON.stringify(updated));
       return;
@@ -93,13 +106,17 @@ const ApplicationCard: React.FC<Props> = ({
           style={{ accentColor: "var(--mt-blue-point)" }}
           className="w-6 h-6 cursor-pointer"
           checked={isSelected} // 상위 상태 반영
-          disabled={["CANCELLED", "EXPIRED", "REJECTED"].includes(
-            app.applicationStatus
+          disabled={["CANCELLED", "EXPIRED", "REJECTED", "PAID"].includes(
+            displayStatus
           )}
           onClick={(e) => e.stopPropagation()}
           onChange={(e) => {
             e.stopPropagation();
-            setSelectedIndex(app.applicationId, e.target.checked);
+            // 첫 번째 세션 ID를 대표로 사용 (선택 상태 관리용)
+            setSelectedIndex(
+              app.applicationItems[0]?.applicationId || 0,
+              e.target.checked
+            );
             handleCheckboxChange(e.target.checked);
           }}
         />
@@ -127,11 +144,11 @@ const ApplicationCard: React.FC<Props> = ({
             {app.dogName}
           </div>
         )}
-        {typeof app.price === "number" && (
+        {typeof app.totalAmount === "number" && (
           <div className="flex justify-end items-baseline gap-1 mb-1">
             <span className="text-sm text-gray-500">총 금액</span>
             <span className="text-xl font-bold text-[var(--mt-blue-point)]">
-              {app.price.toLocaleString()}원
+              {app.totalAmount.toLocaleString()}원
             </span>
           </div>
         )}
@@ -139,7 +156,7 @@ const ApplicationCard: React.FC<Props> = ({
 
       {/* 버튼 영역 */}
       <div className="flex gap-2 mt-2">
-        {app.applicationStatus === "REJECTED" && (
+        {displayStatus === "REJECTED" && (
           <>
             <button
               className="flex-1 flex items-center justify-center gap-2 py-2 text-sm font-semibold rounded-lg"
@@ -162,7 +179,7 @@ const ApplicationCard: React.FC<Props> = ({
           </>
         )}
 
-        {app.applicationStatus === "ACCEPT" && (
+        {displayStatus === "ACCEPT" && (
           <>
             <button
               className="flex-1 flex items-center justify-center gap-2 py-2 text-sm font-semibold rounded-lg"
@@ -174,7 +191,7 @@ const ApplicationCard: React.FC<Props> = ({
               className="flex-1 flex items-center justify-center gap-2 py-2 text-sm font-semibold rounded-lg bg-blue-100 text-(--mt-blue-point)"
               onClick={(e) => {
                 e.stopPropagation();
-                // 세션스토리지에 값이 없으면 현재 카드만 저장
+                // 세션스토리지에 각 세션별로 객체 저장
                 let currentSelections: SelectedApplication[] = [];
                 const stored = sessionStorage.getItem("selectedApplications");
                 if (stored) {
@@ -188,22 +205,24 @@ const ApplicationCard: React.FC<Props> = ({
                     currentSelections = [];
                   }
                 }
-                // 현재 카드가 없으면 추가
-                const exists = currentSelections.some(
-                  (item) => item.applicationId === app.applicationId
-                );
-                if (!exists) {
-                  currentSelections.push({
-                    title: app.title,
-                    price: app.price,
-                    courseId: app.courseId,
-                    applicationId: app.applicationId,
-                  });
-                  sessionStorage.setItem(
-                    "selectedApplications",
-                    JSON.stringify(currentSelections)
+                // 현재 과정의 모든 세션 추가
+                app.applicationItems.forEach((item) => {
+                  const exists = currentSelections.some(
+                    (sel) => sel.applicationId === item.applicationId
                   );
-                }
+                  if (!exists) {
+                    currentSelections.push({
+                      title: app.title,
+                      price: item.price,
+                      courseId: app.courseId,
+                      applicationId: item.applicationId,
+                    });
+                  }
+                });
+                sessionStorage.setItem(
+                  "selectedApplications",
+                  JSON.stringify(currentSelections)
+                );
                 router.push(`/payment/detail`);
               }}
             >
@@ -218,7 +237,7 @@ const ApplicationCard: React.FC<Props> = ({
           "CANCELLED",
           "EXPIRED",
           "COUNSELING_REQUIRED",
-        ].includes(app.applicationStatus) && (
+        ].includes(displayStatus) && (
           <button
             className="flex-1 flex items-center justify-center gap-2 py-2 text-sm font-semibold rounded-lg"
             style={{ border: "1px solid #C5C5C5", color: "#374151" }}
