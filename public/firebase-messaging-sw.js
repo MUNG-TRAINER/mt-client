@@ -31,6 +31,7 @@ messaging.onBackgroundMessage((payload) => {
     await addNotification({
       ver: 1,
       data: {
+        userId: payload.data.userId,
         title: payload.notification.title,
         desc: payload.notification.body,
         url: payload.data.url,
@@ -46,8 +47,8 @@ messaging.onBackgroundMessage((payload) => {
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
   const url = event.notification.data?.url ?? "/";
-  event.waitUntil(async () => {
-    const clientList = self.clients.matchAll({
+  const promise = (async () => {
+    const clientList = await self.clients.matchAll({
       type: "window",
       includeUncontrolled: true,
     });
@@ -60,6 +61,7 @@ self.addEventListener("notificationclick", (event) => {
     }
     await self.clients.openWindow(url);
   })();
+  event.waitUntil(promise);
 });
 // open Indexed DB
 const initDB = (ver) => {
@@ -102,9 +104,9 @@ const addNotification = async ({ver, data}) => {
   await new Promise((resolve, reject) => {
     const transaction = db.transaction(NOTIFICATION, "readwrite");
     const store = transaction.objectStore(NOTIFICATION);
-    store.add(data);
-    transaction.onsuccess = async () => resolve();
-    transaction.onerror = async () => {
+    const request = store.add(data);
+    request.onsuccess = async () => resolve();
+    request.onerror = async () => {
       reject(new Error("알람 데이터를 추가하는데 실패했습니다."));
     };
   });

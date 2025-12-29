@@ -4,7 +4,7 @@ import {NextRequest, NextResponse} from "next/server";
 
 export async function PATCH(req: NextRequest) {
   const cookie = await cookies();
-  const requestBody = req.body;
+  const requestBody = await req.json();
   const res = await fetch(`${API_BASE_URL}/auth/fcm-token`, {
     method: "PATCH",
     headers: {

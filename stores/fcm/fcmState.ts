@@ -16,7 +16,7 @@ export const useFCMState = create<IFCMState & IFCMSetState>()(
       userId: null,
       targetId: null,
       trainerToken: null,
-      setUserId: (id: number | null) => set({targetId: id}),
+      setUserId: (id: number | null) => set({userId: id}),
       setTargetId: (id: number | null) => set({targetId: id}),
       setTrainerToken: (token: string | null) => set({trainerToken: token}),
     }),

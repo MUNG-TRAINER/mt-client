@@ -22,7 +22,7 @@ export const useFCM = () => useContext(FCMContext);
 
 export default function FirebaseProvider({children}: {children: ReactNode}) {
   // states
-  const [token, setTotken] = useState<string | null>(null);
+  const [token, setToken] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
   // custom hook
   const {addNotification, editAlertState} = useIndexedDB();
@@ -56,9 +56,9 @@ export default function FirebaseProvider({children}: {children: ReactNode}) {
       if (notification === "granted") {
         const fcmToken = await getToken(messaging, {
           vapidKey:
-            "BDvAfhYQkGZBR6_A_NLM2jMamkTgaHVlIlU3NjkN_6d1JSKexIcf5n9TKfSfOnVTfW6PqDXn9h4_OkCs\_\_JSdiE",
+            "BDvAfhYQkGZBR6_A_NLM2jMttamkTgaHVlIlU3NjkN_6d1JSKexIcf5n9TKfSfOnVTfW6PqDXn9h4_OkCs\_\_JSdiE",
         });
-        setTotken(fcmToken);
+        setToken(fcmToken);
 
         setReady(true);
         msgUnSubscribe = onMessage(messaging, (payload) => {
@@ -74,11 +74,10 @@ export default function FirebaseProvider({children}: {children: ReactNode}) {
           // 여기에 db에 noti저장하는 함수 만들 수 있음
           addNotification({ver: 1, data});
           editAlertState(true);
+          const origin = self.location?.origin ?? window.location.origin;
+          const path = data.url ? data.url : "";
           noti.onclick = () => {
-            window.open(
-              `https://mungschool.kro.kr/${data.url ? data.url : ""}`,
-              // `http://localhost:3000/${data.url ? data.url : ""}`,
-            );
+            window.open(`${origin}/${path}`);
           };
         });
       }
