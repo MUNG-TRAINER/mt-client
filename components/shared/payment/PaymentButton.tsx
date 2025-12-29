@@ -53,6 +53,9 @@ export default function PaymentButton({
       // 디버그: 서버 결제 준비 응답 확인
       console.log("결제 준비 결과:", prepareResult);
 
+      // 결제 준비 성공 후 세션 스토리지 정리
+      sessionStorage.removeItem("selectedApplications");
+
       const amountValue = Number(prepareResult.amount);
       // 1-1. 결제 금액이 0원일 경우 결제창 호출 없이 결제 종료 처리
       if (

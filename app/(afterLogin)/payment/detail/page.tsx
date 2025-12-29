@@ -62,46 +62,12 @@ export default function PaymentDetailPage() {
     title: it.title,
   }));
 
-  // 주문명: 단건은 그대로, 다건은 "첫상품 외 N건"
-  const orderName =
-    items.length <= 1
-      ? items[0]?.title || ""
-      : `${items[0]?.title || "상품"} 외 ${items.length - 1}건`;
-
   return (
     <div className="w-full h-full">
       <div className="">
         <div className="bg-white rounded-lg shadow-lg p-8">
           {/* 헤더 */}
           <h1 className="text-3xl font-bold text-gray-900 mb-6">결제하기</h1>
-
-          {/* 상품 정보 */}
-          {/* <div className="border-b pb-6 mb-6">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">
-              주문 상품
-            </h2>
-            <div className="space-y-3">
-              <div className="flex flex-col gap-2">
-                {items.length === 0 ? (
-                  <span className="font-medium">선택된 상품이 없습니다.</span>
-                ) : (
-                  <div className="flex flex-col gap-2">
-                    {items.map((it, idx) => (
-                      <div
-                        key={`${it.courseId}-${idx}`}
-                        className="flex justify-between"
-                      >
-                        <span className="font-medium">{it.title}</span>
-                        <span className="text-(--mt-gray)">
-                          {it.price.toLocaleString()}원
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-          </div> */}
 
           <PaymentCheckoutSection
             paymentRequestItems={paymentRequestItems}
