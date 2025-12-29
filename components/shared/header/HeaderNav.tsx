@@ -23,14 +23,16 @@ export default function HeaderNav() {
   const {onToggle} = useDrawer();
   const path = usePathname();
   const router = useRouter();
+
   const handleAlertClick = async () => {
     setAlert((prev) => !prev);
     await editAlertState(false);
+    setState(false);
   };
   useEffect(() => {
     const alertState = async () => {
       const dbState: IAlertTypes = await getAlertDB(1);
-      setState(dbState.state);
+      setState(dbState?.state);
     };
     alertState();
   }, [getAlertDB, state]);

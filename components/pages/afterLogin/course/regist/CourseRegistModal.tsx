@@ -1,32 +1,28 @@
 "use client";
 
-import { CheckIcon } from "@/components/icons/check";
-import { IDogListType } from "@/types/dog/dogType";
-import { randomColor } from "@/util/randomColor";
+import {CheckIcon} from "@/components/icons/check";
+import {IDogListType} from "@/types/dog/dogType";
+import {randomColor} from "@/util/randomColor";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  Dispatch,
-  FormEvent,
-  SetStateAction,
-  useEffect,
-  useState,
-} from "react";
-import { useRouter } from "next/navigation";
-import { useCreateWishlist } from "@/hooks/afterLogin/wishlist/useCreateWishlist";
+import {Dispatch, FormEvent, SetStateAction, useEffect, useState} from "react";
+import {useRouter} from "next/navigation";
+import {useCreateWishlist} from "@/hooks/afterLogin/wishlist/useCreateWishlist";
 import ConfirmModal from "@/components/pages/afterLogin/wishlist/ConfirmModal";
-import { useApplyCourse } from "@/hooks/afterLogin/applications/useApplyCourse";
-import { useWishlistDogs } from "@/hooks/afterLogin/wishlist/useWishlistDogs";
-import { useFCMState } from "@/stores/fcm/fcmState";
-import useCheckLoggedIn from "@/hooks/afterLogin/users/useCheckLoggedIn";
+import {useApplyCourse} from "@/hooks/afterLogin/applications/useApplyCourse";
+import {useWishlistDogs} from "@/hooks/afterLogin/wishlist/useWishlistDogs";
+import {useFCMState} from "@/stores/fcm/fcmState";
+import {fcmApi} from "@/apis/fcm/fcmApi";
 
 export default function CourseRegistModal({
+  trainerId,
   trainerToken,
   courseId,
   dogs,
   mode,
   modalOff,
 }: {
+  trainerId: number;
   trainerToken: string;
   courseId: string;
   dogs: IDogListType | undefined;
@@ -39,8 +35,7 @@ export default function CourseRegistModal({
   const [open, setOpen] = useState(false);
   const [dogColors] = useState(() => dogs && randomColor(dogs));
   //zustand
-  const { myId } = useCheckLoggedIn();
-  const { setUserId, setTrainerToken } = useFCMState();
+  const {setUserId, setTrainerToken} = useFCMState();
 
   const handleBack = () => {
     // animate close then call modalOff
@@ -64,9 +59,9 @@ export default function CourseRegistModal({
     "wishlist" | "apply" | null
   >(null);
 
-  const { create } = useCreateWishlist();
-  const { mutate: applyCourse } = useApplyCourse();
-  const { dogs: wishlistDogs } = useWishlistDogs();
+  const {create} = useCreateWishlist();
+  const {mutate: applyCourse} = useApplyCourse();
+  const {dogs: wishlistDogs} = useWishlistDogs();
 
   const handleApply = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -84,7 +79,7 @@ export default function CourseRegistModal({
         try {
           const res = await fetch("/api/wishlist", {
             method: "GET",
-            headers: { "Content-Type": "application/json" },
+            headers: {"Content-Type": "application/json"},
           });
           if (res.ok) {
             const json = await res.json();
@@ -100,7 +95,7 @@ export default function CourseRegistModal({
           // ... 기타 필요한 필드
         }
         const isDuplicate = (wishlist as WishlistType[]).some(
-          (w) => w.courseId === Number(courseId) && w.dogId === id
+          (w) => w.courseId === Number(courseId) && w.dogId === id,
         );
         if (isDuplicate) {
           setConfirmDesc("이미 찜한 강의입니다.");
@@ -128,7 +123,7 @@ export default function CourseRegistModal({
     try {
       const res = await fetch("/api/application/list", {
         method: "GET",
-        headers: { "Content-Type": "application/json" },
+        headers: {"Content-Type": "application/json"},
       });
       if (res.ok) {
         const json = await res.json();
@@ -150,8 +145,8 @@ export default function CourseRegistModal({
         app.courseId === Number(courseId) &&
         app.dogId === id &&
         ["APPLIED", "WAITING", "ACCEPT", "PAID"].includes(
-          String(app.applicationStatus)
-        )
+          String(app.applicationStatus),
+        ),
     );
     if (isAlreadyApplied) {
       setConfirmDesc("이미 신청한 강의입니다.");
@@ -172,7 +167,7 @@ export default function CourseRegistModal({
       // 상담 안 된 강아지는 상담 안내 모달 띄우고 이동
       setConfirmDesc("상담이 안된 반려견입니다. 상담페이지로 이동합니다.");
       setConfirmOpen(true);
-      setUserId(Number(myId));
+      setUserId(Number(trainerId));
       setTrainerToken(trainerToken);
       setTimeout(() => {
         setConfirmOpen(false);
@@ -184,12 +179,20 @@ export default function CourseRegistModal({
     applyCourse(
       {
         courseId: Number(courseId),
-        data: { dogId: id },
+        data: {dogId: id},
       },
       {
-        onSuccess: () => {
+        onSuccess: async () => {
           setConfirmDesc("수강 신청이 완료되었습니다.");
           setConfirmResult("apply");
+          await fcmApi.sendFCMMsg({
+            userId: trainerId,
+            title: `${selectedDog.name}의 수강신청이 도착했어요.`,
+            msgBody: `${selectedDog.name}의 수강신청이 도착했어요.`,
+            desc: `${selectedDog.name}의 상담신청이 도착했어요.`,
+            url: `/trainer/applications`,
+            token: trainerToken ?? "",
+          });
           setConfirmOpen(true);
           router.push("/applications");
         },
@@ -205,7 +208,7 @@ export default function CourseRegistModal({
           setConfirmResult(null);
           setConfirmOpen(true);
         },
-      }
+      },
     );
   };
 
@@ -217,7 +220,7 @@ export default function CourseRegistModal({
         className={`absolute inset-0 bg-(--mt-black)/75 transition-opacity duration-300 ${
           open ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
-        style={{ zIndex: 1 }}
+        style={{zIndex: 1}}
       />
       {/* 중앙 모달 */}
       <div
@@ -228,7 +231,7 @@ export default function CourseRegistModal({
         }`}
         role="dialog"
         aria-modal="true"
-        style={{ height: "auto" }}
+        style={{height: "auto"}}
       >
         <button
           className="w-20 h-1 bg-(--mt-gray) rounded-lg"
