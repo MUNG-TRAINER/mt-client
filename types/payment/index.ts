@@ -12,6 +12,7 @@ export interface PaymentPrepareResponse {
   merchantUid: string;
   amount: number;
   isCompleted: boolean;
+  orderName: string;
 }
 
 // 결제 승인 요청
