@@ -7,19 +7,21 @@ export async function PATCH(
   {
     params,
   }: {
-    params: Promise<{ courseId: string; sessionId: string; userName: string }>;
+    params: Promise<{
+      courseId: string;
+      sessionId: string;
+      attendanceId: string;
+    }>;
   }
 ) {
-  const { courseId, sessionId, userName } = await params;
+  const { courseId, sessionId, attendanceId } = await params;
   const cookieStore = await cookies();
 
   try {
     const body = await request.json();
 
     const res = await fetch(
-      `${API_BASE_URL}/trainer/course/${courseId}/session/${sessionId}/attendance/${encodeURIComponent(
-        userName
-      )}`,
+      `${API_BASE_URL}/trainer/course/${courseId}/session/${sessionId}/attendance/${attendanceId}`,
       {
         method: "PATCH",
         headers: {
