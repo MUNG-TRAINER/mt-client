@@ -13,6 +13,10 @@ import { UserIcon } from "@/components/icons/user";
 import { CheckIcon } from "@/components/icons/check";
 import { XMarkIcon } from "@/components/icons/xMark";
 import { getDogSizeLabel } from "@/util/course/courseMappings";
+import {
+  getDifficultyColor,
+  getDifficultyLabel,
+} from "@/util/course/difficultyUtils";
 
 interface CourseCardProps {
   course: CourseItem;
@@ -136,8 +140,10 @@ export const CourseCard = ({ course, onReserve }: CourseCardProps) => {
           <span className="px-2.5 py-1 bg-blue-50 text-blue-600 text-xs rounded-md font-semibold">
             {LESSON_FORM_LABEL[course.lessonForm]}
           </span>
-          <span className="px-2.5 py-1 bg-green-50 text-green-600 text-xs rounded-md font-semibold">
-            {course.difficulty}
+          <span
+            className={`px-2.5 py-1 text-xs rounded-md font-semibold ${getDifficultyColor(course.difficulty)}`}
+          >
+            {getDifficultyLabel(course.difficulty)}
           </span>
           {getDogSizeLabel(course.dogSize).map((sizeLabel, index) => (
             <span
