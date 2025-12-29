@@ -22,5 +22,5 @@ export async function PATCH(req: NextRequest) {
       {status: res.status},
     );
   }
-  return NextResponse.json({success: false, message: "FCM토큰 업데이트 성공."});
+  return NextResponse.json({success: true, message: "FCM토큰 업데이트 성공."});
 }
