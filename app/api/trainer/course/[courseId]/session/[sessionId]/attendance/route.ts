@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { API_BASE_URL } from "@/util/env";
+import { cookies } from "next/headers";
 
 /**
  * 출석 목록 조회 API
@@ -17,17 +18,16 @@ export async function GET(
   }
 ) {
   const { courseId, sessionId } = await params;
+  const cookieStore = await cookies();
 
   try {
-    const cookie = req.headers.get("cookie");
-
     const response = await fetch(
       `${API_BASE_URL}/trainer/course/${courseId}/session/${sessionId}/attendance`,
       {
         method: "GET",
         headers: {
+          Cookie: cookieStore.toString(),
           "Content-Type": "application/json",
-          ...(cookie && { Cookie: cookie }),
         },
       }
     );
