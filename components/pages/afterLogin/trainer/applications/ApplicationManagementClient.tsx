@@ -1,21 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import {useState} from "react";
 import useGroupedApplications from "@/hooks/afterLogin/applications/useGroupedApplications";
-import { useApplicationSelection } from "@/hooks/afterLogin/applications/useApplicationSelection";
-import { useApplicationModals } from "@/hooks/afterLogin/applications/useApplicationModals";
-import { useApplicationBulkActions } from "@/hooks/afterLogin/applications/useApplicationBulkActions";
-import { ApplicationList } from "./ApplicationList";
-import { RejectModal } from "./RejectModal";
-import { ApprovalConfirmModal } from "./ApprovalConfirmModal";
-import { DogDetailModal } from "./DogDetailModal";
+import {useApplicationSelection} from "@/hooks/afterLogin/applications/useApplicationSelection";
+import {useApplicationModals} from "@/hooks/afterLogin/applications/useApplicationModals";
+import {useApplicationBulkActions} from "@/hooks/afterLogin/applications/useApplicationBulkActions";
+import {ApplicationList} from "./ApplicationList";
+import {RejectModal} from "./RejectModal";
+import {ApprovalConfirmModal} from "./ApprovalConfirmModal";
+import {DogDetailModal} from "./DogDetailModal";
 import AlertModal from "@/components/shared/modal/AlertModal";
-import type { GroupedApplication } from "@/types/applications/applicationType";
+import type {GroupedApplication} from "@/types/applications/applicationType";
+import {fcmApi} from "@/apis/fcm/fcmApi";
 
 export const ApplicationManagementClient = () => {
-  const { data: applications, isPending, isError } = useGroupedApplications();
-  const { selectedItems, toggleSelection, clearSelection } =
-    useApplicationSelection();
+  const [selected, setSelected] = useState<Set<string> | null>(null);
+  const {data: applications, isPending, isError} = useGroupedApplications();
+  const {selectedItems, toggleSelection} = useApplicationSelection();
   const {
     rejectModalOpen,
     targetDogName,
@@ -29,8 +30,7 @@ export const ApplicationManagementClient = () => {
     openDogDetailModal,
     closeDogDetailModal,
   } = useApplicationModals();
-  const { handleBulkApprove, handleBulkReject } = useApplicationBulkActions();
-
+  const {handleBulkApprove, handleBulkReject} = useApplicationBulkActions();
   // 결과 모달 상태
   const [resultModal, setResultModal] = useState<{
     isOpen: boolean;
@@ -59,11 +59,12 @@ export const ApplicationManagementClient = () => {
   // 거절 버튼 클릭
   const handleRejectClick = () => {
     if (selectedItems.size === 0) return;
-
+    // 스냅샷으로 고정 (Set 레퍼런스가 바뀌거나 mutate되는 문제 방지)
+    setSelected(new Set(selectedItems));
     const firstKey = Array.from(selectedItems)[0];
     const [courseId, dogId] = firstKey.split("-").map(Number);
     const firstApplication = applications.find(
-      (app) => app.courseId === courseId && app.dogId === dogId
+      (app) => app.courseId === courseId && app.dogId === dogId,
     );
     if (firstApplication) {
       openRejectModal(firstApplication.dogName);
@@ -79,9 +80,7 @@ export const ApplicationManagementClient = () => {
       const [courseId, dogId] = key.split("-").map(Number);
       toggleSelection(courseId, dogId);
     });
-
     closeRejectModal();
-
     // 결과 피드백
     if (result.failed.length === 0) {
       setResultModal({
@@ -105,11 +104,32 @@ export const ApplicationManagementClient = () => {
         message: `성공: ${result.succeeded.length}건\n실패: ${result.failed.length}건\n\n실패한 항목은 선택된 상태로 유지됩니다.`,
       });
     }
+    if (selected !== null) {
+      const selectedApp = applications
+        .filter((app) => selected.has(`${app.courseId}-${app.dogId}`))
+        .filter((app) => app.fcmToken);
+      for (const app of selectedApp) {
+        try {
+          await fcmApi.sendFCMMsg({
+            userId: app.userId,
+            title: `수업 거절`,
+            msgBody: `${reason}`,
+            desc: `${reason}`,
+            url: `/applications`,
+            token: app.fcmToken!,
+          });
+        } catch (err) {
+          console.error(`FCM 전송 실패: ${app.userId}`, err);
+        }
+      }
+    }
   };
 
   // 승인 버튼 클릭
   const handleApprovalClick = () => {
     if (selectedItems.size === 0) return;
+    // 승인에서도 FCM 전송 대상 스냅샷을 잡아둬야 selected가 null이 되지 않음
+    setSelected(new Set(selectedItems));
     openApprovalModal();
   };
 
@@ -147,6 +167,25 @@ export const ApplicationManagementClient = () => {
         title: "일부 처리 완료",
         message: `성공: ${result.succeeded.length}건\n실패: ${result.failed.length}건\n\n실패한 항목은 선택된 상태로 유지됩니다.`,
       });
+    }
+    if (selected !== null) {
+      const selectedApp = applications
+        .filter((app) => selected.has(`${app.courseId}-${app.dogId}`))
+        .filter((app) => app.fcmToken);
+      for (const app of selectedApp) {
+        try {
+          await fcmApi.sendFCMMsg({
+            userId: app.userId,
+            title: `수업 승인`,
+            msgBody: `훈련사가 수업을 승인했어요.`,
+            desc: `훈련사가 수업을 승인했어요.`,
+            url: `/applications`,
+            token: app.fcmToken!,
+          });
+        } catch (err) {
+          console.error(`FCM 전송 실패: ${app.userId}`, err);
+        }
+      }
     }
   };
 
@@ -244,7 +283,7 @@ export const ApplicationManagementClient = () => {
         title={resultModal.title}
         message={resultModal.message}
         positioning="absolute"
-        onClose={() => setResultModal({ ...resultModal, isOpen: false })}
+        onClose={() => setResultModal({...resultModal, isOpen: false})}
       />
     </div>
   );

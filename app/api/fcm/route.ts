@@ -52,6 +52,7 @@ export async function POST(req: NextRequest) {
     };
     const sendMsg = await admin?.messaging().send(message);
     if (!sendMsg) {
+      console.error("메세지를 보내는데 실패했습니다.");
       return NextResponse.json({
         success: false,
         message: "메세지를 보내는데 실패했습니다.",

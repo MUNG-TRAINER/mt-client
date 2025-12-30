@@ -1,12 +1,12 @@
 "use client";
 
-import {useEffect} from "react";
-import {ITrainerUserListResponse} from "@/types/trainer/trainerUserType";
-import {DogIcon} from "@/components/icons/dog";
-import {ChevronRightIcon} from "@/components/icons/chevron";
-import {useRouter} from "next/navigation";
+import { useEffect } from "react";
+import { ITrainerUserListResponse } from "@/types/trainer/trainerUserType";
+import { DogIcon } from "@/components/icons/dog";
+import { ChevronRightIcon } from "@/components/icons/chevron";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
-import {getBackgroundColorStyle} from "@/util/color/generateColorFromId";
+import { getBackgroundColorStyle } from "@/util/color/generateColorFromId";
 import useGetUserDogs from "@/hooks/afterLogin/trainer/useGetUserDogs";
 
 interface IDogListModalProps {
@@ -14,9 +14,9 @@ interface IDogListModalProps {
   onClose: () => void;
 }
 
-export default function DogListModal({user, onClose}: IDogListModalProps) {
+export default function DogListModal({ user, onClose }: IDogListModalProps) {
   const router = useRouter();
-  const {dogs, isLoading, error} = useGetUserDogs({userId: user.userId});
+  const { dogs, isLoading, error } = useGetUserDogs({ userId: user.userId });
 
   // Escape 키로 모달 닫기
   useEffect(() => {
@@ -58,13 +58,13 @@ export default function DogListModal({user, onClose}: IDogListModalProps) {
 
   return (
     <div
-      className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50"
+      className="absolute inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4"
       role="dialog"
       aria-modal="true"
       aria-labelledby="dog-list-modal-title"
       onClick={handleBackdropClick}
     >
-      <div className="bg-white rounded-2xl max-w-lg w-full mx-4 max-h-[80vh] flex flex-col shadow-xl">
+      <div className="bg-white rounded-2xl w-full max-w-md max-h-[90vh] overflow-hidden flex flex-col shadow-xl">
         {/* 헤더 */}
         <div className="p-6 border-b border-(--mt-gray-light)">
           <h2
@@ -152,7 +152,7 @@ export default function DogListModal({user, onClose}: IDogListModalProps) {
                     <div className="flex items-center gap-2 mt-1">
                       <span
                         className={`text-xs px-2 py-0.5 rounded-full font-medium ${getGenderBadgeColor(
-                          dog.gender,
+                          dog.gender
                         )}`}
                       >
                         {getGenderLabel(dog.gender)}

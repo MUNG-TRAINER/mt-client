@@ -58,6 +58,8 @@ export interface GroupedApplication {
   dogName: string;
   ownerName: string;
   totalSessions: number;
+  userId: number;
+  fcmToken: string | null;
   sessions: SessionInfo[];
 }
 
