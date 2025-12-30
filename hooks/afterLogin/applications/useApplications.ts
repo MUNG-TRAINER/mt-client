@@ -1,14 +1,14 @@
 "use client";
 
-import { ApplicationType } from "@/types/applications/applicationsType";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { applicationAPI } from "@/apis/applications/applicationAPI";
-import { useApplicationState } from "@/stores/applicationsState";
+import {ApplicationType} from "@/types/applications/applicationsType";
+import {useQuery, useQueryClient} from "@tanstack/react-query";
+import {applicationAPI} from "@/apis/applications/applicationAPI";
+import {useApplicationState} from "@/stores/applicationsState";
 
 export const useApplications = () => {
-  const { activeTab, selectedIndex } = useApplicationState();
+  const {activeTab, selectedIndex} = useApplicationState();
   const queryClient = useQueryClient();
-  const { data, isPending, isError } = useQuery<ApplicationType[]>({
+  const {data, isPending, isError} = useQuery<ApplicationType[]>({
     queryKey: ["applicationList"],
     queryFn: () => applicationAPI.getApplicationList(),
   });
@@ -47,7 +47,7 @@ export const useApplications = () => {
     activeTab === "pending" ? pendingApplications : completedApplications;
 
   const refreshApplicationListCache = () => {
-    queryClient.invalidateQueries({ queryKey: ["applicationList"] });
+    queryClient.invalidateQueries({queryKey: ["applicationList"]});
   };
 
   const thisWeekSchedule = data?.filter((app) => {

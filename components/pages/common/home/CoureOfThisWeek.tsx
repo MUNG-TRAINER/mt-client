@@ -9,9 +9,9 @@ export default function CourseOfThisWeek() {
 
   if (isPending) return <div>Loading...</div>;
   if (data && "code" in data) return null;
-  if (data && "role" in data && data.role === "USER") {
-    return <CourseOfWeekUser />;
-  }
+  // if (data && "role" in data && data.role === "USER") {
+  //   return <CourseOfWeekUser />;
+  // }
   if (data && "role" in data && data.role === "TRAINER") {
     return <CourseOfWeekTrainer />;
   }

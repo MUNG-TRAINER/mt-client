@@ -77,7 +77,7 @@ export const courseApi = {
       const presignedURL = await response.json();
       const mainImgUrl = await presignedUrlApi.uploadToS3(
         presignedURL.presignedUrl,
-        mainImgFile,
+        mainImgFile
       );
       formData.set("mainImgUrl", mainImgUrl);
     }
@@ -98,7 +98,7 @@ export const courseApi = {
       const presignedURL = await response.json();
       const s3Key = await presignedUrlApi.uploadToS3(
         presignedURL.presignedUrl,
-        file,
+        file
       );
       detailImageUrl.push(s3Key);
     }

@@ -15,6 +15,16 @@ interface ApplicationInfoProps {
   location?: string;
   sessionSchedule?: string;
 }
+const TYPE_LABEL: Record<string, string> = {
+  ONCE: "일회성",
+  MULTI: "다회차",
+};
+
+const LESSON_FORM_LABEL: Record<string, string> = {
+  WALK: "산책",
+  GROUP: "그룹모임",
+  PRIVATE: "1:1",
+};
 
 const CourseCard: React.FC<ApplicationInfoProps> = ({
   title,
@@ -53,10 +63,10 @@ const CourseCard: React.FC<ApplicationInfoProps> = ({
 
           <div className="flex gap-1 flex-wrap mb-2">
             <span className="flex gap-1 text-xs items-center leading-none px-2 py-1 rounded-full bg-[#E7F5FF] text-[#4263EB]">
-              {type}
+              {TYPE_LABEL[type] ?? type}
             </span>
             <span className="flex gap-1 text-xs items-center leading-none px-2 py-1 rounded-full bg-[#FFF3BF] text-[#F59F00]">
-              {lessonForm}
+              {LESSON_FORM_LABEL[lessonForm] ?? lessonForm}
             </span>
           </div>
         </div>

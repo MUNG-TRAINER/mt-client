@@ -7,8 +7,6 @@ import {useRouter} from "next/navigation";
 import {TrainerCourseType} from "@/types/trainer/trainerCourseType";
 
 import DogImage from "@/public/images/application/dog.jpg";
-import TypeImage from "@/public/images/application/repeat.jpg";
-import LessonformImage from "@/public/images/application/check.jpg";
 import SessionNoImage from "@/public/images/application/star.jpg";
 import BellImage from "@/public/images/application/bell.jpg";
 
@@ -55,13 +53,13 @@ export default function PlanCourseList({courses, isTrainer = false, onOpenAttend
                 mainImage={course.mainImage ?? ""}
                 location={course.location}
                 sessionSchedule={`${session.sessionDate} ${formatTime(
-                  session.startTime,
+                  session.startTime
                 )} ~ ${formatTime(session.endTime)}`}
               />
 
               {/* ===== Session Info ===== */}
               <div className="flex flex-col gap-2">
-                <div className="flex justify-between pl-1 pr-1">
+                <div className="flex justify-between pl-1 pr-1 mt-1">
                   <div className="min-w-20">
                     {!isTrainer && (
                       <div className="flex items-center text-xs font-medium text-gray-700 mb-2 gap-1">
@@ -77,33 +75,8 @@ export default function PlanCourseList({courses, isTrainer = false, onOpenAttend
                     )}
                   </div>
                   <div className="flex gap-1 text-gray-700">
-                    {/* 상태 표시 */}
-                    <span className="flex gap-1 text-xs items-center leading-none px-1.5 py-0.5 rounded-full">
-                      <Image
-                        src={TypeImage}
-                        placeholder="blur"
-                        alt="타입"
-                        width={13}
-                        height={5}
-                        className="w-3.5 h-[15px] items-center"
-                      />
-                      {course.type}
-                    </span>
-                    {course.lessonForm && (
-                      <span className="flex gap-1 text-xs items-center leading-none px-1.5 py-0.5 rounded-full">
-                        <Image
-                          src={LessonformImage}
-                          placeholder="blur"
-                          alt="lessonform"
-                          width={13}
-                          height={5}
-                          className="w-3.5 h-[15px] items-center"
-                        />
-                        {course.lessonForm}
-                      </span>
-                    )}
                     {session.sessionNo && (
-                      <span className="flex gap-1 text-xs items-center leading-none px-1.5 py-0.5">
+                      <span className="flex gap-1 text-xs items-center leading-none">
                         <Image
                           src={SessionNoImage}
                           placeholder="blur"
@@ -148,7 +121,7 @@ export default function PlanCourseList({courses, isTrainer = false, onOpenAttend
                 </div>
               )}
             </li>
-          )),
+          ))
         )}
       </ul>
     </>
