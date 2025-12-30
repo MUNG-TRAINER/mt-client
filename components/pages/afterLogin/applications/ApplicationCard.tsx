@@ -114,11 +114,18 @@ const ApplicationCard: React.FC<Props> = ({
           onClick={(e) => e.stopPropagation()}
           onChange={(e) => {
             e.stopPropagation();
-            // 첫 번째 세션 ID를 대표로 사용 (선택 상태 관리용)
-            setSelectedIndex(
-              app.applicationItems[0]?.applicationId || 0,
-              e.target.checked
-            );
+            // 모든 세션 ID를 선택 상태에 추가/제거
+            if (e.target.checked) {
+              // 체크 시 모든 세션 ID 추가
+              app.applicationItems.forEach((item) => {
+                setSelectedIndex(item.applicationId, true);
+              });
+            } else {
+              // 체크 해제 시 모든 세션 ID 제거
+              app.applicationItems.forEach((item) => {
+                setSelectedIndex(item.applicationId, false);
+              });
+            }
             handleCheckboxChange(e.target.checked);
           }}
         />
@@ -149,7 +156,7 @@ const ApplicationCard: React.FC<Props> = ({
         {typeof app.totalAmount === "number" && (
           <div className="flex justify-end items-baseline gap-1 mb-1">
             <span className="text-sm text-gray-500">총 금액</span>
-            <span className="text-xl font-bold text-[var(--mt-blue-point)]">
+            <span className="text-xl font-bold text-(--mt-blue-point)">
               {app.totalAmount.toLocaleString()}원
             </span>
           </div>
@@ -171,9 +178,11 @@ const ApplicationCard: React.FC<Props> = ({
               style={{ border: "1px solid #C5C5C5", color: "#EF4444" }}
               onClick={(e) => {
                 e.stopPropagation();
-                app.rejectReason
-                  ? onOpenRejectModal?.(app.rejectReason)
-                  : alert("거절 사유가 없습니다.");
+                if (app.rejectReason) {
+                  onOpenRejectModal?.(app.rejectReason);
+                } else {
+                  alert("거절 사유가 없습니다.");
+                }
               }}
             >
               거절사유
@@ -245,7 +254,17 @@ const ApplicationCard: React.FC<Props> = ({
             className="flex-1 flex items-center justify-center gap-2 py-2 text-sm font-semibold rounded-lg"
             style={{ border: "1px solid #C5C5C5", color: "#374151" }}
           >
-            {statusText}
+            {displayStatus === "WAITING" &&
+            app.applicationItems.some(
+              (item) => item.isWaiting && item.waitingOrder
+            )
+              ? (() => {
+                  const waitingItem = app.applicationItems.find(
+                    (item) => item.isWaiting && item.waitingOrder
+                  );
+                  return `대기예약 (${waitingItem?.waitingOrder}번)`;
+                })()
+              : statusText}
           </button>
         )}
       </div>

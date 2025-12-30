@@ -44,20 +44,33 @@ export const ApplicationListItem = ({
   const getBadgeConfig = () => {
     if (!firstSession) return null;
 
-    if (!firstSession.isWaiting) {
-      return { color: "bg-blue-100 text-blue-700", text: "승인 대기" };
-    }
-
-    if (firstSession.isPreApproved) {
+    // 대기 중 상태 (status=WAITING 또는 isWaiting=true)
+    if (firstSession.status === "WAITING" || firstSession.isWaiting) {
+      // 미리 승인된 대기
+      if (firstSession.isPreApproved) {
+        return {
+          color: "bg-green-100 text-green-700 border border-green-300",
+          text: `✓ 승인 예정 (대기 ${firstSession.waitingOrder}번)`,
+          icon: "✓",
+        };
+      }
+      // 일반 대기
       return {
-        color: "bg-green-100 text-green-700",
-        text: `승인 예정 (대기 ${firstSession.waitingOrder}번)`,
+        color: "bg-orange-100 text-orange-700 border border-orange-300",
+        text: `⏳ 정원초과 대기 (${firstSession.waitingOrder}번)`,
+        icon: "⏳",
       };
     }
 
+    // 일반 승인 대기
+    const capacityText =
+      firstSession.maxCapacity && firstSession.currentParticipants !== undefined
+        ? ` (${firstSession.currentParticipants}/${firstSession.maxCapacity})`
+        : "";
     return {
-      color: "bg-yellow-100 text-yellow-700",
-      text: `대기 중 (${firstSession.waitingOrder}번)`,
+      color: "bg-blue-100 text-blue-700",
+      text: `승인 대기${capacityText}`,
+      icon: null,
     };
   };
 
@@ -139,16 +152,20 @@ export const ApplicationListItem = ({
 
             // 회차별 대기 상태 배지
             let sessionBadge = null;
-            if (session.isWaiting && session.isPreApproved) {
+            // 대기 중 상태 (status=WAITING 또는 isWaiting=true)
+            if (
+              (session.status === "WAITING" || session.isWaiting) &&
+              session.isPreApproved
+            ) {
               sessionBadge = (
-                <span className="px-2 py-0.5 bg-green-100 text-green-700 text-xs font-medium rounded">
-                  승인 예정 ({session.waitingOrder}번)
+                <span className="px-2 py-0.5 bg-green-100 text-green-700 border border-green-300 text-xs font-medium rounded">
+                  ✓ 승인 예정 ({session.waitingOrder}번)
                 </span>
               );
-            } else if (session.isWaiting) {
+            } else if (session.status === "WAITING" || session.isWaiting) {
               sessionBadge = (
-                <span className="px-2 py-0.5 bg-yellow-100 text-yellow-700 text-xs font-medium rounded">
-                  대기 {session.waitingOrder}번
+                <span className="px-2 py-0.5 bg-orange-100 text-orange-700 border border-orange-300 text-xs font-medium rounded">
+                  ⏳ 대기 {session.waitingOrder}번
                 </span>
               );
             }
