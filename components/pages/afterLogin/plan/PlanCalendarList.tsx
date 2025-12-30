@@ -4,7 +4,7 @@ import Image from "next/image";
 import CalendarImage from "@/public/images/application/calendar.jpg";
 import locationImage from "@/public/images/application/location.jpg";
 import DogImage from "@/public/images/application/dog.jpg";
-import {SessionCardCourse} from "@/types/course/sessionCardCourse"; // ✅ SessionCardCourse 타입 사용
+import {SessionCardCourse} from "@/types/course/sessionCardCourse";
 
 interface SessionCardListProps {
   courses: SessionCardCourse[]; // ✅ SessionCardCourse[]로 통일
