@@ -55,10 +55,27 @@ export default function CreateCounselingForm({
   };
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setPhone(value);
+    const value = e.target.value.replace(/[^0-9]/g, ""); // 숫자만 추출
+    
+    // 11자리 초과는 무시
+    if (value.length > 11) {
+      return;
+    }
+    
+    // 자동으로 하이픈 추가
+    let formattedValue = "";
+    if (value.length <= 3) {
+      formattedValue = value;
+    } else if (value.length <= 7) {
+      formattedValue = `${value.slice(0, 3)}-${value.slice(3)}`;
+    } else {
+      formattedValue = `${value.slice(0, 3)}-${value.slice(3, 7)}-${value.slice(7)}`;
+    }
+    
+    setPhone(formattedValue);
 
-    if (value && !validatePhone(value)) {
+    // 유효성 검사
+    if (formattedValue && formattedValue.length >= 12 && !validatePhone(formattedValue)) {
       setPhoneError("올바른 전화번호 형식이 아닙니다. (예: 010-1234-5678)");
     } else {
       setPhoneError("");
@@ -205,9 +222,6 @@ export default function CreateCounselingForm({
           {phoneError && (
             <p className="text-red-500 text-sm mt-1">{phoneError}</p>
           )}
-          <p className="text-(--mt-gray) text-xs mt-2">
-            하이픈(-)을 포함하여 입력해주세요
-          </p>
         </div>
 
         {/* 안내 메시지 */}
