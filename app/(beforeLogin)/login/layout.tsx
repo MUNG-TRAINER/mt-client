@@ -15,7 +15,7 @@ export default function layout({children}: {children: ReactNode}) {
       <div className="bg-(--mt-blue) p-5 rounded-full size-20">
         <Image src={logo_slogun_white} alt="로고이미지" />
       </div>
-      <h2 className="text-2xl font-dohyeon">댕스쿨</h2>
+      <h2 className="text-2xl font-dohyeon">멍스쿨</h2>
       <p className="text-sm text-(--mt-gray)">반려견 훈련 플랫폼</p>
       {children}
       <p className="flex items-center gap-2 justify-center text-center text-sm font-semibold text-(--mt-gray)">
