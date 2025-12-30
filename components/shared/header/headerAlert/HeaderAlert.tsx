@@ -3,7 +3,7 @@ import {TrashIcon} from "@/components/icons/trash";
 import useCheckLoggedIn from "@/hooks/afterLogin/users/useCheckLoggedIn";
 import useIndexedDB from "@/hooks/indexedDB/useIndexedDB";
 import {INotiData} from "@/util/indexedDB/initDB";
-import {NOTI_BROARDCAST} from "@/util/variables";
+import {NOTI_BROADCAST} from "@/util/variables";
 import Link from "next/link";
 import {useEffect, useState} from "react";
 
@@ -36,7 +36,7 @@ export default function HeaderAlert({state}: {state: boolean}) {
     getData();
   }, [getNoticeDB, myUserId]);
   useEffect(() => {
-    const notiBroadCast = new BroadcastChannel(NOTI_BROARDCAST);
+    const notiBroadCast = new BroadcastChannel(NOTI_BROADCAST);
 
     notiBroadCast.onmessage = async (e) => {
       const db = await getNoticeDB(1);

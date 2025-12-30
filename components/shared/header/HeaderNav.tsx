@@ -9,7 +9,7 @@ import HeaderAlert from "./headerAlert/HeaderAlert";
 import {useEffect, useState} from "react";
 import useIndexedDB from "@/hooks/indexedDB/useIndexedDB";
 import {IAlertTypes} from "@/util/indexedDB/initDB";
-import {NOTI_BROARDCAST} from "@/util/variables";
+import {NOTI_BROADCAST} from "@/util/variables";
 
 const notAllowBackBtn: {[key: string]: boolean} = {
   "/": true,
@@ -39,12 +39,12 @@ export default function HeaderNav() {
   }, [getAlertDB, state]);
 
   useEffect(() => {
-    const notiBroadCast = new BroadcastChannel(NOTI_BROARDCAST);
+    const notiBroadCast = new BroadcastChannel(NOTI_BROADCAST);
     notiBroadCast.onmessage = (e) => {
       setState(e.data.alert);
     };
     return () => notiBroadCast.close();
-  }, [state]);
+  }, []);
   return (
     <>
       {!notAllowBackBtn[path] && (

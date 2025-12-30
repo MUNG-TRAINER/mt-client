@@ -3,7 +3,7 @@ import {fcmApi} from "@/apis/fcm/fcmApi";
 import useIndexedDB from "@/hooks/indexedDB/useIndexedDB";
 import {IFirebaseMsgTypes} from "@/types/firebaseMsg/IFirebaseMsgTypes";
 import {app} from "@/util/firebase/initFirebase";
-import {NOTI_BROARDCAST} from "@/util/variables";
+import {NOTI_BROADCAST} from "@/util/variables";
 import {getMessaging, getToken, onMessage} from "firebase/messaging";
 import {
   createContext,
@@ -86,7 +86,7 @@ export default function FirebaseProvider({children}: {children: ReactNode}) {
           await editAlertState(true);
 
           //브로드 캐스트
-          const notiBroadCast = new BroadcastChannel(NOTI_BROARDCAST);
+          const notiBroadCast = new BroadcastChannel(NOTI_BROADCAST);
           notiBroadCast.postMessage({alert: true});
           notiBroadCast.close();
 
