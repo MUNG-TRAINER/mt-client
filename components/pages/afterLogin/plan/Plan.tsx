@@ -2,17 +2,12 @@
 import PlanTabs from "./PlanTabs";
 import PlanCourseList from "./PlanCourseList";
 import {useState} from "react";
-import Image from "next/image";
 import PlanFloatingBtn from "./PlanFloatingBtn";
 import Calendar from "./Calendar";
 import {UserCourseType} from "@/types/course/userCourse";
 import useCheckLoggedIn from "@/hooks/afterLogin/users/useCheckLoggedIn";
 import {TrainerCourseType} from "@/types/trainer/trainerCourseType";
 import {useRouter} from "next/navigation";
-import DogImage from "@/public/images/application/dog.jpg";
-import CalendarImage from "@/public/images/application/calendar.jpg";
-import SessionNoImage from "@/public/images/application/star.jpg";
-import locationImage from "@/public/images/application/location.jpg";
 import PlanCalendarList from "./PlanCalendarList";
 
 interface PlanProps {

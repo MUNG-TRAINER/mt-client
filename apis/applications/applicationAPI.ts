@@ -42,9 +42,8 @@ export const applicationAPI = {
 
   applyCourse: async (
     courseId: number,
-    data: Partial<ApplicationType>
+    data: Partial<ApplicationType>,
   ): Promise<ApplicationType[]> => {
-  
     const res = await fetch(`/api/course/${courseId}/apply`, {
       method: "POST",
       headers: {
@@ -54,13 +53,25 @@ export const applicationAPI = {
     });
 
     if (!res.ok) {
-      const errorBody = await res.json();
+      let errorBody;
+      try {
+        errorBody = await res.json();
+      } catch {
+        // JSON 파싱 실패 시 기본 에러 메시지
+        throw new Error("신청 중 오류가 발생했습니다.");
+      }
 
-      if (errorBody.code === "ALREADY_APPLIED") {
+      // 백엔드 응답: { error: "ALREADY_APPLIED", message: "..." }
+      if (errorBody.error === "ALREADY_APPLIED") {
         throw new Error("ALREADY_APPLIED");
       }
 
-      throw new Error("APPLY_FAILED");
+      // 백엔드에서 보낸 에러 메시지를 그대로 전달
+      if (errorBody.message) {
+        throw new Error(errorBody.message);
+      }
+
+      throw new Error("신청 중 오류가 발생했습니다.");
     }
 
     const result = (await res.json()) as IResultResponseData<ApplicationType[]>;
@@ -151,7 +162,16 @@ export const applicationAPI = {
     );
 
     if (!response.ok) {
-      throw new Error("일괄 상태 변경에 실패했습니다.");
+      const contentType = response.headers.get("content-type") ?? "";
+      if (contentType.includes("application/json")) {
+        const body = await response.json().catch(() => null);
+        const message =
+          (body && (body.message || body.error || body.detail)) ??
+          "일괄 상태 변경에 실패했습니다.";
+        throw new Error(message);
+      }
+      const text = await response.text().catch(() => "");
+      throw new Error(text || "일괄 상태 변경에 실패했습니다.");
     }
 
     return response.text();

@@ -3,6 +3,7 @@ import {TrashIcon} from "@/components/icons/trash";
 import useCheckLoggedIn from "@/hooks/afterLogin/users/useCheckLoggedIn";
 import useIndexedDB from "@/hooks/indexedDB/useIndexedDB";
 import {INotiData} from "@/util/indexedDB/initDB";
+import {NOTI_BROADCAST} from "@/util/variables";
 import Link from "next/link";
 import {useEffect, useState} from "react";
 
@@ -11,7 +12,7 @@ export default function HeaderAlert({state}: {state: boolean}) {
   const [noti, setNoti] = useState<INotiData[] | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const {getNoticeDB, removeNotiData} = useIndexedDB();
-
+  const myUserId = data && "userId" in data ? Number(data.userId) : null;
   const handleDeleteItem = (id: number) => {
     removeNotiData(1, id);
     setNoti((prev) => {
@@ -27,17 +28,31 @@ export default function HeaderAlert({state}: {state: boolean}) {
       setLoading(true);
       const db = await getNoticeDB(1);
       const myData = db.filter(
-        (val) =>
-          Number(val.userId) === (data && "userId" in data && data.userId),
+        (val) => myUserId !== null && Number(val.userId) === myUserId,
       );
       setNoti(myData);
       setLoading(false);
     };
     getData();
-  }, [getNoticeDB, data]);
+  }, [getNoticeDB, myUserId]);
+  useEffect(() => {
+    const notiBroadCast = new BroadcastChannel(NOTI_BROADCAST);
+
+    notiBroadCast.onmessage = async (e) => {
+      const db = await getNoticeDB(1);
+      if (e.data.alert) {
+        const myData = db.filter(
+          (val) => myUserId !== null && Number(val.userId) === myUserId,
+        );
+        setNoti(myData);
+      }
+    };
+
+    return () => notiBroadCast.close();
+  }, [getNoticeDB, myUserId]);
   return (
     <div
-      className={`absolute w-70 ${state ? "h-80 scale-y-full" : "h-0 scale-y-0"}  top-18.75 right-4 z-70 bg-(--mt-blue) p-3 rounded-b-lg transition-transform duration-200 ease-in-out origin-top`}
+      className={`absolute w-70 ${state ? "h-80 scale-y-full" : "h-0 scale-y-0"} top-20 right-4 z-70 rounded-b-lg transition-transform duration-200 ease-in-out origin-top shadow-2xl`}
     >
       <ul className="bg-(--mt-white) w-full h-full rounded-md p-2 flex flex-col gap-2 *:bg-blue-100 *:p-2 *:rounded-md overflow-y-auto">
         {loading && <p>알림 데이터 가져오는 중..</p>}
@@ -48,7 +63,7 @@ export default function HeaderAlert({state}: {state: boolean}) {
             <li key={val.id} className="flex items-center justify-between">
               <Link
                 href={val.url}
-                className="text-xl font-bold truncate hover:bg-(--mt-blue-smoke) p-2 rounded-md flex-1"
+                className="font-bold truncate hover:bg-(--mt-blue-smoke) p-2 rounded-md flex-1"
               >
                 {val.title}
               </Link>

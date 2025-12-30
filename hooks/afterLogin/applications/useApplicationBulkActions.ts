@@ -1,5 +1,6 @@
 "use client";
 import useBulkUpdateStatus from "./useBulkUpdateStatus";
+import {useQueryClient} from "@tanstack/react-query";
 
 /**
  * 일괄 처리 결과 타입
@@ -13,7 +14,23 @@ interface BulkActionResult {
  * 신청 일괄 처리 로직 훅
  */
 export function useApplicationBulkActions() {
-  const {mutate: bulkUpdateStatus} = useBulkUpdateStatus();
+  const queryClient = useQueryClient();
+  const {mutateAsync: bulkUpdateStatusAsync} = useBulkUpdateStatus();
+
+  const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+  const runWithRetry = async <T>(fn: () => Promise<T>, retries = 1) => {
+    let lastError: unknown;
+    for (let attempt = 0; attempt <= retries; attempt += 1) {
+      try {
+        return await fn();
+      } catch (e) {
+        lastError = e;
+        if (attempt < retries) await sleep(250);
+      }
+    }
+    throw lastError;
+  };
 
   const handleBulkApprove = async (
     selectedItems: Set<string>,
@@ -21,31 +38,25 @@ export function useApplicationBulkActions() {
     const succeeded: string[] = [];
     const failed: Array<{key: string; error: unknown}> = [];
 
-    await Promise.allSettled(
-      Array.from(selectedItems).map((key) => {
-        const [courseId, dogId] = key.split("-").map(Number);
-        return new Promise<void>((resolve, reject) => {
-          bulkUpdateStatus(
-            {
+    const keys = Array.from(selectedItems);
+    for (const key of keys) {
+      const [courseId, dogId] = key.split("-").map(Number);
+      try {
+        await runWithRetry(
+          () =>
+            bulkUpdateStatusAsync({
               courseId,
               dogId,
               data: {status: "ACCEPT"},
-            },
-            {
-              onSuccess: () => {
-                succeeded.push(key);
-                resolve();
-              },
-              onError: (error) => {
-                failed.push({key, error});
-                reject(error);
-              },
-            },
-          );
-        });
-      }),
-    );
-
+            }),
+          1,
+        );
+        succeeded.push(key);
+      } catch (error) {
+        failed.push({key, error});
+      }
+    }
+    await queryClient.invalidateQueries({queryKey: ["groupedApplications"]});
     return {succeeded, failed};
   };
 
@@ -56,31 +67,26 @@ export function useApplicationBulkActions() {
     const succeeded: string[] = [];
     const failed: Array<{key: string; error: unknown}> = [];
 
-    await Promise.allSettled(
-      Array.from(selectedItems).map((key) => {
-        const [courseId, dogId] = key.split("-").map(Number);
-        return new Promise<void>((resolve, reject) => {
-          bulkUpdateStatus(
-            {
+    const keys = Array.from(selectedItems);
+
+    for (const key of keys) {
+      const [courseId, dogId] = key.split("-").map(Number);
+      try {
+        await runWithRetry(
+          () =>
+            bulkUpdateStatusAsync({
               courseId,
               dogId,
               data: {status: "REJECTED", rejectReason: reason},
-            },
-            {
-              onSuccess: () => {
-                succeeded.push(key);
-                resolve();
-              },
-              onError: (error) => {
-                failed.push({key, error});
-                reject(error);
-              },
-            },
-          );
-        });
-      }),
-    );
-
+            }),
+          1,
+        );
+        succeeded.push(key);
+      } catch (error) {
+        failed.push({key, error});
+      }
+    }
+    await queryClient.invalidateQueries({queryKey: ["groupedApplications"]});
     return {succeeded, failed};
   };
 

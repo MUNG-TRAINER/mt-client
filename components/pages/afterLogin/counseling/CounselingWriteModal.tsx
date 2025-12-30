@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { XMarkIcon } from "@/components/icons/xMark";
+import {useState, useEffect} from "react";
+import {XMarkIcon} from "@/components/icons/xMark";
 import useDogDetail from "@/hooks/afterLogin/dogs/useDogDetail";
 
 interface CounselingWriteModalProps {
@@ -107,8 +107,8 @@ export const CounselingWriteModal = ({
                     {dogDetail.gender === "M"
                       ? "수컷"
                       : dogDetail.gender === "F"
-                      ? "암컷"
-                      : "-"}
+                        ? "암컷"
+                        : "-"}
                   </span>
                 </div>
                 <div className="flex justify-between">
@@ -147,10 +147,10 @@ export const CounselingWriteModal = ({
                     {dogDetail.humanSocialization === "HIGH"
                       ? "높음"
                       : dogDetail.humanSocialization === "MEDIUM"
-                      ? "보통"
-                      : dogDetail.humanSocialization === "LOW"
-                      ? "낮음"
-                      : "-"}
+                        ? "보통"
+                        : dogDetail.humanSocialization === "LOW"
+                          ? "낮음"
+                          : "-"}
                   </span>
                 </div>
                 <div className="flex justify-between">
@@ -159,10 +159,10 @@ export const CounselingWriteModal = ({
                     {dogDetail.animalSocialization === "HIGH"
                       ? "높음"
                       : dogDetail.animalSocialization === "MEDIUM"
-                      ? "보통"
-                      : dogDetail.animalSocialization === "LOW"
-                      ? "낮음"
-                      : "-"}
+                        ? "보통"
+                        : dogDetail.animalSocialization === "LOW"
+                          ? "낮음"
+                          : "-"}
                   </span>
                 </div>
                 {dogDetail.healthInfo && (
@@ -189,9 +189,9 @@ export const CounselingWriteModal = ({
                   상담 내용 작성
                 </label>
                 <textarea
-                  value={content}
                   onChange={(e) => setContent(e.target.value)}
                   placeholder="상담 내용을 입력해주세요..."
+                  defaultValue={""}
                   className="w-full h-32 p-3 border border-gray-200 rounded-lg resize-none focus:outline-none focus:border-blue-500 text-sm"
                 />
               </div>
@@ -210,8 +210,8 @@ export const CounselingWriteModal = ({
               {isSubmitting
                 ? "저장 중..."
                 : initialContent
-                ? "수정 완료"
-                : "작성 완료"}
+                  ? "수정 완료"
+                  : "작성 완료"}
             </button>
           </div>
         )}

@@ -2,7 +2,7 @@ import {
   AttendanceType,
   UpdateAttendanceRequest,
 } from "@/types/trainer/attendanceType";
-import {fetchWithAuth} from "../common/fetchWithAuth";
+import { fetchWithAuth } from "../common/fetchWithAuth";
 
 export const attendanceAPI = {
   /**
@@ -10,7 +10,7 @@ export const attendanceAPI = {
    */
   getAttendanceList: async (
     courseId: number,
-    sessionId: number,
+    sessionId: number
   ): Promise<AttendanceType[]> => {
     const res = await fetchWithAuth(
       `/api/trainer/course/${courseId}/session/${sessionId}/attendance`,
@@ -19,7 +19,7 @@ export const attendanceAPI = {
         headers: {
           "Content-Type": "application/json",
         },
-      },
+      }
     );
 
     if (!res.ok) {
@@ -35,20 +35,18 @@ export const attendanceAPI = {
   updateAttendanceStatus: async (
     courseId: number,
     sessionId: number,
-    userName: string,
-    data: UpdateAttendanceRequest,
+    attendanceId: number,
+    data: UpdateAttendanceRequest
   ): Promise<void> => {
     const res = await fetchWithAuth(
-      `/api/trainer/course/${courseId}/session/${sessionId}/attendance/${encodeURIComponent(
-        userName,
-      )}`,
+      `/api/trainer/course/${courseId}/session/${sessionId}/attendance/${attendanceId}`,
       {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
-      },
+      }
     );
 
     if (!res.ok) {
