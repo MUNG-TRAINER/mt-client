@@ -1,22 +1,31 @@
 "use client";
 
-import {useState} from "react";
+import { useState } from "react";
 import useGroupedApplications from "@/hooks/afterLogin/applications/useGroupedApplications";
-import {useApplicationSelection} from "@/hooks/afterLogin/applications/useApplicationSelection";
-import {useApplicationModals} from "@/hooks/afterLogin/applications/useApplicationModals";
-import {useApplicationBulkActions} from "@/hooks/afterLogin/applications/useApplicationBulkActions";
-import {ApplicationList} from "./ApplicationList";
-import {RejectModal} from "./RejectModal";
-import {ApprovalConfirmModal} from "./ApprovalConfirmModal";
-import {DogDetailModal} from "./DogDetailModal";
+import { useApplicationSelection } from "@/hooks/afterLogin/applications/useApplicationSelection";
+import { useApplicationModals } from "@/hooks/afterLogin/applications/useApplicationModals";
+import { useApplicationBulkActions } from "@/hooks/afterLogin/applications/useApplicationBulkActions";
+import { ApplicationList } from "./ApplicationList";
+import { RejectModal } from "./RejectModal";
+import { ApprovalConfirmModal } from "./ApprovalConfirmModal";
+import { DogDetailModal } from "./DogDetailModal";
 import AlertModal from "@/components/shared/modal/AlertModal";
-import type {GroupedApplication} from "@/types/applications/applicationType";
-import {fcmApi} from "@/apis/fcm/fcmApi";
+import type { GroupedApplication } from "@/types/applications/applicationType";
+import type { LessonFormFilter } from "@/types/applications/applicationFilterTypes";
+import { ApplicationFilterBar } from "./ApplicationFilterBar";
+import { fcmApi } from "@/apis/fcm/fcmApi";
 
 export const ApplicationManagementClient = () => {
   const [selected, setSelected] = useState<Set<string> | null>(null);
-  const {data: applications, isPending, isError} = useGroupedApplications();
-  const {selectedItems, toggleSelection} = useApplicationSelection();
+  const [selectedFilter, setSelectedFilter] = useState<LessonFormFilter>("ALL");
+  const {
+    data: applications,
+    isPending,
+    isError,
+  } = useGroupedApplications({
+    lessonFormFilter: selectedFilter,
+  });
+  const { selectedItems, toggleSelection } = useApplicationSelection();
   const {
     rejectModalOpen,
     targetDogName,
@@ -30,7 +39,7 @@ export const ApplicationManagementClient = () => {
     openDogDetailModal,
     closeDogDetailModal,
   } = useApplicationModals();
-  const {handleBulkApprove, handleBulkReject} = useApplicationBulkActions();
+  const { handleBulkApprove, handleBulkReject } = useApplicationBulkActions();
   // 결과 모달 상태
   const [resultModal, setResultModal] = useState<{
     isOpen: boolean;
@@ -49,6 +58,11 @@ export const ApplicationManagementClient = () => {
     openDogDetailModal(application);
   };
 
+  // 필터 변경 핸들러
+  const handleFilterChange = (filter: LessonFormFilter) => {
+    setSelectedFilter(filter);
+  };
+
   // 모달에서 선택 버튼 클릭
   const handleSelectFromModal = () => {
     if (!selectedApplication) return;
@@ -64,7 +78,7 @@ export const ApplicationManagementClient = () => {
     const firstKey = Array.from(selectedItems)[0];
     const [courseId, dogId] = firstKey.split("-").map(Number);
     const firstApplication = applications.find(
-      (app) => app.courseId === courseId && app.dogId === dogId,
+      (app) => app.courseId === courseId && app.dogId === dogId
     );
     if (firstApplication) {
       openRejectModal(firstApplication.dogName);
@@ -222,6 +236,14 @@ export const ApplicationManagementClient = () => {
         )}
       </div>
 
+      {/* 수업 형태 필터 */}
+      <div className="mb-3">
+        <ApplicationFilterBar
+          selectedFilter={selectedFilter}
+          onFilterChange={handleFilterChange}
+        />
+      </div>
+
       {/* 목록 */}
       <ApplicationList
         applications={applications}
@@ -283,7 +305,7 @@ export const ApplicationManagementClient = () => {
         title={resultModal.title}
         message={resultModal.message}
         positioning="absolute"
-        onClose={() => setResultModal({...resultModal, isOpen: false})}
+        onClose={() => setResultModal({ ...resultModal, isOpen: false })}
       />
     </div>
   );

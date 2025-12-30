@@ -270,8 +270,11 @@ export default function CourseRegistModal({
                             />
                           </div>
                         ) : (
+                          dogColors?
                           <div
-                            className={`size-24 rounded-full ${dogColors![i]}`}
+                            className={`size-24 rounded-full ${dogColors[i]}`}
+                          />:<div
+                            className={`size-24 rounded-full bg-amber-200`}
                           />
                         )}
                         <div>
