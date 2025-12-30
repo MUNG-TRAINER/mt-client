@@ -10,6 +10,7 @@ import {useEffect, useState} from "react";
 import useIndexedDB from "@/hooks/indexedDB/useIndexedDB";
 import {IAlertTypes} from "@/util/indexedDB/initDB";
 import {NOTI_BROADCAST} from "@/util/variables";
+import {useAlertState} from "@/stores/alert/alertState";
 
 const notAllowBackBtn: {[key: string]: boolean} = {
   "/": true,
@@ -18,15 +19,14 @@ const notAllowBackBtn: {[key: string]: boolean} = {
 };
 
 export default function HeaderNav() {
-  const [alert, setAlert] = useState(false);
   const [state, setState] = useState<boolean>(false);
   const {getAlertDB, editAlertState} = useIndexedDB();
   const {onToggle} = useDrawer();
   const path = usePathname();
   const router = useRouter();
-
+  const {alertState, setAlertState} = useAlertState();
   const handleAlertClick = async () => {
-    setAlert((prev) => !prev);
+    setAlertState();
     await editAlertState(false);
     setState(false);
   };
@@ -76,7 +76,7 @@ export default function HeaderNav() {
           </i>
         </button>
       </li>
-      <HeaderAlert state={alert} />
+      <HeaderAlert state={alertState} />
     </>
   );
 }
