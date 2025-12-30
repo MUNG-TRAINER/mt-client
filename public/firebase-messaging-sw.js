@@ -5,9 +5,11 @@ importScripts(
   "https://www.gstatic.com/firebasejs/10.13.2/firebase-messaging-compat.js",
 );
 
-const INDEXED_DB_NAME = "notice-center";
-const ALERT = "alert";
-const NOTIFICATION = "notification";
+// 앱(브라우저 탭)에서 사용하는 IndexedDB 설정과 반드시 동일해야
+// 백그라운드(Firebase SW)로 들어온 알림을 앱 UI에서 조회할 수 있습니다.
+const INDEXED_DB_NAME = "MUNGSCHOOL";
+const ALERT = "ALERT";
+const NOTIFICATION = "NOTIFICATION";
 
 let cachedDB = null;
 
