@@ -3,6 +3,7 @@ import {fcmApi} from "@/apis/fcm/fcmApi";
 import useIndexedDB from "@/hooks/indexedDB/useIndexedDB";
 import {IFirebaseMsgTypes} from "@/types/firebaseMsg/IFirebaseMsgTypes";
 import {app} from "@/util/firebase/initFirebase";
+import {NOTI_BROARDCAST} from "@/util/variables";
 import {getMessaging, getToken, onMessage} from "firebase/messaging";
 import {
   createContext,
@@ -83,6 +84,12 @@ export default function FirebaseProvider({children}: {children: ReactNode}) {
           // 여기에 db에 noti저장하는 함수 만들 수 있음
           await addNotification({ver: 1, data});
           await editAlertState(true);
+
+          //브로드 캐스트
+          const notiBroadCast = new BroadcastChannel(NOTI_BROARDCAST);
+          notiBroadCast.postMessage({alert: true});
+          notiBroadCast.close();
+
           const origin = self.location?.origin ?? window.location.origin;
           const path = data.url ? data.url : "";
           noti.onclick = () => {
