@@ -12,6 +12,10 @@ export interface ApplicationItem {
   price: number;
   sessionSchedule: string;
   rejectReason: string | null;
+  // 대기 정보 (WAITING 상태일 때만 사용)
+  isWaiting?: boolean;
+  waitingOrder?: number | null; // 대기 순번 (1부터 시작)
+  isPreApproved?: boolean; // 미리 승인 여부
 }
 
 export interface ApplicationType {

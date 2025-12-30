@@ -47,6 +47,9 @@ export interface SessionInfo {
   isWaiting?: boolean; // 대기 중 여부
   isPreApproved?: boolean; // 미리 승인 여부
   waitingOrder?: number | null; // 대기 순번 (1부터 시작, 대기 중이 아니면 null)
+  maxCapacity?: number; // 세션 최대 정원
+  currentParticipants?: number; // 현재 승인/결제 완료된 인원 (APPROVED, PAID)
+  isFull?: boolean; // 정원 마감 여부
 }
 
 // 코스별 그룹핑된 신청 타입
@@ -54,6 +57,7 @@ export interface GroupedApplication {
   courseId: number;
   courseTitle: string;
   courseType: "SINGLE" | "MULTI" | "GROUP";
+  lessonForm: "WALK" | "GROUP" | "PRIVATE";
   dogId: number;
   dogName: string;
   ownerName: string;
