@@ -3,7 +3,7 @@ import Link from "next/link";
 import walk_course from "@/public/images/home/mainimage3.jpg";
 import solo_course from "@/public/images/home/solo_course.jpg";
 import group_course from "@/public/images/home/group_course.jpg";
-import dog_main from "@/public/images/home/dog_image.png";
+import dog_main from "@/public/images/home/dogchange.png";
 import {Metadata} from "next";
 import CourseOfThisWeek from "@/components/pages/common/home/CoureOfThisWeek";
 
