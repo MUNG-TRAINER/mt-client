@@ -28,6 +28,7 @@ messaging.onBackgroundMessage((payload) => {
       icon: payload.notification?.icon,
       data: payload.data,
     };
+    await initDB(1);
     await addNotification({
       ver: 1,
       data: {
@@ -78,14 +79,13 @@ const initDB = (ver) => {
       );
     request.onupgradeneeded = () => {
       const db = request.result;
-      const dbs =
-        db.objectStoreNames.contains(ALERT) &&
-        db.objectStoreNames.contains(NOTIFICATION);
-      if (!dbs) {
+      if (!db.objectStoreNames.contains(ALERT)) {
         db.createObjectStore(ALERT, {
           keyPath: "id",
           autoIncrement: true,
         });
+      }
+      if (!db.objectStoreNames.contains(NOTIFICATION)) {
         db.createObjectStore(NOTIFICATION, {
           keyPath: "id",
           autoIncrement: true,

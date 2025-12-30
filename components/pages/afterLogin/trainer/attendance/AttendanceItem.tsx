@@ -10,7 +10,7 @@ import {
 
 interface AttendanceItemProps {
   attendance: AttendanceType;
-  onToggle: (userName: string, currentStatus: AttendanceStatus) => void;
+  onToggle: (attendanceId: number, currentStatus: AttendanceStatus) => void;
   isEditable: boolean;
 }
 
@@ -64,7 +64,9 @@ export default function AttendanceItem({
         {isEditable ? (
           <ToggleSlide
             toggleState={isAttended}
-            toggleFn={() => onToggle(attendance.userName, attendance.status)}
+            toggleFn={() =>
+              onToggle(attendance.attendanceId, attendance.status)
+            }
             barWidth={48}
             barHeight={24}
           />

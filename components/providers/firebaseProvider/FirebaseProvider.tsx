@@ -32,7 +32,13 @@ export default function FirebaseProvider({
   const [token, setToken] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
   // custom hook
-  const { addNotification, editAlertState } = useIndexedDB();
+  const { initDB, addNotification, editAlertState } = useIndexedDB();
+  useEffect(() => {
+    initDB(1)
+      .then(() => console.log("indexDB 작동"))
+      .catch(() => console.log("indexDB 에러"));
+  }, [initDB]);
+
   useEffect(() => {
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker
@@ -80,9 +86,10 @@ export default function FirebaseProvider({
 
         const notification = await Notification.requestPermission();
         const messaging = getMessaging(app);
+        const vapidKeyResponse = await fetch("/api/fcm/vapidkey");
         if (notification === "granted") {
           const fcmToken = await getToken(messaging, {
-            vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY,
+            vapidKey: await vapidKeyResponse.json(),
           });
           setToken(fcmToken);
 

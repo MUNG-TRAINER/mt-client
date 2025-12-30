@@ -1,13 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import {useState} from "react";
 import Tabs from "@/components/shared/tabs/Tabs";
-import { CounselingList } from "./CounselingList";
-import { useCounselingList } from "@/hooks/afterLogin/counseling/useCounselingList";
-import { CounselingWriteModal } from "./CounselingWriteModal";
-import { counselingApi } from "@/apis/counseling/counselingApi";
-import { useQueryClient } from "@tanstack/react-query";
-import type { CounselingDog } from "@/types/counseling/counselingType";
+import {CounselingList} from "./CounselingList";
+import {useCounselingList} from "@/hooks/afterLogin/counseling/useCounselingList";
+import {CounselingWriteModal} from "./CounselingWriteModal";
+import {counselingApi} from "@/apis/counseling/counselingApi";
+import {useQueryClient} from "@tanstack/react-query";
+import type {CounselingDog} from "@/types/counseling/counselingType";
+import {fcmApi} from "@/apis/fcm/fcmApi";
 
 type CounselingTab = "pending" | "completed";
 
@@ -21,12 +22,8 @@ export default function CounselingManagementClient() {
   const [activeTab, setActiveTab] = useState<CounselingTab>("pending");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDog, setSelectedDog] = useState<CounselingDog | null>(null);
-
   // 상담 완료 여부에 따라 데이터 조회
-  const { data: dogs, isLoading } = useCounselingList(
-    activeTab === "completed"
-  );
-
+  const {data: dogs, isLoading} = useCounselingList(activeTab === "completed");
   const handleViewDetail = (counselingId: number) => {
     const dog = dogs?.find((d) => d.counselingId === counselingId);
     if (dog) {
@@ -41,14 +38,21 @@ export default function CounselingManagementClient() {
     try {
       await counselingApi.saveCounselingContent(
         selectedDog.counselingId,
-        content
+        content,
       );
 
       // React Query 캐시 무효화 - 리스트 자동 새로고침
       await queryClient.invalidateQueries({
         queryKey: ["counseling", "list"],
       });
-
+      await fcmApi.sendFCMMsg({
+        userId: Number(selectedDog.userId),
+        title: `새로운 상담신청이 도착했어요.`,
+        msgBody: `${selectedDog?.dogName}의 상담신청이 도착했어요.`,
+        desc: `${selectedDog?.dogName}의 상담신청이 도착했어요.`,
+        url: `/trainer/counseling`,
+        token: selectedDog.fcmToken ?? "",
+      });
       // 모달 닫기
       setIsModalOpen(false);
       setSelectedDog(null);

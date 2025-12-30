@@ -12,15 +12,17 @@ import ConfirmModal from "@/components/pages/afterLogin/wishlist/ConfirmModal";
 import {useApplyCourse} from "@/hooks/afterLogin/applications/useApplyCourse";
 import {useWishlistDogs} from "@/hooks/afterLogin/wishlist/useWishlistDogs";
 import {useFCMState} from "@/stores/fcm/fcmState";
-import useCheckLoggedIn from "@/hooks/afterLogin/users/useCheckLoggedIn";
+import {fcmApi} from "@/apis/fcm/fcmApi";
 
 export default function CourseRegistModal({
+  trainerId,
   trainerToken,
   courseId,
   dogs,
   mode,
   modalOff,
 }: {
+  trainerId: number;
   trainerToken: string;
   courseId: string;
   dogs: IDogListType | undefined;
@@ -33,7 +35,6 @@ export default function CourseRegistModal({
   const [open, setOpen] = useState(false);
   const [dogColors] = useState(() => dogs && randomColor(dogs));
   //zustand
-  const {myId} = useCheckLoggedIn();
   const {setUserId, setTrainerToken} = useFCMState();
 
   const handleBack = () => {
@@ -166,7 +167,7 @@ export default function CourseRegistModal({
       // 상담 안 된 강아지는 상담 안내 모달 띄우고 이동
       setConfirmDesc("상담이 안된 반려견입니다. 상담페이지로 이동합니다.");
       setConfirmOpen(true);
-      setUserId(Number(myId));
+      setUserId(Number(trainerId));
       setTrainerToken(trainerToken);
       setTimeout(() => {
         setConfirmOpen(false);
@@ -181,9 +182,17 @@ export default function CourseRegistModal({
         data: {dogId: id},
       },
       {
-        onSuccess: () => {
+        onSuccess: async () => {
           setConfirmDesc("수강 신청이 완료되었습니다.");
           setConfirmResult("apply");
+          await fcmApi.sendFCMMsg({
+            userId: trainerId,
+            title: `${selectedDog.name}의 수강신청이 도착했어요.`,
+            msgBody: `${selectedDog.name}의 수강신청이 도착했어요.`,
+            desc: `${selectedDog.name}의 상담신청이 도착했어요.`,
+            url: `/trainer/applications`,
+            token: trainerToken ?? "",
+          });
           setConfirmOpen(true);
           router.push("/applications");
         },
@@ -192,7 +201,8 @@ export default function CourseRegistModal({
           if (e.message === "ALREADY_APPLIED") {
             setConfirmDesc("이미 신청한 강의입니다.");
           } else {
-            setConfirmDesc("신청 중 오류가 발생했습니다.");
+            // 백엔드에서 전달된 에러 메시지를 그대로 표시
+            setConfirmDesc(e.message || "신청 중 오류가 발생했습니다.");
           }
 
           setConfirmResult(null);

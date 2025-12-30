@@ -53,13 +53,25 @@ export const applicationAPI = {
     });
 
     if (!res.ok) {
-      const errorBody = await res.json();
+      let errorBody;
+      try {
+        errorBody = await res.json();
+      } catch {
+        // JSON 파싱 실패 시 기본 에러 메시지
+        throw new Error("신청 중 오류가 발생했습니다.");
+      }
 
-      if (errorBody.code === "ALREADY_APPLIED") {
+      // 백엔드 응답: { error: "ALREADY_APPLIED", message: "..." }
+      if (errorBody.error === "ALREADY_APPLIED") {
         throw new Error("ALREADY_APPLIED");
       }
 
-      throw new Error("APPLY_FAILED");
+      // 백엔드에서 보낸 에러 메시지를 그대로 전달
+      if (errorBody.message) {
+        throw new Error(errorBody.message);
+      }
+
+      throw new Error("신청 중 오류가 발생했습니다.");
     }
 
     const result = (await res.json()) as IResultResponseData<ApplicationType[]>;

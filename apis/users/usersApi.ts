@@ -78,4 +78,35 @@ export const usersApi = {
     }
     return await res.json();
   },
+  getUserFCMTokenByUserName: async (userName: string) => {
+    const res = await fetchWithAuth(
+      `/api/users/fcm-token/userName/${userName}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+    if (!res.ok) {
+      throw new Error("해당 유저의 FCM토큰을 가져오지 못했습니다.");
+    }
+    return await res.json();
+  },
+  findUserByName: async (userName: string) => {
+    const res = await fetchWithAuth(
+      `/api/users/${encodeURIComponent(userName)}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+    if (!res.ok) {
+      throw new Error("해당 유저의 정보를 찾을 수 없습니다.");
+    }
+    const result = await res.json();
+    return result;
+  },
 };

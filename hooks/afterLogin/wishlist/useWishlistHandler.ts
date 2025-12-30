@@ -1,23 +1,23 @@
 "use client";
-import {useState} from "react";
-import {useUserWishlist} from "./useWishlist";
-import {useWishlistDogs} from "./useWishlistDogs";
-import {useDeleteWishlist} from "./useDeleteWishlist";
-import {useUpdateWishlist} from "./usePatchWishlist";
-import {useApplyWishlist} from "./useApplyWishlist";
-import {ApplicationType} from "@/types/applications/applicationsType";
+import { useState } from "react";
+import { useUserWishlist } from "./useWishlist";
+import { useWishlistDogs } from "./useWishlistDogs";
+import { useDeleteWishlist } from "./useDeleteWishlist";
+import { useUpdateWishlist } from "./usePatchWishlist";
+import { useApplyWishlist } from "./useApplyWishlist";
+import { ApplicationType } from "@/types/applications/applicationsType";
 
 export const useWishlistHandler = () => {
-  const {wishlist, loading, refetch} = useUserWishlist();
-  const {dogs} = useWishlistDogs();
+  const { wishlist, loading, refetch } = useUserWishlist();
+  const { dogs } = useWishlistDogs();
 
-  const {remove} = useDeleteWishlist();
-  const {update} = useUpdateWishlist();
-  const {apply} = useApplyWishlist();
+  const { remove } = useDeleteWishlist();
+  const { update } = useUpdateWishlist();
+  const { apply } = useApplyWishlist();
 
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [selectedDogIds, setSelectedDogIds] = useState<Record<number, number>>(
-    {},
+    {}
   );
   const [modalContent, setModalContent] = useState<{
     title?: string;
@@ -26,7 +26,7 @@ export const useWishlistHandler = () => {
 
   const handleSelect = (id: number, isChecked: boolean) => {
     setSelectedIds((prev) =>
-      isChecked ? [...prev, id] : prev.filter((i) => i !== id),
+      isChecked ? [...prev, id] : prev.filter((i) => i !== id)
     );
   };
 
@@ -38,7 +38,7 @@ export const useWishlistHandler = () => {
     const duplicate = wishlist.find(
       (w) =>
         w.courseId === item.courseId &&
-        (selectedDogIds[w.wishlistItemId] ?? w.dogId) === dogId,
+        (selectedDogIds[w.wishlistItemId] ?? w.dogId) === dogId
     );
     if (duplicate && duplicate.wishlistItemId !== wishlistItemId) {
       setModalContent({
@@ -49,8 +49,8 @@ export const useWishlistHandler = () => {
     }
 
     try {
-      await update(wishlistItemId, {dogId});
-      setSelectedDogIds((prev) => ({...prev, [wishlistItemId]: dogId}));
+      await update(wishlistItemId, { dogId });
+      setSelectedDogIds((prev) => ({ ...prev, [wishlistItemId]: dogId }));
       await refetch();
       setModalContent({
         title: "변경 완료",
@@ -68,7 +68,7 @@ export const useWishlistHandler = () => {
   const handleDelete = async (ids: number[]) => {
     if (!ids.length) return;
     try {
-      await remove({wishlistItemId: ids});
+      await remove({ wishlistItemId: ids });
       await refetch();
     } catch (err) {
       console.error(err);
@@ -81,7 +81,7 @@ export const useWishlistHandler = () => {
 
   const handleApplyWithDog = async () => {
     if (!selectedIds.length) {
-      setModalContent({description: "적어도 하나의 찜 항목을 선택해주세요."});
+      setModalContent({ description: "적어도 하나의 찜 항목을 선택해주세요." });
       return;
     }
 
@@ -90,7 +90,7 @@ export const useWishlistHandler = () => {
     try {
       const res = await fetch("/api/application/list", {
         method: "GET",
-        headers: {"Content-Type": "application/json"},
+        headers: { "Content-Type": "application/json" },
       });
       if (res.ok) {
         const json = await res.json();
@@ -106,7 +106,7 @@ export const useWishlistHandler = () => {
 
       // 이미 신청된 강의+반려견이면 안내
       const isDuplicate = applications.some(
-        (app) => app.courseId === item.courseId && app.dogId === dogId,
+        (app) => app.courseId === item.courseId && app.dogId === dogId
       );
       if (isDuplicate) {
         setModalContent({
@@ -131,7 +131,7 @@ export const useWishlistHandler = () => {
       const body = selectedIds.map((id) => {
         const item = wishlist.find((w) => w.wishlistItemId === id)!;
         const dogId = selectedDogIds[id] ?? item.dogId;
-        return {wishlistItemId: id, dogId, courseId: item.courseId};
+        return { wishlistItemId: id, dogId, courseId: item.courseId };
       });
       await apply(body);
       setModalContent({
@@ -142,9 +142,11 @@ export const useWishlistHandler = () => {
       setSelectedIds([]);
     } catch (err) {
       console.error(err);
+      const errorMessage =
+        err instanceof Error ? err.message : "신청 중 오류가 발생했습니다.";
       setModalContent({
         title: "신청 실패",
-        description: "신청 중 오류가 발생했습니다.",
+        description: errorMessage,
       });
     }
   };
