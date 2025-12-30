@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import useGroupedApplications from "@/hooks/afterLogin/applications/useGroupedApplications";
 import { useApplicationSelection } from "@/hooks/afterLogin/applications/useApplicationSelection";
 import { useApplicationModals } from "@/hooks/afterLogin/applications/useApplicationModals";
@@ -11,6 +11,10 @@ import { ApprovalConfirmModal } from "./ApprovalConfirmModal";
 import { DogDetailModal } from "./DogDetailModal";
 import AlertModal from "@/components/shared/modal/AlertModal";
 import type { GroupedApplication } from "@/types/applications/applicationType";
+
+// 모달 애니메이션 완료 대기 시간 (ms)
+// 더 나은 방법: 모달 라이브러리의 onExited/onClosed 콜백 활용 권장
+const MODAL_CLOSE_DELAY = 100;
 
 export const ApplicationManagementClient = () => {
   const { data: applications, isPending, isError } = useGroupedApplications();
@@ -71,41 +75,48 @@ export const ApplicationManagementClient = () => {
   };
 
   // 거절 확인
-  const handleRejectConfirm = async (reason: string) => {
-    const result = await handleBulkReject(selectedItems, reason);
+  const handleRejectConfirm = useCallback(
+    async (reason: string) => {
+      // 먼저 모달을 닫음
+      closeRejectModal();
 
-    // 성공한 항목만 선택 해제
-    result.succeeded.forEach((key) => {
-      const [courseId, dogId] = key.split("-").map(Number);
-      toggleSelection(courseId, dogId);
-    });
+      const result = await handleBulkReject(selectedItems, reason);
 
-    closeRejectModal();
+      // 성공한 항목만 선택 해제
+      result.succeeded.forEach((key) => {
+        const [courseId, dogId] = key.split("-").map(Number);
+        toggleSelection(courseId, dogId);
+      });
 
-    // 결과 피드백
-    if (result.failed.length === 0) {
-      setResultModal({
-        isOpen: true,
-        type: "success",
-        title: "거절 완료",
-        message: `${result.succeeded.length}건이 거절되었습니다.`,
-      });
-    } else if (result.succeeded.length === 0) {
-      setResultModal({
-        isOpen: true,
-        type: "error",
-        title: "거절 실패",
-        message: `거절에 실패했습니다. (실패: ${result.failed.length}건)\n다시 시도해주세요.`,
-      });
-    } else {
-      setResultModal({
-        isOpen: true,
-        type: "info",
-        title: "일부 처리 완료",
-        message: `성공: ${result.succeeded.length}건\n실패: ${result.failed.length}건\n\n실패한 항목은 선택된 상태로 유지됩니다.`,
-      });
-    }
-  };
+      // 모달 애니메이션 완료 대기 후 결과 모달 표시
+      setTimeout(() => {
+        // 결과 피드백
+        if (result.failed.length === 0) {
+          setResultModal({
+            isOpen: true,
+            type: "success",
+            title: "거절 완료",
+            message: `${result.succeeded.length}건이 거절되었습니다.`,
+          });
+        } else if (result.succeeded.length === 0) {
+          setResultModal({
+            isOpen: true,
+            type: "error",
+            title: "거절 실패",
+            message: `거절에 실패했습니다. (실패: ${result.failed.length}건)\n다시 시도해주세요.`,
+          });
+        } else {
+          setResultModal({
+            isOpen: true,
+            type: "info",
+            title: "일부 처리 완료",
+            message: `성공: ${result.succeeded.length}건\n실패: ${result.failed.length}건\n\n실패한 항목은 선택된 상태로 유지됩니다.`,
+          });
+        }
+      }, MODAL_CLOSE_DELAY);
+    },
+    [selectedItems, closeRejectModal, handleBulkReject, toggleSelection]
+  );
 
   // 승인 버튼 클릭
   const handleApprovalClick = () => {
@@ -114,7 +125,10 @@ export const ApplicationManagementClient = () => {
   };
 
   // 승인 확인
-  const handleApprovalConfirm = async () => {
+  const handleApprovalConfirm = useCallback(async () => {
+    // 먼저 모달을 닫음
+    closeApprovalModal();
+
     const result = await handleBulkApprove(selectedItems);
 
     // 성공한 항목만 선택 해제
@@ -123,32 +137,33 @@ export const ApplicationManagementClient = () => {
       toggleSelection(courseId, dogId);
     });
 
-    closeApprovalModal();
-
-    // 결과 피드백
-    if (result.failed.length === 0) {
-      setResultModal({
-        isOpen: true,
-        type: "success",
-        title: "승인 완료",
-        message: `${result.succeeded.length}건이 승인되었습니다.`,
-      });
-    } else if (result.succeeded.length === 0) {
-      setResultModal({
-        isOpen: true,
-        type: "error",
-        title: "승인 실패",
-        message: `승인에 실패했습니다. (실패: ${result.failed.length}건)\n다시 시도해주세요.`,
-      });
-    } else {
-      setResultModal({
-        isOpen: true,
-        type: "info",
-        title: "일부 처리 완료",
-        message: `성공: ${result.succeeded.length}건\n실패: ${result.failed.length}건\n\n실패한 항목은 선택된 상태로 유지됩니다.`,
-      });
-    }
-  };
+    // 모달 애니메이션 완료 대기 후 결과 모달 표시
+    setTimeout(() => {
+      // 결과 피드백
+      if (result.failed.length === 0) {
+        setResultModal({
+          isOpen: true,
+          type: "success",
+          title: "승인 완료",
+          message: `${result.succeeded.length}건이 승인되었습니다.`,
+        });
+      } else if (result.succeeded.length === 0) {
+        setResultModal({
+          isOpen: true,
+          type: "error",
+          title: "승인 실패",
+          message: `승인에 실패했습니다. (실패: ${result.failed.length}건)\n다시 시도해주세요.`,
+        });
+      } else {
+        setResultModal({
+          isOpen: true,
+          type: "info",
+          title: "일부 처리 완료",
+          message: `성공: ${result.succeeded.length}건\n실패: ${result.failed.length}건\n\n실패한 항목은 선택된 상태로 유지됩니다.`,
+        });
+      }
+    }, MODAL_CLOSE_DELAY);
+  }, [selectedItems, closeApprovalModal, handleBulkApprove, toggleSelection]);
 
   if (isPending) {
     return (
