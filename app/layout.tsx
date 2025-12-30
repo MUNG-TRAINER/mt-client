@@ -44,7 +44,7 @@ export default function RootLayout({
         <QueryProvider>
           <FirebaseProvider>
             <Wallpapaer>
-              <section className="relative flex flex-col justify-between max-w-[500px] h-full mx-auto md:mr-32 bg-(--mt-blue-smoke)">
+              <section className="relative flex flex-col justify-between max-w-[500px] h-full mx-auto md:mr-32 bg-(--mt-white)">
                 <HeaderBar className="bg-(--mt-blue)">
                   <HeaderNav />
                 </HeaderBar>

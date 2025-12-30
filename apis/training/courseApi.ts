@@ -77,7 +77,7 @@ export const courseApi = {
       const presignedURL = await response.json();
       const mainImgUrl = await presignedUrlApi.uploadToS3(
         presignedURL.presignedUrl,
-        mainImgFile,
+        mainImgFile
       );
       formData.set("mainImgUrl", mainImgUrl);
     }
@@ -96,7 +96,10 @@ export const courseApi = {
         }),
       });
       const presignedURL = await response.json();
-      const s3Key = await presignedUrlApi.uploadToS3(presignedURL, file);
+      const s3Key = await presignedUrlApi.uploadToS3(
+        presignedURL.presignedUrl,
+        file
+      );
       detailImageUrl.push(s3Key);
     }
     formData.set("detailImgUrl", detailImageUrl.join(","));

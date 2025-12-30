@@ -1,70 +1,43 @@
 "use client";
-import {ReactNode, useEffect, useState} from "react";
-import Drawer from "../drawer/Drawer";
-import back_1 from "@/public/images/home/back_1.jpg";
-import back_2 from "@/public/images/home/back_2.jpg";
-import back_3 from "@/public/images/home/back_3.jpg";
+import {ReactNode} from "react";
 import Image from "next/image";
+import Drawer from "../drawer/Drawer";
+import back_1 from "@/public/images/home/bg_back.png";
+import back_2 from "@/public/images/home/bg_text.png";
 
 export default function Wallpaper({children}: {children: ReactNode}) {
-  const [translate, setTranslate] = useState(0);
-  const moving = () => {
-    setInterval(() => {
-      setTranslate((prev) => {
-        if (prev >= 66.666666) {
-          return 0;
-        }
-        return prev + 33.333333;
-      });
-    }, 5000);
-  };
-  useEffect(() => {
-    moving();
-    return () => moving();
-  }, []);
   return (
-    <div className="w-full h-full">
-      <div className="absolute z-60 text-(--mt-white) xl:left-[3%] 2xl:left-[10%] top-[35%] p-10 rounded-lg bg-(--mt-black)/75 hidden xl:block transition-normal ease-in-out duration-200">
-        <h2 className="font-dohyeon font-bold text-5xl">
-          멍스쿨에 오신것을 환영합니다.
-        </h2>
+    <div className="relative w-screen h-screen overflow-hidden">
+      {/* 배경 이미지 */}
+      <Image
+        src={back_1}
+        alt="배경"
+        fill
+        priority
+        sizes="100vw"
+        className="object-cover"
+      />
+
+      {/* 텍스트(전경) 이미지 */}
+      <div className="absolute top-25 left-80 z-10 flex items-center justify-center pointer-events-none">
+        <Image
+          src={back_2}
+          alt="텍스트 배경"
+          priority
+          sizes="(min-width: 1280px) 900px, 80vw"
+          className="
+            w-[80vw]
+            max-w-[900px]
+            h-auto
+          "
+        />
       </div>
-      <div>
-        <ul
-          className="absolute left-0 flex h-full w-[300%] transition-transform duration-500 ease-in-out brightness-80"
-          style={{transform: `translateX(-${translate}%)`}}
-        >
-          <li className="relative size-full w-full h-full">
-            <Image
-              src={back_1}
-              alt="배경화면_1"
-              fill
-              sizes="100"
-              placeholder="blur"
-            />
-          </li>
-          <li className="relative size-full w-full h-full">
-            <Image
-              src={back_2}
-              alt="배경화면_1"
-              fill
-              sizes="100"
-              placeholder="blur"
-            />
-          </li>
-          <li className="relative size-full w-full h-full">
-            <Image
-              src={back_3}
-              alt="배경화면_1"
-              fill
-              sizes="100"
-              placeholder="blur"
-            />
-          </li>
-        </ul>
+
+      {/* UI / 콘텐츠 */}
+      <div className="relative z-20 h-full">
+        <Drawer />
+        {children}
       </div>
-      <Drawer />
-      {children}
     </div>
   );
 }
