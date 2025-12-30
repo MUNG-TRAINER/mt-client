@@ -6,7 +6,7 @@ import {useDrawer} from "@/stores/drawerState";
 import {usePathname, useRouter} from "next/navigation";
 import {ChevronLeftIcon} from "@/components/icons/chevron";
 import HeaderAlert from "./headerAlert/HeaderAlert";
-import {useEffect, useState} from "react";
+import {MouseEvent, useEffect, useState} from "react";
 import useIndexedDB from "@/hooks/indexedDB/useIndexedDB";
 import {IAlertTypes} from "@/util/indexedDB/initDB";
 import {NOTI_BROADCAST} from "@/util/variables";
@@ -25,7 +25,7 @@ export default function HeaderNav() {
   const path = usePathname();
   const router = useRouter();
   const {alertState, setAlertState} = useAlertState();
-  const handleAlertClick = async (e: MouseEvent) => {
+  const handleAlertClick = async (e: MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     setAlertState();
     await editAlertState(false);
@@ -61,7 +61,7 @@ export default function HeaderNav() {
         </Link>
       </li>
       <li className="ml-auto hover:bg-blue-400 rounded-full p-2 relative">
-        <button onClick={handleAlertClick}>
+        <button onClick={(e) => handleAlertClick(e)}>
           <i>
             <BellIcon className="size-6 text-white" />
           </i>
