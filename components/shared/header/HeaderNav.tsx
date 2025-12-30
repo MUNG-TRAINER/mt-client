@@ -25,7 +25,8 @@ export default function HeaderNav() {
   const path = usePathname();
   const router = useRouter();
   const {alertState, setAlertState} = useAlertState();
-  const handleAlertClick = async () => {
+  const handleAlertClick = async (e: MouseEvent) => {
+    e.stopPropagation();
     setAlertState();
     await editAlertState(false);
     setState(false);
