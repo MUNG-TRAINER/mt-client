@@ -8,10 +8,10 @@ import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {useRouter} from "next/navigation";
 
 export default function useLogin() {
-  const router = useRouter();
   const queryClient = useQueryClient();
   const {refreshUserCheck} = useCheckLoggedIn();
   const {token} = useFCM();
+  const router = useRouter();
   const {mutate, isPending, isError, reset} = useMutation({
     mutationKey: ["loginRequest"],
     mutationFn: (data: ILoginDataType) => loginApi.login(data),
@@ -19,9 +19,7 @@ export default function useLogin() {
       await fcmApi.updateFcmToken(token ?? "");
       queryClient.setQueryData(["auth"], {loggedOut: false});
       refreshUserCheck();
-      setTimeout(() => {
-        router.replace("/");
-      }, 100);
+      router.replace("/");
     },
   });
   return {mutate, isPending, isError, reset};

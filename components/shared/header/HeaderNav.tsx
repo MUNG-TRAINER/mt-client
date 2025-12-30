@@ -9,6 +9,7 @@ import HeaderAlert from "./headerAlert/HeaderAlert";
 import {useEffect, useState} from "react";
 import useIndexedDB from "@/hooks/indexedDB/useIndexedDB";
 import {IAlertTypes} from "@/util/indexedDB/initDB";
+import {NOTI_BROADCAST} from "@/util/variables";
 
 const notAllowBackBtn: {[key: string]: boolean} = {
   "/": true,
@@ -18,7 +19,7 @@ const notAllowBackBtn: {[key: string]: boolean} = {
 
 export default function HeaderNav() {
   const [alert, setAlert] = useState(false);
-  const [state, setState] = useState<boolean | null>(null);
+  const [state, setState] = useState<boolean>(false);
   const {getAlertDB, editAlertState} = useIndexedDB();
   const {onToggle} = useDrawer();
   const path = usePathname();
@@ -36,6 +37,14 @@ export default function HeaderNav() {
     };
     alertState();
   }, [getAlertDB, state]);
+
+  useEffect(() => {
+    const notiBroadCast = new BroadcastChannel(NOTI_BROADCAST);
+    notiBroadCast.onmessage = (e) => {
+      setState(e.data.alert);
+    };
+    return () => notiBroadCast.close();
+  }, []);
   return (
     <>
       {!notAllowBackBtn[path] && (
