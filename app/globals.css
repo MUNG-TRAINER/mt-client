@@ -35,6 +35,15 @@ body {
   height: 100dvh;
   overflow-x: hidden;
 }
+
+/* iOS Safari 대응 */
+@supports (-webkit-touch-callout: none) {
+  html,
+  body {
+    height: -webkit-fill-available;
+  }
+}
+
 body {
   background-color: var(--mt-background);
   color: var(--mt-black);
