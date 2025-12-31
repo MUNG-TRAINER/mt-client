@@ -2,7 +2,7 @@ import Image from "next/image";
 import logo_slogun from "@/public/logos/logo_svg_white.svg";
 
 export const metadata = {
-  title: "멍선생 소개",
+  title: "멍스쿨 소개",
 };
 
 export default function IntroducePage() {
