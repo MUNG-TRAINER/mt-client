@@ -1,5 +1,5 @@
 import Image from "next/image";
-import logo_slogun from "@/public/logos/logo_text_slogun_svg_white.svg";
+import logo_slogun from "@/public/logos/logo_svg_white.svg";
 
 export default function BeforeLoginLoading() {
   return (

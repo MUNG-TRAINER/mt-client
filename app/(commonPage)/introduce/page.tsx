@@ -1,5 +1,5 @@
 import Image from "next/image";
-import logo_slogun from "@/public/logos/logo_text_slogun_svg_white.svg";
+import logo_slogun from "@/public/logos/logo_svg_white.svg";
 
 export const metadata = {
   title: "멍선생 소개",
@@ -8,8 +8,8 @@ export const metadata = {
 export default function IntroducePage() {
   return (
     <div className="bg-(--mt-white) rounded-md h-full p-6 flex flex-col items-center gap-6 overflow-y-scroll">
-      <section className="flex size-72 justify-center bg-(--mt-blue) rounded-full">
-        <Image src={logo_slogun} alt="멍선생 프로필" width={150} height={150} />
+      <section className="flex size-60 justify-center bg-(--mt-blue) rounded-full">
+        <Image src={logo_slogun} alt="멍스쿨 프로필" width={150} height={150} />
       </section>
       <h1 className="text-4xl font-bold text-center font-dohyeon">
         멍스쿨 소개
@@ -30,7 +30,7 @@ export default function IntroducePage() {
       </section>
 
       <section className="flex flex-col gap-2 w-full">
-        <h2 className="text-2xl font-semibold">멍선생의 강점</h2>
+        <h2 className="text-2xl font-semibold">멍스쿨의 강점</h2>
         <ul className="flex flex-col gap-1">
           <li>회원제로 운영하는 훈련사와의 반려견 훈련 경험</li>
           <li>반려견과 주인 맞춤형 교육 프로그램 제공</li>

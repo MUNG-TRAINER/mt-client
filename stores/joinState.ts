@@ -14,7 +14,7 @@ interface IJoinStateType {
 }
 
 export const useJoinState = create<IJoinStateType>((set) => ({
-  isTrainer: true,
+  isTrainer: false,
   isUserAgree: 0,
   isTrainerAgree: 0,
   isPolicyAgree: 0,
@@ -55,8 +55,8 @@ const calOSOffset = (offset: number) => {
     os === "ios"
       ? POLICY_OFFSET.ios
       : os === "android"
-      ? POLICY_OFFSET.android
-      : POLICY_OFFSET.desktop;
+        ? POLICY_OFFSET.android
+        : POLICY_OFFSET.desktop;
 
   const next = offset + width;
   const max = width * 2;

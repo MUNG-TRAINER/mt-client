@@ -29,7 +29,9 @@ const Wishlist = () => {
     );
   if (!wishlist.length)
     return (
-      <p className="text-center text-gray-500">장바구니가 비어있습니다.</p>
+      <p className="w-full text-center text-gray-500">
+        장바구니가 비어있습니다.
+      </p>
     );
 
   return (

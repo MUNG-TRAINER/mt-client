@@ -50,7 +50,7 @@ export default function JoinRequiredInputs({
   const now = new Date();
   return (
     <>
-      <div className="flex  items-center gap-2">
+      <div className="flex items-center gap-2">
         <AuthInput
           id="userName"
           name="userName"

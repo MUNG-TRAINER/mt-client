@@ -3,7 +3,6 @@ import Image from "next/image";
 import {ReactNode} from "react";
 import logo_slogun_white from "@/public/logos/logo_svg_white.svg";
 import Link from "next/link";
-import {ChatBubbleOvalLeftIcon} from "@/components/icons/chat";
 
 export const metadata: Metadata = {
   title: "로그인",

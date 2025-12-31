@@ -45,6 +45,7 @@ export default function CounselingManagementClient() {
       await queryClient.invalidateQueries({
         queryKey: ["counseling", "list"],
       });
+
       await fcmApi.sendFCMMsg({
         userId: Number(selectedDog.userId),
         title: `새로운 상담신청이 도착했어요.`,
