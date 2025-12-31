@@ -9,7 +9,11 @@ export default function UserBadge({role}: {role: UserRoleType}) {
         : "bg-amber-500";
   };
   const generateTxt = (role: UserRoleType) => {
-    return role === "TRAINER" ? "훈련사" : role === "ADMIN" ? "관리자" : "유저";
+    return role === "TRAINER"
+      ? "훈련사"
+      : role === "ADMIN"
+        ? "관리자"
+        : "보호자";
   };
 
   return (
