@@ -2,7 +2,7 @@
 name: 🔧 Code Change Request
 about: 기존 코드 수정, 리팩토링, 구조 개선 요청
 title: '[CODE] '
-labels: ['refactor', 'bug', 'chore']
+labels: ['refactor','chore']
 assignees: '여기에 본인 깃허브아이디 적으세요 예)hellicopthecat'
 ---
 
