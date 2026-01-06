@@ -37,6 +37,7 @@ export async function loginAction(
     });
     if (!response.ok) {
       const json = await response.json();
+      console.error("Login API ERROR :: ", json.message);
       return {
         errMsg: undefined,
         resMsg: json.message || "로그인에 실패했습니다.",

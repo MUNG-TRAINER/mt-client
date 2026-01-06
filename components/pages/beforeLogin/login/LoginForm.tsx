@@ -11,6 +11,7 @@ import useCheckLoggedIn from "@/hooks/afterLogin/users/useCheckLoggedIn";
 import {loginSchema} from "@/schemas/loginSchema";
 import {IFormResultType} from "@/types/formResultType";
 import {customQueryClient} from "@/util/queryClient";
+import {useRouter} from "next/navigation";
 import {useActionState, useState} from "react";
 
 const initState = {
@@ -22,7 +23,7 @@ export default function LoginForm() {
   const [clearErrors, setClearErrors] = useState<Set<"userName" | "password">>(
     new Set(),
   );
-
+  const router = useRouter();
   const {refreshUserCheck} = useCheckLoggedIn();
   const {token} = useFCM();
   const [state, action, isPending] = useActionState(
@@ -30,10 +31,19 @@ export default function LoginForm() {
       setClearErrors(new Set());
       const result = await loginAction(state, formData);
       if (!result.errMsg && !result.resMsg) {
-        await fcmApi.updateFcmToken(token ?? "");
+        try {
+          await fcmApi.updateFcmToken(token ?? "");
+        } catch (error) {
+          const err = error as Error;
+          console.error(
+            "FCM 토큰 업데이트 중 오류가 발생했습니다. :: ",
+            err.message,
+          );
+        }
         customQueryClient.setQueryData(["auth"], {loggedOut: false});
         refreshUserCheck();
-        window.location.href = "/";
+        // window.location.href = "/"; // 배포시 쿠키의 동작이 안될때 사용
+        router.replace("/");
       }
       return result;
     },
