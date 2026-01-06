@@ -1,7 +1,6 @@
 import {
   ICheckLoggedInType,
   IFailedCheckLoggedInType,
-  ILoginDataType,
 } from "@/types/login/loginDataType";
 import {
   IResultResponse,
@@ -10,21 +9,6 @@ import {
 import {fetchWithAuth} from "../common/fetchWithAuth";
 
 export const loginApi = {
-  login: async (data: ILoginDataType) => {
-    const res = await fetch(`/api/auth/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-    if (!res.ok) {
-      console.log(await res.text());
-      throw new Error("로그인에 실패하였습니다.");
-    }
-    const result = await res.json();
-    return result;
-  },
   logout: async () => {
     const res = await fetchWithAuth(`/api/auth/logout`, {
       method: "GET",

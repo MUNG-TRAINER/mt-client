@@ -1,5 +1,5 @@
-import type { Metadata } from "next";
-import { Do_Hyeon, Nanum_Gothic } from "next/font/google";
+import type {Metadata} from "next";
+import {Do_Hyeon, Nanum_Gothic} from "next/font/google";
 import "./globals.css";
 import GlobalNav from "@/components/shared/globalNav/GlobalNav";
 import HeaderBar from "@/components/shared/header/HeaderBar";
@@ -25,7 +25,11 @@ export const metadata: Metadata = {
     template: "%s | 멍스쿨",
     default: "멍스쿨 | 멍스쿨",
   },
-  // manifest: "/manifest.webmanifest",
+  applicationName: "멍스쿨",
+  alternates: {
+    canonical: "https://도메인",
+  },
+  keywords: ["댕댕이", "반려견", "반려견 훈련", "멍스쿨"],
 };
 
 export default function RootLayout({

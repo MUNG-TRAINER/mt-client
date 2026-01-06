@@ -1,55 +1,74 @@
 "use client";
 
+import {fcmApi} from "@/apis/fcm/fcmApi";
+import {loginAction} from "@/app/(beforeLogin)/login/actions";
 import {EyeIcon, EyeSlashIcon} from "@/components/icons/eye";
 import {LockClosedIcon} from "@/components/icons/lock";
 import {UserIcon} from "@/components/icons/user";
+import {useFCM} from "@/components/providers/firebaseProvider/FirebaseProvider";
 import AuthInput from "@/components/shared/inputs/AuthInput";
-import useLogin from "@/hooks/beforeLogin/login/useLogin";
+import useCheckLoggedIn from "@/hooks/afterLogin/users/useCheckLoggedIn";
 import {loginSchema} from "@/schemas/loginSchema";
-import {ZodErrorTree} from "@/types/formResultType";
-import {FormEvent, useState} from "react";
-import {treeifyError} from "zod";
+import {IFormResultType} from "@/types/formResultType";
+import {customQueryClient} from "@/util/queryClient";
+import {useRouter} from "next/navigation";
+import {useActionState, useState} from "react";
 
+const initState = {
+  errMsg: undefined,
+  resMsg: undefined,
+};
 export default function LoginForm() {
   const [togglePwd, setTogglePwd] = useState(false);
-  const [fieldErrors, setFieldErrors] =
-    useState<ZodErrorTree<typeof loginSchema>>();
-  /* Custom Hook */
-  const {mutate, isPending, isError, reset} = useLogin();
+  const [clearErrors, setClearErrors] = useState<Set<"userName" | "password">>(
+    new Set(),
+  );
+  const router = useRouter();
+  const {refreshUserCheck} = useCheckLoggedIn();
+  const {token} = useFCM();
+  const [state, action, isPending] = useActionState(
+    async (state: IFormResultType<typeof loginSchema>, formData: FormData) => {
+      setClearErrors(new Set());
+      const result = await loginAction(state, formData);
+      if (!result.errMsg && !result.resMsg) {
+        try {
+          await fcmApi.updateFcmToken(token ?? "");
+        } catch (error) {
+          const err = error as Error;
+          console.error(
+            "FCM 토큰 업데이트 중 오류가 발생했습니다. :: ",
+            err.message,
+          );
+        }
+        customQueryClient.setQueryData(["auth"], {loggedOut: false});
+        refreshUserCheck();
+        // window.location.href = "/"; // 배포시 쿠키의 동작이 안될때 사용
+        router.replace("/");
+      }
+      return result;
+    },
+    initState,
+  );
 
   /* fn */
-  // 로그인
-  const handleFormAction = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const data = {
-      userName: formData.get("userName"),
-      password: formData.get("password"),
-    };
-    const result = await loginSchema.safeParseAsync(data);
-    if (!result.success) {
-      setFieldErrors(treeifyError(result.error));
-      return;
-    }
-    mutate(result.data);
-  };
   // 에러메세지 초기화
   const handleFieldChange = (field: "userName" | "password") => {
-    setFieldErrors((prev) => {
-      if (!prev?.properties) return prev;
-      const next = structuredClone(prev);
-      if (!next.properties) return;
-      delete next.properties[field];
-      return next;
+    if (!state.errMsg?.properties?.[field]) return;
+    setClearErrors((prev) => {
+      const prevSet = new Set(prev);
+      prevSet.add(field);
+      return prevSet;
     });
-    reset();
   };
-
+  /* variables */
+  const userNameErrors = clearErrors.has("userName")
+    ? []
+    : state.errMsg?.properties?.userName?.errors || [];
+  const passwordErrors = clearErrors.has("password")
+    ? []
+    : state.errMsg?.properties?.password?.errors || [];
   return (
-    <form
-      onSubmit={handleFormAction}
-      className="flex flex-col items-center w-full gap-3"
-    >
+    <form action={action} className="flex flex-col items-center w-full gap-3">
       <fieldset className="flex flex-col items-center gap-3 w-full">
         <legend>로그인</legend>
         <AuthInput
@@ -59,11 +78,7 @@ export default function LoginForm() {
           type="text"
           placeholder="아이디를 입력하세요."
           headIcon={<UserIcon />}
-          errMsg={
-            (fieldErrors?.properties &&
-              fieldErrors.properties.userName?.errors) ||
-            []
-          }
+          errMsg={userNameErrors}
           onChange={() => handleFieldChange("userName")}
           required
         />
@@ -78,11 +93,7 @@ export default function LoginForm() {
           stateTrueTailIcon={<EyeSlashIcon />}
           fnState={togglePwd}
           fn={() => setTogglePwd((prev) => !prev)}
-          errMsg={
-            (fieldErrors?.properties &&
-              fieldErrors.properties.password?.errors) ||
-            []
-          }
+          errMsg={passwordErrors}
           onChange={() => handleFieldChange("password")}
           required
         />
@@ -94,8 +105,8 @@ export default function LoginForm() {
       >
         {isPending ? "로그인 중..." : "로그인"}
       </button>
-      {isError && (
-        <p className="text-xs text-(--mt-red)">로그인에 실패하였습니다.</p>
+      {state.resMsg && (
+        <p className="text-xs text-(--mt-red)">{state.resMsg}</p>
       )}
     </form>
   );

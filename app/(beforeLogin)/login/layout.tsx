@@ -7,6 +7,28 @@ import {ChatBubbleOvalLeftIcon} from "@/components/icons/chat";
 
 export const metadata: Metadata = {
   title: "로그인",
+  description: "로그인하고 멍스쿨에서 반려견 훈련을 시작해보아요.",
+  openGraph: {
+    type: "website",
+    title: "로그인 | 멍스쿨",
+    description: "로그인하고 멍스쿨에서 반려견 훈련을 시작해보아요.",
+    siteName: "멍스쿨",
+    url: "/도메인작성",
+    images: [{url: "/pwa-logos/icon-144x144.png"}],
+  },
+  twitter: {
+    title: "로그인 | 멍스쿨",
+    card: "summary",
+    description: "로그인하고 멍스쿨에서 반려견 훈련을 시작해보아요.",
+    images: "/pwa-logos/icon-144x144.png",
+  },
+  alternates: {
+    canonical: "https://도메인/login",
+  },
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 export default function layout({children}: {children: ReactNode}) {
