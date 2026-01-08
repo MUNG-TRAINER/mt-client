@@ -16,6 +16,10 @@ export default function DrawerHeader() {
     offToggle();
     router.push("/login");
   };
+  const goToJoin = () => {
+    offToggle();
+    router.push("/join");
+  };
   const handleLogout = async () => {
     mutate();
     resetUserCheck();
@@ -42,12 +46,18 @@ export default function DrawerHeader() {
           </button>
         </li>
       ) : (
-        <li>
+        <li className="flex items-center gap-3">
           <button
             onClick={goToLogin}
             className="bg-(--mt-white) px-2 py-1 rounded-lg font-semibold text-sm hover:bg-(--mt-blue-light) hover:outline-2 hover:outline-(--mt-blue-point) transition-colors ease-in-out duration-200"
           >
             로그인
+          </button>
+          <button
+            onClick={goToJoin}
+            className="bg-(--mt-white) px-2 py-1 rounded-lg font-semibold text-sm hover:bg-(--mt-blue-light) hover:outline-2 hover:outline-(--mt-blue-point) transition-colors ease-in-out duration-200"
+          >
+            회원가입
           </button>
         </li>
       )}

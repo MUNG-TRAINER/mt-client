@@ -1,14 +1,21 @@
 import {BuildingOffice2Icon, HomeIcon} from "@/components/icons/home";
 import {MapIcon, MapPinIcon} from "@/components/icons/location";
 import AuthInput from "@/components/shared/inputs/AuthInput";
+import {useJoinRequiredInputState} from "@/stores/join/joinRequiredInputState";
 import {onClickAddr} from "@/util/address/address";
 import {useState} from "react";
 
 export default function JoinAddress() {
-  const [sido, setSido] = useState("");
-  const [sigungu, setSigungu] = useState("");
-  const [roadname, setRoadName] = useState("");
-  const [postcode, setPostCode] = useState("");
+  const {
+    sido,
+    sigungu,
+    roadname,
+    postcode,
+    setSido,
+    setSigungu,
+    setRoadName,
+    setPostCode,
+  } = useJoinRequiredInputState();
   return (
     <>
       <div

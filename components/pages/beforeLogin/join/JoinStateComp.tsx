@@ -1,15 +1,18 @@
 "use client";
 
-import {useJoinState, usePolicyState} from "@/stores/joinState";
+import {useJoinRequiredInputState} from "@/stores/join/joinRequiredInputState";
+import {useJoinState, usePolicyState} from "@/stores/join/joinState";
 
 export default function JoinStateComp() {
   const {isTrainer, toggleIsTrainer, resetToggleIsAgree} = useJoinState();
   const {setZeroOffset, setResetPolicy} = usePolicyState();
+  const {resetStates} = useJoinRequiredInputState();
   const handleToggleState = () => {
     toggleIsTrainer();
     setZeroOffset();
     resetToggleIsAgree();
     setResetPolicy();
+    resetStates();
   };
   return (
     <div

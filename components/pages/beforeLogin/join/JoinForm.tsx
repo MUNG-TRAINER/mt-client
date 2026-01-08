@@ -7,7 +7,7 @@ import {
   joinUserAction,
 } from "@/app/(beforeLogin)/join/actions";
 import useCheckValidation from "@/hooks/beforeLogin/join/useCheckValidation";
-import {useJoinState, usePolicyState} from "@/stores/joinState";
+import {useJoinState, usePolicyState} from "@/stores/join/joinState";
 import JoinTrainerTerm from "./policy/JoinTrainerTerm";
 import JoinPrivacyPolicy from "./policy/JoinPrivacyPolicy";
 import JoinUserTerm from "./policy/JoinUserTerm";
@@ -16,6 +16,7 @@ import getOS from "@/util/getOS";
 import {joinTrainerSchema, joinUserSchema} from "@/schemas/joinSchema";
 import {IFormResultType} from "@/types/formResultType";
 import {useRouter} from "next/navigation";
+import {useJoinRequiredInputState} from "@/stores/join/joinRequiredInputState";
 
 const initailState = {
   errMsg: undefined,
@@ -23,18 +24,16 @@ const initailState = {
 };
 
 export default function JoinForm() {
+  const router = useRouter();
+  const [togglePwd, setTogglePwd] = useState(false);
+  const [toggleCheckPwd, setToggleCheckPwd] = useState(false);
+  const {userName, email} = useJoinRequiredInputState();
+  const {isTrainer} = useJoinState();
+  // Custom Hook
   const os = getOS();
   const isIos = os === "ios";
   const isAndroid = os === "android";
-  const [togglePwd, setTogglePwd] = useState(false);
-  const [toggleCheckPwd, setToggleCheckPwd] = useState(false);
-  const [userNameInput, setUserNameInput] = useState("");
-  const [emailInput, setEmailInput] = useState("");
-  const {isTrainer} = useJoinState();
-  const router = useRouter();
-  // Custom Hook
-  const {offset, setZeroOffset, setResetPolicy} = usePolicyState();
-  const {resetToggleIsAgree} = useJoinState();
+  const {offset} = usePolicyState();
   const {
     checkUserName,
     checkEmail,
@@ -42,10 +41,10 @@ export default function JoinForm() {
     handleCheckUserName,
     handleCheckEmail,
     handleResetState,
-  } = useCheckValidation({userNameInput, emailInput});
+  } = useCheckValidation({userName, email});
 
   // form action
-  const [state, action] = useActionState(
+  const [state, action, isPending] = useActionState(
     async (
       state: IFormResultType<typeof joinTrainerSchema | typeof joinUserSchema>,
       formData: FormData,
@@ -58,8 +57,11 @@ export default function JoinForm() {
       } else {
         result = await joinUserAction(state, formData);
       }
+      if (result.errMsg || result.resMsg) {
+        handleResetState();
+      }
       if (!result.errMsg && !result.resMsg) {
-        router.replace("/");
+        router.replace("/login");
       }
       return result;
     },
@@ -88,10 +90,7 @@ export default function JoinForm() {
 
   useEffect(() => {
     handleResetState();
-    setZeroOffset();
-    setResetPolicy();
-    resetToggleIsAgree();
-  }, [handleResetState, setZeroOffset, setResetPolicy, resetToggleIsAgree]);
+  }, [handleResetState]);
 
   return (
     <form action={action} className="flex overflow-x-hidden py-2">
@@ -112,8 +111,6 @@ export default function JoinForm() {
               togglePwd={togglePwd}
               toggleCheckPwd={toggleCheckPwd}
               isTrainer={isTrainer}
-              setUserNameInput={setUserNameInput}
-              setEmailInput={setEmailInput}
               handleCheckUserName={handleCheckUserName}
               handleCheckEmail={handleCheckEmail}
               setTogglePwd={setTogglePwd}
@@ -130,9 +127,9 @@ export default function JoinForm() {
                 : "bg-(--mt-blue) hover:bg-(--mt-blue-point)"
             } text-(--mt-white) py-2 rounded-lg shadow-md font-bold transition-colors duration-200 ease-in-out
         `}
-            disabled={unableStates.userName || unableStates.email}
+            disabled={unableStates.userName || unableStates.email || isPending}
           >
-            회원가입
+            {isPending ? "가입중.." : "회원가입"}
           </button>
         </fieldset>
       </div>
