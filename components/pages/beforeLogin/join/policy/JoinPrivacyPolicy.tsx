@@ -1,7 +1,7 @@
 import PrivacyPolicy from "@/markdown/privacy_policy.md";
 import JoinPolicyLayout from "./JoinPolicyLayout";
 import MotherPolicyLayout from "./MotherPolicyLayout";
-import {useJoinState, usePolicyState} from "@/stores/joinState";
+import {useJoinState, usePolicyState} from "@/stores/join/joinState";
 export default function JoinPrivacyPolicy() {
   const {isPolicyAgree, toggleIsPolicyAgree} = useJoinState();
   const {isPPolicyState, setPPolicyState} = usePolicyState();

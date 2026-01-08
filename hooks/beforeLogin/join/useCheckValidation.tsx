@@ -5,11 +5,11 @@ import useCheckEmail from "./useCheckEmail";
 import {useQueryClient} from "@tanstack/react-query";
 
 export default function useCheckValidation({
-  userNameInput,
-  emailInput,
+  userName,
+  email,
 }: {
-  userNameInput: string;
-  emailInput: string;
+  userName: string;
+  email: string;
 }) {
   const queryClient = useQueryClient();
   const [checkUserName, setCheckUserName] = useState(false);
@@ -19,12 +19,12 @@ export default function useCheckValidation({
     email: true,
   });
   // Custom Hook
-  const {refetch: checkUserNameRefetch} = useCheckUserName(userNameInput);
-  const {refetch: checkEmailRefetch} = useCheckEmail(emailInput);
+  const {refetch: checkUserNameRefetch} = useCheckUserName(userName);
+  const {refetch: checkEmailRefetch} = useCheckEmail(email);
   /* functions */
   // 유저이름 확인
   const handleCheckUserName = async () => {
-    if (!userNameInput.trim()) {
+    if (!userName.trim()) {
       setCheckUserName(false);
       setUnableStates((prev) => ({
         ...prev,
@@ -49,7 +49,7 @@ export default function useCheckValidation({
   };
   // 유저 이메일 확인
   const handleCheckEmail = async () => {
-    if (!emailInput.trim()) {
+    if (!email.trim()) {
       setCheckEmail(false);
       setUnableStates((prev) => ({
         ...prev,

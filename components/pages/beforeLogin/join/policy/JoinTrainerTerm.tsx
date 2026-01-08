@@ -1,7 +1,7 @@
 import TrainerTerm from "@/markdown/trainer_terms.md";
 import JoinPolicyLayout from "./JoinPolicyLayout";
 import MotherPolicyLayout from "./MotherPolicyLayout";
-import {useJoinState, usePolicyState} from "@/stores/joinState";
+import {useJoinState, usePolicyState} from "@/stores/join/joinState";
 export default function JoinTrainerTerm() {
   const {isTrainerAgree, toggleIsTrainerAgree} = useJoinState();
   const {isTPolicyState, setTPolicyState} = usePolicyState();

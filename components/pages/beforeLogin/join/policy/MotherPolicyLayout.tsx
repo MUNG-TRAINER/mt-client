@@ -1,6 +1,6 @@
 "use client";
 
-import {usePolicyState} from "@/stores/joinState";
+import {usePolicyState} from "@/stores/join/joinState";
 import {IMotherPolicyType} from "@/types/components/motherPolicyType";
 import {useId} from "react";
 

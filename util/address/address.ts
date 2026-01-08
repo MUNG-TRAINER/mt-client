@@ -1,10 +1,8 @@
-import {Dispatch, SetStateAction} from "react";
-
 interface IOnClickAddrProps {
-  setSido: Dispatch<SetStateAction<string>>;
-  setSigungu: Dispatch<SetStateAction<string>>;
-  setRoadName: Dispatch<SetStateAction<string>>;
-  setPostCode: Dispatch<SetStateAction<string>>;
+  setSido: (sido: string) => void;
+  setSigungu: (sigungu: string) => void;
+  setRoadName: (roadName: string) => void;
+  setPostCode: (postCode: string) => void;
 }
 interface IAddr {
   sido: string;

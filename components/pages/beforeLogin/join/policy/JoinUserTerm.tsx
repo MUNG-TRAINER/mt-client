@@ -1,7 +1,7 @@
 import UserTerm from "@/markdown/user_terms.md";
 import JoinPolicyLayout from "./JoinPolicyLayout";
 import MotherPolicyLayout from "./MotherPolicyLayout";
-import {useJoinState, usePolicyState} from "@/stores/joinState";
+import {useJoinState, usePolicyState} from "@/stores/join/joinState";
 export default function JoinUserTerm() {
   const {isUserAgree, toggleIsUserAgree} = useJoinState();
   const {isUPolicyState, setUPolicyState} = usePolicyState();
