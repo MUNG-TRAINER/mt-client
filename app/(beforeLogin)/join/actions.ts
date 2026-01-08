@@ -61,46 +61,55 @@ export async function joinTrainerAction(
   state: IFormResultType<typeof joinTrainerSchema>,
   formData: FormData,
 ): Promise<IFormResultType<typeof joinTrainerSchema>> {
-  const data = {
-    isAgree: formData.get("isAgree") === "1",
-    userName: formData.get("userName"),
-    email: formData.get("email"),
-    phone: formData.get("phone"),
-    password: formData.get("password"),
-    passwordCheck: formData.get("passwordCheck"),
-    name: formData.get("name"),
-    birth: formData.get("birth"),
-    sido: formData.get("sido"),
-    sigungu: formData.get("sigungu"),
-    roadname: formData.get("roadname"),
-    postcode: formData.get("postcode"),
-    restAddress: formData.get("restAddress"),
-  };
-  const result = await joinTrainerSchema.safeParseAsync(data);
-  if (!result.success) {
-    return {
-      errMsg: treeifyError(result.error),
-      resMsg: undefined,
+  try {
+    const data = {
+      isAgree: formData.get("isAgree") === "1",
+      userName: formData.get("userName"),
+      email: formData.get("email"),
+      phone: formData.get("phone"),
+      password: formData.get("password"),
+      passwordCheck: formData.get("passwordCheck"),
+      name: formData.get("name"),
+      birth: formData.get("birth"),
+      sido: formData.get("sido"),
+      sigungu: formData.get("sigungu"),
+      roadname: formData.get("roadname"),
+      postcode: formData.get("postcode"),
+      restAddress: formData.get("restAddress"),
     };
-  }
-  const cookie = await cookies();
-  const res = await fetch(`${API_BASE_URL}/auth/join/trainer`, {
-    method: "POST",
-    headers: {
-      Cookie: cookie.toString(),
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(result.data),
-  });
-  if (!res.ok) {
-    const responseResult: IErrorResponse = await res.json();
+    const result = await joinTrainerSchema.safeParseAsync(data);
+    if (!result.success) {
+      return {
+        errMsg: treeifyError(result.error),
+        resMsg: undefined,
+      };
+    }
+    const cookie = await cookies();
+    const res = await fetch(`${API_BASE_URL}/auth/join/trainer`, {
+      method: "POST",
+      headers: {
+        Cookie: cookie.toString(),
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(result.data),
+    });
+    if (!res.ok) {
+      const responseResult: IErrorResponse = await res.json();
+      return {
+        errMsg: undefined,
+        resMsg: responseResult.message || "로그인에 실패했습니다.",
+      };
+    }
     return {
       errMsg: undefined,
-      resMsg: responseResult.message,
+      resMsg: undefined,
+    };
+  } catch (error) {
+    const err = error as Error;
+    console.error("Join Server Action :: ", err.message);
+    return {
+      errMsg: undefined,
+      resMsg: "서버에 오류가 났습니다. 다시 시도해주세요.",
     };
   }
-  return {
-    errMsg: undefined,
-    resMsg: undefined,
-  };
 }
